@@ -18,21 +18,19 @@ namespace scrapyAngleTestApp
 
         static void Main(string[] args)
         {
-            var url = "http://nabava.net/robots.txt";
+            Url = "http://nabava.net";
             List<string> urlsList = new List<string>();
 
-            Browser = new ScrapingBrowser();
-            WebPage source = Browser.NavigateToPage(new Uri(url));
-
+            //get user agent
             //var useragent = Browser.UserAgent;
             //urlsList.AddRange(goTo.GetResourceUrls());//gets File url's
 
-            //FetchAbrakadabra();
-
-            if (GetSitemap(source))
+            //FetchAbrakadabra(); comented for testing
+            Browser = new ScrapingBrowser();
+            if (GetSitemap())
             {
-                WebPage source2 = Browser.NavigateToPage(new Uri(Url));
-                var nodes = source2.Html.CssSelect("loc").ToList();//gets all links(source http://nabava.net/sitemap.xml)
+                WebPage source = Browser.NavigateToPage(new Uri(Url));
+                var nodes = source.Html.CssSelect("loc").ToList();//gets all links(source http://nabava.net/sitemap.xml)
 
                 foreach (var node in nodes)
                 {
@@ -44,8 +42,12 @@ namespace scrapyAngleTestApp
             Console.ReadLine();
         }
 
-        public static bool GetSitemap(WebPage source)
+        public static bool GetSitemap()
         {
+            //Check for /robots.txt
+            string sitemapSource = Url + "/robots.txt";
+            WebPage source = Browser.NavigateToPage(new Uri(sitemapSource));
+
             //Regex -get
             var matcheSitemap = Regex.Match(source.Html.InnerHtml, @"\b(?:https?://|www\.)\S+\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
