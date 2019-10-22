@@ -5,6 +5,7 @@ using ScrapySharp.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace scrapyAngleTestApp
 {
@@ -23,10 +24,10 @@ namespace scrapyAngleTestApp
             Browser = new ScrapingBrowser();
             WebPage source = Browser.NavigateToPage(new Uri(url));
 
-            var useragent = Browser.UserAgent;
+            //var useragent = Browser.UserAgent;
             //urlsList.AddRange(goTo.GetResourceUrls());//gets File url's
 
-            FetchAbrakadabra();
+            //FetchAbrakadabra();
 
             if (GetSitemap(source))
             {
@@ -45,12 +46,12 @@ namespace scrapyAngleTestApp
 
         public static bool GetSitemap(WebPage source)
         {
-            var sitemap = source.Html.InnerHtml.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);//split separator == \n
+            //Regex -get
+            var matcheSitemap = Regex.Match(source.Html.InnerHtml, @"\b(?:https?://|www\.)\S+\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-            string sitemapFound = sitemap.Where(x => x.Contains("Sitemap")).SingleOrDefault().Split(' ')[1];
-            if (sitemapFound != null)
+            if (matcheSitemap.Success && matcheSitemap.Value.Contains("sitemap"))
             {
-                Url = sitemapFound;
+                Url = matcheSitemap.Value;
                 return true;
             }
             return false;
@@ -58,7 +59,9 @@ namespace scrapyAngleTestApp
 
         public static void FetchAbrakadabra()
         {
-            string url = "https://www.abrakadabra.com/hr-HR/Katalog/TV%2C-mobiteli-i-elektronika/Televizori-i-dodaci/c/FE100";
+            //TODO : check for robots.txt before scraping site !!!!!(this site has it !!)
+
+            string url = "https://www.abrakadabra.com/hr-HR/Katalog/TV%2C-mobiteli-i-elektronika/Televizori-i-dodaci/c/FE100";//it has robots.txt--(and in it is "sitemap.xml")
             //Fetch
             WebPage source = Browser.NavigateToPage(new Uri(url));
 
