@@ -14,9 +14,9 @@ namespace scrapyAngleTestApp
     {
         public static string Url { get; set; }
         public static ScrapingBrowser Browser { get; set; }
-        public static bool IsActive { get; private set; } = true;
+        public static bool IsActiveNabavaScrape { get; private set; } = true;
         public static List<string> InputList { get; set; }
-        public static List<string> Shops { get; set; }
+        public static List<string> WebShops { get; set; }
         public static Dictionary<string, bool> ScrapedDictionary { get; set; }
 
         // ALWAYS CHECK FOR " robots.txt" BEFORE SCRAPING WHOLE PAGE !
@@ -26,7 +26,7 @@ namespace scrapyAngleTestApp
             Url = "http://nabava.net";
             ScrapedDictionary = new Dictionary<string, bool>();
             InputList = new List<string>();
-            Shops = new List<string>();
+            WebShops = new List<string>();
 
             //FetchAbrakadabra(); comented for testing
             Browser = new ScrapingBrowser();//class also has async methods for fetching url's
@@ -35,8 +35,8 @@ namespace scrapyAngleTestApp
             {
                 NabavaSitemapScrape();
 
-                //Than scrape children
-                while (IsActive)
+                //Scrape children
+                while (IsActiveNabavaScrape)
                 {
                     if (!ScrapedDictionary.ContainsKey(Url))
                     {
@@ -46,7 +46,7 @@ namespace scrapyAngleTestApp
                         #region Extract shop Links
 
                         var nodes = pageSource.Html.SelectNodes("//b");//get<b> nodes
-                        if (nodes.Count > 0)
+                        if (nodes != null)
                         {
                             foreach (var node in nodes)
                             {
@@ -54,7 +54,7 @@ namespace scrapyAngleTestApp
                                 if (isLink)
                                 {
                                     //InputList.Add(node.InnerHtml);
-                                    Shops.Add(node.InnerHtml);//add to separate "Shop" list
+                                    WebShops.Add(node.InnerHtml);//add to separate "Shop" list
                                     Console.WriteLine(node.InnerHtml);
                                     break;
                                 }
@@ -62,19 +62,25 @@ namespace scrapyAngleTestApp
                         }
                         else
                         {
-                            Console.WriteLine($"All [{Shops.Count}] Shops scraped from nabava.net/sitemap.xml");
+                            Console.WriteLine($"All [{WebShops.Count}] Shops scraped from nabava.net/sitemap.xml \n");
+                            Console.WriteLine($"Remaining links in queue: {InputList.Count}");
+                            //Exit out of nabava.net/sitemap
+                            InputList = null;
+                            IsActiveNabavaScrape = false;
+                            break;
                         }
 
                         #endregion Extract shop Links
                     }
+
                     ScrapedDictionary.Add(Url, true);//added scraped links from sitemap here...
                     InputList.RemoveAt(0);//remove scraped links from sitemap
                     Url = InputList[0];
                 }
+                //Start scraping Webshops Queue here------------------------------
             }
-            catch (Exception ex)//TODO : exception happens after shops are scraped when inkom shop is scraped.
+            catch (Exception ex)
             {
-                IsActive = false;//temp ...make log instead
                 throw ex;
             }
 
