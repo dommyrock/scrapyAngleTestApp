@@ -67,6 +67,9 @@ namespace scrapyAngleTestApp
                             //Exit out of nabava.net/sitemap
                             InputList = null;
                             IsActiveNabavaScrape = false;
+
+                            //Set url to [0] item in "Webshop" queue before exiting
+                            Url = WebShops[0];
                             break;
                         }
 
@@ -77,7 +80,17 @@ namespace scrapyAngleTestApp
                     InputList.RemoveAt(0);//remove scraped links from sitemap
                     Url = InputList[0];
                 }
-                //Start scraping Webshops Queue here------------------------------
+                //Start scraping Webshops Queue
+
+                GetSitemap();//test this method (if false scrape source , else scrape sitemap ..
+
+                var webshopPage = Browser.NavigateToPageAsync(new Uri(Url));
+
+                var webNodes = webshopPage.Result.Html.SelectNodes("//a");
+                foreach (var wNode in webNodes)
+                {
+                    // fetch sitemap , .than --->mapp data ...serializer data to objects ??
+                }
             }
             catch (Exception ex)
             {
@@ -117,9 +130,9 @@ namespace scrapyAngleTestApp
         {
             ScrapedDictionary.Add(Url, true);
             GetSitemap();
-            //Specific  query for nabava.net
             WebPage source = Browser.NavigateToPage(new Uri(Url));
-            var nodes = source.Html.CssSelect("loc").ToList();//gets all links from http://nabava.net/sitemap.xml)-(make specific for each one for more precission or global query?? )
+            //Specific  query for nabava.net
+            var nodes = source.Html.CssSelect("loc").ToList();
             foreach (var node in nodes)
             {
                 //scrapedList.Add(node.InnerText); //Todo: replace with dictionary or hashset .+ check if item already exists
@@ -130,6 +143,7 @@ namespace scrapyAngleTestApp
             Url = InputList[0];
         }
 
+        //Test method for specific site
         public static void FetchAbrakadabra()
         {
             //TODO : check for robots.txt before scraping site !!!!!(this site has it !!)
@@ -158,6 +172,7 @@ public class Article
 
     public Article(string json)
     {
+        //Serialization cancled atm ..might reuse later!!
         JObject jObject = JObject.Parse(json);//Unexpected character encountered while parsing value
         JToken shopObject = jObject["article"];
         Id = (int)shopObject["id"];
@@ -168,6 +183,3 @@ public class Article
         CurrencyCode = (string)shopObject["currencyCode"];
     }
 }
-
-//TODO: plan....(since nabava.net already has links to other webshops in its sitemap...
-//i can add links to scrape next from it 
