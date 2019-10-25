@@ -33,63 +33,74 @@ namespace scrapyAngleTestApp
 
             try
             {
-                NabavaSitemapScrape();
+                //NabavaSitemapScrape();
 
-                //Scrape children
-                while (IsActiveNabavaScrape)
+                ////Scrape children
+                //while (IsActiveNabavaScrape)
+                //{
+                //    if (!ScrapedDictionary.ContainsKey(Url))
+                //    {
+                //        //Extract  shop links here (exit ,nabava.net after nodes.count =0)(continue scraping nabava.net)
+                //        var pageSource = Browser.NavigateToPage(new Uri(Url));
+
+                //        #region Extract shop Links
+
+                //        var nodes = pageSource.Html.SelectNodes("//b");//get<b> nodes
+                //        if (nodes != null)
+                //        {
+                //            foreach (var node in nodes)
+                //            {
+                //                bool isLink = node.InnerHtml.StartsWith("http");
+                //                if (isLink)
+                //                {
+                //                    //InputList.Add(node.InnerHtml);
+                //                    WebShops.Add(node.InnerHtml);//add to separate "Shop" list
+                //                    Console.WriteLine(node.InnerHtml);
+                //                    break;
+                //                }
+                //            }
+                //        }
+                //        else
+                //        {
+                //            Console.WriteLine($"All [{WebShops.Count}] Shops scraped from nabava.net/sitemap.xml \n");
+                //            Console.WriteLine($"Remaining links in queue: {InputList.Count}");
+                //            //Exit out of nabava.net/sitemap
+                //            InputList = null;
+                //            IsActiveNabavaScrape = false;
+
+                //            //Set url to [0] item in "Webshop" queue before exiting
+                //            Url = WebShops[0];
+                //            break;
+                //        }
+
+                //        #endregion Extract shop Links
+                //    }
+
+                //    ScrapedDictionary.Add(Url, true);//added scraped links from sitemap here...
+                //    InputList.RemoveAt(0);//remove scraped links from sitemap
+                //    Url = InputList[0];
+                //}
+
+                //Start scraping Webshops Queue (check if shop has sitemap ...If it does scrape sitemap, else scrape whole site)
+
+                //TODO: make bellow code into while loop as well , and add else "true" that scrapes sitemap data !!!!!!
+                //NOTE : ....could make some kind of enum ...that has values for "SelectNodes()" based on current Url crawled !!!!!!!!!!??????
+
+                //temp set url to adm
+                Url = "https://www.adm.hr";
+                if (!GetSitemap())
                 {
-                    if (!ScrapedDictionary.ContainsKey(Url))
+                    var webshopPage = Browser.NavigateToPageAsync(new Uri(Url));
+
+                    //adm.hr nodes
+                    //var admNodes = webshopPage.Result.Html.CssSelect("li.subitems"); select all <li>
+                    var admNodes = webshopPage.Result.Html.SelectNodes("//li[@class='subitems']/a").Select(a => a.Attributes[0]); //select all "href's" in <a> inside <li>
+
+                    foreach (var admNode in admNodes)//TODO :abstract this loop later to accept any list
                     {
-                        //Extract  shop links here (exit ,nabava.net after nodes.count =0)(continue scraping nabava.net)
-                        var pageSource = Browser.NavigateToPage(new Uri(Url));
-
-                        #region Extract shop Links
-
-                        var nodes = pageSource.Html.SelectNodes("//b");//get<b> nodes
-                        if (nodes != null)
-                        {
-                            foreach (var node in nodes)
-                            {
-                                bool isLink = node.InnerHtml.StartsWith("http");
-                                if (isLink)
-                                {
-                                    //InputList.Add(node.InnerHtml);
-                                    WebShops.Add(node.InnerHtml);//add to separate "Shop" list
-                                    Console.WriteLine(node.InnerHtml);
-                                    break;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine($"All [{WebShops.Count}] Shops scraped from nabava.net/sitemap.xml \n");
-                            Console.WriteLine($"Remaining links in queue: {InputList.Count}");
-                            //Exit out of nabava.net/sitemap
-                            InputList = null;
-                            IsActiveNabavaScrape = false;
-
-                            //Set url to [0] item in "Webshop" queue before exiting
-                            Url = WebShops[0];
-                            break;
-                        }
-
-                        #endregion Extract shop Links
+                        Console.WriteLine(admNode.Value);
+                        // fetch sitemap , .than --->mapp data ...serializer data to objects ??
                     }
-
-                    ScrapedDictionary.Add(Url, true);//added scraped links from sitemap here...
-                    InputList.RemoveAt(0);//remove scraped links from sitemap
-                    Url = InputList[0];
-                }
-                //Start scraping Webshops Queue
-
-                GetSitemap();//test this method (if false scrape source , else scrape sitemap ..
-
-                var webshopPage = Browser.NavigateToPageAsync(new Uri(Url));
-
-                var webNodes = webshopPage.Result.Html.SelectNodes("//a");
-                foreach (var wNode in webNodes)
-                {
-                    // fetch sitemap , .than --->mapp data ...serializer data to objects ??
                 }
             }
             catch (Exception ex)
@@ -103,6 +114,8 @@ namespace scrapyAngleTestApp
             //get user agent
             //var useragent = Browser.UserAgent;
             //urlsList.AddRange(goTo.GetResourceUrls());//gets File url's
+            //             var link2 = admNode.Descendants("a");
+            //var link2 = admNode.DescendantsAndSelf("a");
         }
 
         /// <summary>
