@@ -94,12 +94,35 @@ namespace scrapyAngleTestApp
 
                     //adm.hr nodes
                     //var admNodes = webshopPage.Result.Html.CssSelect("li.subitems"); select all <li>
-                    var admNodes = webshopPage.Result.Html.SelectNodes("//li[@class='subitems']/a").Select(a => a.Attributes[0]); //select all "href's" in <a> inside <li>
+                    var admNodes = webshopPage.Result.Html.SelectNodes("//li[@class='subitems']/a").Select(a => a.Attributes[0].Value); //select all "href's" in <a> inside <li>
 
-                    foreach (var admNode in admNodes)//TODO :abstract this loop later to accept any list
+                    List<string> updatedList = new List<string>();
+
+                    Console.WriteLine("\n --------------------------------------------------------------------");
+
+                    //CONSRUCT VALID LINKS
+                    var regex = new Regex(Regex.Escape("&amp;"));
+                    //  string updated = Regex.Replace(link, @"(\s|&amp;)", "", RegexOptions.Compiled);  replaces both w ""
+                    foreach (var link in admNodes)
                     {
-                        Console.WriteLine(admNode.Value);
-                        // fetch sitemap , .than --->mapp data ...serializer data to objects ??
+                        //replace 1st one with ""
+                        var updateOne = regex.Replace(link, "", 1);
+                        //Replace 2nd one with &
+                        var updateTwo = regex.Replace(updateOne, "&", 1);
+
+                        updatedList.Add(updateTwo);
+                        Console.WriteLine(updateTwo);
+                    }
+                    //CONTINUE SCRAPING FROM "updatedlsit"
+                    var url = "";
+                    foreach (var item in updatedList)
+                    {
+                        url = item;
+                        webshopPage = Browser.NavigateToPageAsync(new Uri(url));
+
+                        var pNodes = webshopPage.Result.Html.SelectNodes("//div[@class='lista col-12  mb-3']/div"); //select all "href's" in <a> inside <li> col-12 col-md-4 right-block d-flex flex-column align-items-center justify-content-center
+                        //var innerNode = pNodes.Descendants();
+                        //var css = webshopPage.Result.Html.CssSelect("div.col-12 col-md-4 right-block d-flex flex-column align-items-center justify-content-center >p"); not working  ...
                     }
                 }
             }
