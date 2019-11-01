@@ -1,4 +1,5 @@
 ﻿using HtmlAgilityPack;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ScrapySharp.Extensions;
 using ScrapySharp.Network;
@@ -68,6 +69,7 @@ namespace scrapyAngleTestApp
             //serialize JSON to C# object with Newtonsoft
 
             Article article = new Article(dataLayerNode.InnerText);
+            List<Article> articles = article.DeserializeJSON();
         }
     }
 }
@@ -80,16 +82,28 @@ public class Article
     public int Price { get; set; }
     public string Category { get; set; }
     public string CurrencyCode { get; set; }
+    public string JSON { get; set; }
 
     public Article(string json)
     {
-        JObject jObject = JObject.Parse(json);//Unexpected character encountered while parsing value
-        JToken shopObject = jObject["article"];
-        Id = (int)shopObject["id"];
-        Name = (string)shopObject["name"];
-        Brand = (string)shopObject["brand"];
-        Price = (int)shopObject["price"];
-        Category = (string)shopObject["category"];
-        CurrencyCode = (string)shopObject["currencyCode"];
+        this.JSON = json;
+        //JObject jObject = JObject.Parse(json);//Unexpected character encountered while parsing value
+        //JToken shopObject = jObject["article"];
+        //Id = (int)shopObject["id"];
+        //Name = (string)shopObject["name"];
+        //Brand = (string)shopObject["brand"];
+        //Price = (int)shopObject["price"];
+        //Category = (string)shopObject["category"];
+        //CurrencyCode = (string)shopObject["currencyCode"];
+    }
+
+    public List<Article> DeserializeJSON()
+    {
+        var deserialzedList = JsonConvert.DeserializeObject<List<Article>>(this.JSON, new JsonSerializerSettings//validate json format first before inserting it here
+        {
+            Formatting = Formatting.Indented,//not usefull
+        });
+
+        return deserialzedList;
     }
 }
