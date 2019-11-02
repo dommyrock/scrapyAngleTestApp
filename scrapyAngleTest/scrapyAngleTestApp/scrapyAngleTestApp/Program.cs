@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ScrapySharp.Extensions;
 using ScrapySharp.Network;
+using SiteSpecificScrapers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,79 +14,127 @@ namespace scrapyAngleTestApp
 {
     class Program
     {
-        public static string Url { get; set; }
+        public static string Url { get; set; }//TEmp ...remove after refactor
         public static ScrapingBrowser Browser { get; set; }
         public static bool IsActiveNabavaScrape { get; private set; } = true;
         public static List<string> InputList { get; set; }
         public static List<string> WebShops { get; set; }
-        public static Dictionary<string, bool> ScrapedDictionary { get; set; }
-
+        public static Dictionary<string, bool> ScrapedDictionary { get; set; }//refactor this in hashset ? or some other key -value pair (maybe concurrent ?), parallel.foreach , caching ...
+        /*
+         * amsg_aws: @Allisdark you can run your code in lambda to do the scraping and store the outputs in something like DynamoDB or even just dump the data into S3
+            email:AWS-TWITCH@amazon.com
+        */
         // ALWAYS CHECK FOR " robots.txt" BEFORE SCRAPING WHOLE PAGE !
 
         static void Main(string[] args)
         {
-            Url = "http://nabava.net";
+            string url = Url = "http://nabava.net";
             ScrapedDictionary = new Dictionary<string, bool>();
             InputList = new List<string>();
             WebShops = new List<string>();
 
-            //FetchAbrakadabra(); comented for testing
             Browser = new ScrapingBrowser();//class also has async methods for fetching url's
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////7777
+            ///TEST Call child classes from class library here (they inherit from abstract base class )
 
             try
             {
-                //NabavaSitemapScrape();
+                NabavaNetSitemap nabavaSitemap = new NabavaNetSitemap(url, Browser, InputList, WebShops, ScrapedDictionary);
 
-                ////Scrape children
-                //while (IsActiveNabavaScrape)
-                //{
-                //    if (!ScrapedDictionary.ContainsKey(Url))
-                //    {
-                //        //Extract  shop links here (exit ,nabava.net after nodes.count =0)(continue scraping nabava.net)
-                //        var pageSource = Browser.NavigateToPage(new Uri(Url));
+                //If ScrapeSitemapLinks = Success
+                if (nabavaSitemap.ScrapeSitemapLinks().Result)
+                {
+                    //TODO cache or local store shops list for set amount of time , + if( data is Stale before re-scrape) -->in new Helper folder->Helpers class
+                    //TEMP Store
+                    var tempWebshopCache = new List<string> {
+                        "https://www.adm.hr",
+                        "https://www.abrakadabra.com",
+                        "https://www.links.hr",
+                    };
+                    WebShops.AddRange(tempWebshopCache);
 
-                //        #region Extract shop Links
+                    if (tempWebshopCache.Count == 0)
+                    {
+                        //re-scrape
+                        nabavaSitemap.ScrapeWebshops();
+                    }
 
-                //        var nodes = pageSource.Html.SelectNodes("//b");//get<b> nodes
-                //        if (nodes != null)
-                //        {
-                //            foreach (var node in nodes)
-                //            {
-                //                bool isLink = node.InnerHtml.StartsWith("http");
-                //                if (isLink)
-                //                {
-                //                    //InputList.Add(node.InnerHtml);
-                //                    WebShops.Add(node.InnerHtml);//add to separate "Shop" list
-                //                    Console.WriteLine(node.InnerHtml);
-                //                    break;
-                //                }
-                //            }
-                //        }
-                //        else
-                //        {
-                //            Console.WriteLine($"All [{WebShops.Count}] Shops scraped from nabava.net/sitemap.xml \n");
-                //            Console.WriteLine($"Remaining links in queue: {InputList.Count}");
-                //            //Exit out of nabava.net/sitemap
-                //            InputList = null;
-                //            IsActiveNabavaScrape = false;
+                    //dispose
+                    //WE're exiting nabava.net at this point , so remove rest of the links from queue/list
+                    /// <param name="http://nabava.net"/> -->> this way i can access variable in coments :)
 
-                //            //Set url to [0] item in "Webshop" queue before exiting
-                //            Url = WebShops[0];
-                //            break;
-                //        }
+                    InputList = null;
+                    nabavaSitemap = null;
+                }
+                else
+                {
+                    Console.WriteLine($"Failed to scrape {url} sitemap.");
+                }
 
-                //        #endregion Extract shop Links
-                //    }
+                //Continue scraping from "Webshops" here:
+                url = WebShops[0];//check if needed after i exit nabavaSitemap.ScrapeWebshops();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            Console.ReadKey();
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////7777
 
-                //    ScrapedDictionary.Add(Url, true);//added scraped links from sitemap here...
-                //    InputList.RemoveAt(0);//remove scraped links from sitemap
-                //    Url = InputList[0];
-                //}
+            try
+            {
+                NabavaSitemapScrape();
+
+                //Scrape children
+                while (IsActiveNabavaScrape)//temp (always true ... ATM)
+                {
+                    #region Extract shop Links
+
+                    //Extract  shop links here (exit ,nabava.net after nodes.count =0)(continue scraping nabava.net)
+                    var pageSource = Browser.NavigateToPage(new Uri(Url));
+
+                    var nodeLink = pageSource.Html.SelectSingleNode("//b");
+                    var nodes = pageSource.Html.SelectNodes("//b").Where(n => n.InnerHtml.StartsWith("http"));//get<b> node(link)
+                    if (nodes != null)
+                    {
+                        foreach (var node in nodes)
+                        {
+                            bool isLink = node.InnerHtml.StartsWith("http");
+                            if (isLink)
+                            {
+                                //InputList.Add(node.InnerHtml);
+                                WebShops.Add(node.InnerHtml);//add to separate "Shop" list
+                                Console.WriteLine(node.InnerHtml);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"All [{WebShops.Count}] Shops scraped from nabava.net/sitemap.xml \n");
+                        Console.WriteLine($"Remaining links in queue: {InputList.Count}");
+                        //Exit out of nabava.net/sitemap
+                        InputList = null;
+                        IsActiveNabavaScrape = false;
+
+                        //Set url to [0] item in "Webshop" queue before exiting
+                        Url = WebShops[0];
+                        break;
+                    }
+
+                    if (!ScrapedDictionary.ContainsKey(Url))//TODO : use Hash(set)  or concurrent collection (parralel.foreach ..?)
+                    {
+                        ScrapedDictionary.Add(Url, true);//added scraped links from sitemap here...
+                    }
+
+                    InputList.RemoveAt(0);//remove scraped links from sitemap
+                    Url = InputList[0];
+
+                    #endregion Extract shop Links
+                }
 
                 //Start scraping Webshops Queue (check if shop has sitemap ...If it does scrape sitemap, else scrape whole site)
-
-                //TODO: make bellow code into while loop as well , and add else "true" that scrapes sitemap data !!!!!!
-                //NOTE : ....could make some kind of enum ...that has values for "SelectNodes()" based on current Url crawled !!!!!!!!!!??????
 
                 //temp set url to adm
                 Url = "https://www.adm.hr";
@@ -115,22 +164,22 @@ namespace scrapyAngleTestApp
                         Console.WriteLine(updateTwo);
                     }
                     //CONTINUE SCRAPING FROM "updatedlsit"
-                    var url = "";
+                    var tempurl = "";
                     foreach (var item in updatedList)
                     {
-                        url = item;
-                        webshopPage = Browser.NavigateToPageAsync(new Uri(url));
+                        tempurl = item;
+                        webshopPage = Browser.NavigateToPageAsync(new Uri(tempurl));
 
                         var pNodes = webshopPage.Result.Html.SelectNodes("//div[@class='lista col-12  mb-3']/div"); //select all "href's" in <a> inside <li> col-12 col-md-4 right-block d-flex flex-column align-items-center justify-content-center
                         //Get child nodes
                         foreach (var node in pNodes)
                         {
                             //var child = node.SelectNodes(".//div");//all 11 divs (not needed)
-                            var achild = node.SelectNodes(".//div/a"); //all 4/6 outer <a> nodes 
+                            var achild = node.SelectNodes(".//div/a"); //all 4/6 outer <a> nodes
                             var pchild = node.SelectNodes(".//div/p");// <p> elements <p class="opis mt-auto"> &  <p class="product-price mt-2">
                             foreach (var p in pchild)//could trim p.innertext (because it copyes \n \r)
                             {
-                                Console.WriteLine(p.InnerText); 
+                                Console.WriteLine(p.InnerText);
                                 //Trim text here and ad item to new List<string,string> (article,price) -->reuse Article Class on bottom ???
                             }
                         }

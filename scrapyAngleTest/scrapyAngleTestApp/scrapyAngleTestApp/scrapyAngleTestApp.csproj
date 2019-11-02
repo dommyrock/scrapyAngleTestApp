@@ -76,5 +76,11 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SiteSpecificScrapers\SiteSpecificScrapers.csproj">
+      <Project>{0A918BAA-6B86-4F71-92D3-3C67873D57A9}</Project>
+      <Name>SiteSpecificScrapers</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
