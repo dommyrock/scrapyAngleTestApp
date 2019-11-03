@@ -17,7 +17,7 @@ namespace SiteSpecificScrapers
         public override bool HasSitemap { get; set; }
         public override ScrapingBrowser Browser { get; set; }
         public override Dictionary<string, bool> ScrapedKeyValuePairs { get; set; }
-        public List<string> WebShops { get; set; }
+        private List<string> WebShops { get; set; }
 
         public NabavaNetSitemap(string url, ScrapingBrowser browser, List<string> input, List<string> webShops, Dictionary<string, bool> scrapedDictionary)//called from program ->main
         {

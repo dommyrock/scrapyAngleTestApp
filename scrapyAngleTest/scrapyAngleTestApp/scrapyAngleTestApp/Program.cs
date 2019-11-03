@@ -20,10 +20,7 @@ namespace scrapyAngleTestApp
         public static List<string> InputList { get; set; }
         public static List<string> WebShops { get; set; }
         public static Dictionary<string, bool> ScrapedDictionary { get; set; }//refactor this in hashset ? or some other key -value pair (maybe concurrent ?), parallel.foreach , caching ...
-        /*
-         * amsg_aws: @Allisdark you can run your code in lambda to do the scraping and store the outputs in something like DynamoDB or even just dump the data into S3
-            email:AWS-TWITCH@amazon.com
-        */
+
         // ALWAYS CHECK FOR " robots.txt" BEFORE SCRAPING WHOLE PAGE !
 
         static void Main(string[] args)
@@ -45,14 +42,19 @@ namespace scrapyAngleTestApp
                 //If ScrapeSitemapLinks = Success
                 if (nabavaSitemap.ScrapeSitemapLinks().Result)
                 {
+                    #region AWS
+
                     //TODO cache or local store shops list for set amount of time , + if( data is Stale before re-scrape) -->in new Helper folder->Helpers class
-                    //TEMP Store
+                    //TEMP Store (final one will store shops in one of  AWS data stores--)check date "LastModifued" and if date > 48h ? scrape shops again ... and re-post to DB
                     var tempWebshopCache = new List<string> {
                         "https://www.adm.hr",
                         "https://www.abrakadabra.com",
                         "https://www.links.hr",
                     };
+
                     WebShops.AddRange(tempWebshopCache);
+
+                    #endregion AWS
 
                     if (tempWebshopCache.Count == 0)
                     {
@@ -61,8 +63,7 @@ namespace scrapyAngleTestApp
                     }
 
                     //dispose
-                    //WE're exiting nabava.net at this point , so remove rest of the links from queue/list
-                    /// <param name="http://nabava.net"/> -->> this way i can access variable in coments :)
+                    ///WE're exiting  <param name="http://nabava.net"/> at this point , so remove rest of the links from queue/list
 
                     InputList = null;
                     nabavaSitemap = null;
@@ -82,58 +83,8 @@ namespace scrapyAngleTestApp
             Console.ReadKey();
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////7777
 
-            try
+            try//cold use try catch finaly (try ->nabava sitemap,shops scrape , catch .., finaly-> scrape each shop (2nd nested try ,catch inside)
             {
-                NabavaSitemapScrape();
-
-                //Scrape children
-                while (IsActiveNabavaScrape)//temp (always true ... ATM)
-                {
-                    #region Extract shop Links
-
-                    //Extract  shop links here (exit ,nabava.net after nodes.count =0)(continue scraping nabava.net)
-                    var pageSource = Browser.NavigateToPage(new Uri(Url));
-
-                    var nodeLink = pageSource.Html.SelectSingleNode("//b");
-                    var nodes = pageSource.Html.SelectNodes("//b").Where(n => n.InnerHtml.StartsWith("http"));//get<b> node(link)
-                    if (nodes != null)
-                    {
-                        foreach (var node in nodes)
-                        {
-                            bool isLink = node.InnerHtml.StartsWith("http");
-                            if (isLink)
-                            {
-                                //InputList.Add(node.InnerHtml);
-                                WebShops.Add(node.InnerHtml);//add to separate "Shop" list
-                                Console.WriteLine(node.InnerHtml);
-                                break;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine($"All [{WebShops.Count}] Shops scraped from nabava.net/sitemap.xml \n");
-                        Console.WriteLine($"Remaining links in queue: {InputList.Count}");
-                        //Exit out of nabava.net/sitemap
-                        InputList = null;
-                        IsActiveNabavaScrape = false;
-
-                        //Set url to [0] item in "Webshop" queue before exiting
-                        Url = WebShops[0];
-                        break;
-                    }
-
-                    if (!ScrapedDictionary.ContainsKey(Url))//TODO : use Hash(set)  or concurrent collection (parralel.foreach ..?)
-                    {
-                        ScrapedDictionary.Add(Url, true);//added scraped links from sitemap here...
-                    }
-
-                    InputList.RemoveAt(0);//remove scraped links from sitemap
-                    Url = InputList[0];
-
-                    #endregion Extract shop Links
-                }
-
                 //Start scraping Webshops Queue (check if shop has sitemap ...If it does scrape sitemap, else scrape whole site)
 
                 //temp set url to adm

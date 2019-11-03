@@ -12,6 +12,8 @@ namespace SiteSpecificScrapers.BaseClass
     //also methods  (could be virtual ... so i can override them in childs if needed )
     //and can have abstract prefix(methods can't have implementations here , only in child class) to note that they need to be inherited & implemented !!
 
+    //Structure : BASE ---> children ---> SUM export(index.js -like )that captures all children and provides access to them .
+
     #endregion Info
 
     /// <summary>
@@ -58,3 +60,23 @@ namespace SiteSpecificScrapers.BaseClass
         }
     }
 }
+
+/**********************************************************DI****************************************************************************************
+ * when someone requests  IInterface service  we want ASP ,Core  to create instance of my Childclass & inject its instance into "controller"
+ * By default ASp .core cant do that , we have to register interface , and class into container
+ * ---> Startup.cs --->ConfigureServices -->service.AddSingleton<IInterface,childClass>();
+ * If someone requests service IInterface than create instance of "childClass" & inject that instance !
+ *
+ *With DI we exclude tight coupling of classes ...and improve meintainability, also makes unit tests easyer , since we can swap dependencies
+ *
+ * addSingleton() --single instance of service is created & that instance is used throughout the liftime of app!
+ * addTransient() --a new instance of transient service is created each time its requested !
+ *addScoped() -- new instance of scoped service is created once per request within a scope
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ */
