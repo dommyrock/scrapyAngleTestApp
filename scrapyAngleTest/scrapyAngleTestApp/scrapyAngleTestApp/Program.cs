@@ -33,8 +33,8 @@ namespace scrapyAngleTestApp
             Browser = new ScrapingBrowser();//class also has async methods for fetching url's
 
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////7777
-            ///TEST Call child classes from class library here (they inherit from abstract base class )
-
+            ContainerConfig.Configure();//DI init (not sure if ok ??)
+            /// <see cref="https://autofac.readthedocs.io/en/latest/getting-started/index.html#structuring-the-application"/>
             try
             {
                 NabavaNetSitemap nabavaSitemap = new NabavaNetSitemap(url, Browser, InputList, WebShops, ScrapedDictionary);
@@ -83,7 +83,7 @@ namespace scrapyAngleTestApp
             Console.ReadKey();
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////7777
 
-            try//cold use try catch finaly (try ->nabava sitemap,shops scrape , catch .., finaly-> scrape each shop (2nd nested try ,catch inside)
+            try//could use try catch finaly (try ->nabava sitemap,shops scrape , catch .., finaly-> scrape each shop (2nd nested try ,catch inside)
             {
                 //Start scraping Webshops Queue (check if shop has sitemap ...If it does scrape sitemap, else scrape whole site)
 

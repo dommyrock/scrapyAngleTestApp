@@ -12,8 +12,6 @@ namespace SiteSpecificScrapers.BaseClass
     //also methods  (could be virtual ... so i can override them in childs if needed )
     //and can have abstract prefix(methods can't have implementations here , only in child class) to note that they need to be inherited & implemented !!
 
-    //Structure : BASE ---> children ---> SUM export(index.js -like )that captures all children and provides access to them .
-
     #endregion Info
 
     /// <summary>
@@ -21,13 +19,13 @@ namespace SiteSpecificScrapers.BaseClass
     /// </summary>
     public abstract class BaseScraperClass
     {
-        //Props that sould be inherited/implemented by children:
+        //Props that sould be inherited/implemented by children: TODO:remove them form here and export to ISiteSpecific
 
-        public abstract string Url { get; set; }
-        public abstract List<string> InputList { get; set; }
-        public abstract Dictionary<string, bool> ScrapedKeyValuePairs { get; set; }//refactor this in hashset ? or some other key -value pair (maybe concurrent ?)
-        public abstract bool HasSitemap { get; set; }
-        public abstract ScrapingBrowser Browser { get; set; }
+        private string Url { get; set; }
+        private List<string> InputList { get; set; }
+        private Dictionary<string, bool> ScrapedKeyValuePairs { get; set; }//refactor this in hashset ? or some other key -value pair (maybe concurrent ?)
+        private bool HasSitemap { get; set; }
+        private ScrapingBrowser Browser { get; set; }
 
         //constructor used to pass values to abstract class (has no instance !)
         //protected BaseScraperClass()
@@ -70,12 +68,13 @@ namespace SiteSpecificScrapers.BaseClass
  *With DI we exclude tight coupling of classes ...and improve meintainability, also makes unit tests easyer , since we can swap dependencies
  *
  * addSingleton() --single instance of service is created & that instance is used throughout the liftime of app!
- * addTransient() --a new instance of transient service is created each time its requested !
- *addScoped() -- new instance of scoped service is created once per request within a scope
+ * addTransient() --a new instance of transient service is created each time its requested !(overrides old instance ..same as new Class)
+ *addScoped() -- new instance of scoped service is created once per(http) request within a scope
  *
  *
  *
- *
+ *New structure would be :  have each child class implement : ISiteSpecific and its props,methods --->than in Startup.cs
+ * include it in DI container and scan all... related classes that implement ISiteSpecific
  *
  *
  *

@@ -194,6 +194,7 @@ E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\
 E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\scrapyAngleTestApp\bin\Debug\System.Xml.XPath.dll
 E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\scrapyAngleTestApp\bin\Debug\System.Xml.XPath.XDocument.dll
 E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\scrapyAngleTestApp\bin\Debug\AngleSharp.dll
+E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\scrapyAngleTestApp\bin\Debug\Autofac.dll
 E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\scrapyAngleTestApp\bin\Debug\FSharp.Core.dll
 E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\scrapyAngleTestApp\bin\Debug\HtmlAgilityPack.dll
 E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\scrapyAngleTestApp\bin\Debug\Newtonsoft.Json.dll
@@ -205,6 +206,8 @@ E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\
 E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\scrapyAngleTestApp\bin\Debug\SiteSpecificScrapers.pdb
 E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\scrapyAngleTestApp\bin\Debug\SiteSpecificScrapers.dll.config
 E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\scrapyAngleTestApp\bin\Debug\AngleSharp.xml
+E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\scrapyAngleTestApp\bin\Debug\Autofac.pdb
+E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\scrapyAngleTestApp\bin\Debug\Autofac.xml
 E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\scrapyAngleTestApp\bin\Debug\FSharp.Core.xml
 E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\scrapyAngleTestApp\bin\Debug\HtmlAgilityPack.pdb
 E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\scrapyAngleTestApp\bin\Debug\HtmlAgilityPack.xml

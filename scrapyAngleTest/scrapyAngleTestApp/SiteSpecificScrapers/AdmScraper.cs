@@ -8,13 +8,14 @@ using System.Threading.Tasks;
 
 namespace SiteSpecificScrapers
 {
-    public class AdmScraper : BaseScraperClass
+    public class AdmScraper : BaseScraperClass, ISiteSpecific//TODOd...test this class ...
     {
-        public override string Url { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public override List<string> InputList { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public override Dictionary<string, bool> ScrapedKeyValuePairs { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public override bool HasSitemap { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public override ScrapingBrowser Browser { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string Url { get; set; }
+        public List<string> InputList { get; set; }
+        public bool HasSitemap { get; set; }
+        public ScrapingBrowser Browser { get; set; }
+        public Dictionary<string, bool> ScrapedKeyValuePairs { get; set; }
+        private List<string> WebShops { get; set; }
 
         /// <summary>
         /// True if Success(Adds webshop urls to "InputList".) / False if no sitemap has been found in robots.txt
@@ -43,6 +44,3 @@ namespace SiteSpecificScrapers
         }
     }
 }
-
-//TODO: Redesign my child classes --derived from "BaseScraper" class ...make some kind of interface/container that captures them all
-//Othervise i will have Main ,flooded by instances of child classes ??

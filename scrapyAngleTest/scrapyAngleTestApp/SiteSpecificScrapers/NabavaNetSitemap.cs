@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace SiteSpecificScrapers
 {
-    public class NabavaNetSitemap : BaseScraperClass
+    public class NabavaNetSitemap : BaseScraperClass, ISiteSpecific
     {
-        public override string Url { get; set; }
-        public override List<string> InputList { get; set; }
-        public override bool HasSitemap { get; set; }
-        public override ScrapingBrowser Browser { get; set; }
-        public override Dictionary<string, bool> ScrapedKeyValuePairs { get; set; }
+        public string Url { get; set; }
+        public List<string> InputList { get; set; }
+        public bool HasSitemap { get; set; }
+        public ScrapingBrowser Browser { get; set; }
+        public Dictionary<string, bool> ScrapedKeyValuePairs { get; set; }
         private List<string> WebShops { get; set; }
 
         public NabavaNetSitemap(string url, ScrapingBrowser browser, List<string> input, List<string> webShops, Dictionary<string, bool> scrapedDictionary)//called from program ->main

@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "scrapyAngleTestApp", "scrap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiteSpecificScrapers", "SiteSpecificScrapers\SiteSpecificScrapers.csproj", "{0A918BAA-6B86-4F71-92D3-3C67873D57A9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreConsole", "CoreConsole\CoreConsole.csproj", "{6D6FEC2D-F2D8-4AF2-8ED9-798793DA8F75}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{0A918BAA-6B86-4F71-92D3-3C67873D57A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A918BAA-6B86-4F71-92D3-3C67873D57A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A918BAA-6B86-4F71-92D3-3C67873D57A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D6FEC2D-F2D8-4AF2-8ED9-798793DA8F75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D6FEC2D-F2D8-4AF2-8ED9-798793DA8F75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D6FEC2D-F2D8-4AF2-8ED9-798793DA8F75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D6FEC2D-F2D8-4AF2-8ED9-798793DA8F75}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
