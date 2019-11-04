@@ -66,7 +66,7 @@ namespace scrapyAngleTestApp
                     ///WE're exiting  <param name="http://nabava.net"/> at this point , so remove rest of the links from queue/list
 
                     InputList = null;
-                    nabavaSitemap = null;
+                    nabavaSitemap = null;// TODO : replace this since im using DI : its scope should kill instances (instead of me manualy )
                 }
                 else
                 {

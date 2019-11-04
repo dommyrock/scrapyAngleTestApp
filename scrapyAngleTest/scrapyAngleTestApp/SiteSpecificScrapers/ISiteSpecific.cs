@@ -14,7 +14,7 @@ namespace SiteSpecificScrapers
         string Url { get; set; }
         List<string> InputList { get; set; }
         Dictionary<string, bool> ScrapedKeyValuePairs { get; set; }//refactor this in hashset ? or some other key -value pair (maybe concurrent ?)
-        bool HasSitemap { get; set; }
+        string SitemapUrl { get; set; }
         ScrapingBrowser Browser { get; set; }
 
         Task<bool> ScrapeSitemapLinks();

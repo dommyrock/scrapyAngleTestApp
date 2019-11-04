@@ -19,7 +19,7 @@ namespace SiteSpecificScrapers.BaseClass
     /// </summary>
     public abstract class BaseScraperClass
     {
-        //Props that sould be inherited/implemented by children: TODO:remove them form here and export to ISiteSpecific
+        //Props that sould be inherited/implemented by children:
 
         private string Url { get; set; }
         private List<string> InputList { get; set; }
@@ -28,22 +28,22 @@ namespace SiteSpecificScrapers.BaseClass
         private ScrapingBrowser Browser { get; set; }
 
         //constructor used to pass values to abstract class (has no instance !)
-        //protected BaseScraperClass()
-        //{
-        //    //Init base stuff here (browser ctx .... )
-        //    //Browser = new ScrapingBrowser(); dont need this , since i dont want new instance for every child
-        //}
+        protected BaseScraperClass()
+        {
+            //Init base stuff here (browser ctx .... )
+            //Browser = new ScrapingBrowser(); dont need this , since i dont want new instance for every child
+        }
 
         /// <summary>
         /// Derived classes should call this method to fetch .sitemap file if it exists.
         /// [Protected: only derived class can use this method]
         /// </summary>
-        protected async Task<bool> GetSitemap(ScrapingBrowser browser)
+        protected async Task<string> GetSitemap(ScrapingBrowser browser, string url)
         {
             Browser = browser;
             //Dont need opening in headless browser for this url
             //Check for /robots.txt
-            string sitemapSource = Url + "/robots.txt";
+            string sitemapSource = url + "/robots.txt";
 
             var document = await browser.DownloadStringAsync(new Uri(sitemapSource));//only need string to parse
 
@@ -51,10 +51,11 @@ namespace SiteSpecificScrapers.BaseClass
 
             if (matchSitemap.Success && matchSitemap.Value.Contains("sitemap"))
             {
-                Url = matchSitemap.Value;
-                return true;
+                url = matchSitemap.Value;
+                return url;
             }
-            return false;
+            url = string.Empty;
+            return url;
         }
     }
 }

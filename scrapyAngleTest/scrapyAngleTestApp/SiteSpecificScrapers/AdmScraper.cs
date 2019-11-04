@@ -12,19 +12,24 @@ namespace SiteSpecificScrapers
     {
         public string Url { get; set; }
         public List<string> InputList { get; set; }
-        public bool HasSitemap { get; set; }
+        public string SitemapUrl { get; set; }
         public ScrapingBrowser Browser { get; set; }
         public Dictionary<string, bool> ScrapedKeyValuePairs { get; set; }
         private List<string> WebShops { get; set; }
+
+        public AdmScraper()
+        {
+            this.Url = "testString...";
+        }
 
         /// <summary>
         /// True if Success(Adds webshop urls to "InputList".) / False if no sitemap has been found in robots.txt
         /// </summary>
         public async Task<bool> ScrapeSitemapLinks()
         {
-            HasSitemap = await base.GetSitemap(Browser);
+            SitemapUrl = await base.GetSitemap(Browser, Url);
 
-            if (HasSitemap)
+            if (SitemapUrl != string.Empty)
             {
                 WebPage document = await Browser.NavigateToPageAsync(new Uri(Url));//might replace with basic downloadstrignasync...
                 //Specific  query for nabava.net
@@ -38,9 +43,9 @@ namespace SiteSpecificScrapers
 
                 InputList.RemoveAt(0);
                 Url = InputList[0];
-                return HasSitemap;//true
+                return true;//true
             }
-            return HasSitemap;//false
+            return false;//false
         }
     }
 }

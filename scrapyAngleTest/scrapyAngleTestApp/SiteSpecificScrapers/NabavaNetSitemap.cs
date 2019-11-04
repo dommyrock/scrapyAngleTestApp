@@ -14,13 +14,14 @@ namespace SiteSpecificScrapers
     {
         public string Url { get; set; }
         public List<string> InputList { get; set; }
-        public bool HasSitemap { get; set; }
+        public string SitemapUrl { get; set; }
         public ScrapingBrowser Browser { get; set; }
         public Dictionary<string, bool> ScrapedKeyValuePairs { get; set; }
         private List<string> WebShops { get; set; }
 
         public NabavaNetSitemap(string url, ScrapingBrowser browser, List<string> input, List<string> webShops, Dictionary<string, bool> scrapedDictionary)//called from program ->main
         {
+            //Before this constructro we call base.Constructor and init stuff there !!!
             this.Url = url;
             Browser = browser;//instance passed from Main (its static =1 instance anyway)
             InputList = input;
@@ -35,11 +36,11 @@ namespace SiteSpecificScrapers
         /// </summary>
         public async Task<bool> ScrapeSitemapLinks()
         {
-            HasSitemap = await base.GetSitemap(Browser);
+            SitemapUrl = await base.GetSitemap(Browser, Url);
 
-            if (HasSitemap)
+            if (SitemapUrl != string.Empty)
             {
-                WebPage document = await Browser.NavigateToPageAsync(new Uri(Url));//might replace with basic downloadstrignasync...
+                WebPage document = await Browser.NavigateToPageAsync(new Uri(SitemapUrl));//might replace with basic downloadstrignasync...
 
                 //Specific  query for nabava.net
                 var nodes = document.Html.CssSelect("loc").ToList();
