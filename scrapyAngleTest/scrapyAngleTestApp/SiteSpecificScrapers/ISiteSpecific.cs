@@ -18,5 +18,7 @@ namespace SiteSpecificScrapers
         ScrapingBrowser Browser { get; set; }
 
         Task<bool> ScrapeSitemapLinks();
+
+        //Task<bool> ScrapeSiteLinks();
     }
 }

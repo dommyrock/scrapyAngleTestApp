@@ -38,23 +38,27 @@ namespace SiteSpecificScrapers.BaseClass
         /// Derived classes should call this method to fetch .sitemap file if it exists.
         /// [Protected: only derived class can use this method]
         /// </summary>
-        protected async Task<string> GetSitemap(ScrapingBrowser browser, string url)
+        protected async Task<string> GetSitemap(ScrapingBrowser browser, string url)//Todo..maybe it doesnt need to be async ...or find fix for async download with DI
         {
             Browser = browser;
-            //Dont need opening in headless browser for this url
-            //Check for /robots.txt
-            string sitemapSource = url + "/robots.txt";
-
-            var document = await browser.DownloadStringAsync(new Uri(sitemapSource));//only need string to parse
-
-            var matchSitemap = Regex.Match(document, @"\b(?:https?://|www\.)\S+\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);//TODO :check this regex for other sitemaps ...not sure if ok
-
-            if (matchSitemap.Success && matchSitemap.Value.Contains("sitemap"))
+            if (Browser != null)
             {
-                url = matchSitemap.Value;
-                return url;
+                //Dont need opening in headless browser for this url
+                //Check for /robots.txt
+                string sitemapSource = url + "/robots.txt";
+
+                var document = browser.DownloadString(new Uri(sitemapSource));//Temp fix for async
+                //var document = await browser.DownloadStringAsync(new Uri(sitemapSource)); async breaks with DI
+
+                var matchSitemap = Regex.Match(document, @"\b(?:https?://|www\.)\S+\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);//TODO :check this regex for other sitemaps ...not sure if ok
+
+                if (matchSitemap.Success && matchSitemap.Value.Contains("sitemap"))
+                {
+                    url = matchSitemap.Value;
+                    return url;
+                }
+                url = string.Empty;
             }
-            url = string.Empty;
             return url;
         }
     }

@@ -19,14 +19,21 @@ namespace SiteSpecificScrapers
         public Dictionary<string, bool> ScrapedKeyValuePairs { get; set; }
         private List<string> WebShops { get; set; }
 
-        public NabavaNetSitemap(string url, ScrapingBrowser browser, List<string> input, List<string> webShops, Dictionary<string, bool> scrapedDictionary)//called from program ->main
+        //ISiteSpecific _siteSpecific;
+
+        public NabavaNetSitemap(/*string url, ScrapingBrowser browser, List<string> input, List<string> webShops, Dictionary<string, bool> scrapedDictionary*//*, ISiteSpecific siteSpecific*/)//called from program ->main
         {
+            //_siteSpecific = siteSpecific;
             //Before this constructro we call base.Constructor and init stuff there !!!
-            this.Url = url;
-            Browser = browser;//instance passed from Main (its static =1 instance anyway)
-            InputList = input;
-            WebShops = webShops;
-            ScrapedKeyValuePairs = scrapedDictionary;
+            //this.Url = url;
+            //Browser = browser;//instance passed from Main (its static =1 instance anyway)
+            //InputList = input;
+            //WebShops = webShops;
+            //ScrapedKeyValuePairs = scrapedDictionary;
+
+            //Temp inatiations
+            this.Url = "http://nabava.net";
+            Browser = new ScrapingBrowser();
         }
 
         //This class ment to only fetch sitemap (GetSitemap method --->
