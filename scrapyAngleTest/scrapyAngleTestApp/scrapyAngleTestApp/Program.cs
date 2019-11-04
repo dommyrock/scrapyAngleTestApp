@@ -121,20 +121,24 @@ namespace scrapyAngleTestApp
                         webshopPage = Browser.NavigateToPageAsync(new Uri(url));
 
                         var pNodes = webshopPage.Result.Html.SelectNodes("//div[@class='lista col-12  mb-3']/div"); //select all "href's" in <a> inside <li> col-12 col-md-4 right-block d-flex flex-column align-items-center justify-content-center
-                        //Get child nodes
-                        foreach (var node in pNodes)
+
+                        if (pNodes != null)
                         {
-                            //var child = node.SelectNodes(".//div");//all 11 divs (not needed)
-                            var achild = node.SelectNodes(".//div/a"); //all 4/6 outer <a> nodes 
-                            var pchild = node.SelectNodes(".//div/p");// <p> elements <p class="opis mt-auto"> &  <p class="product-price mt-2">
-                            foreach (var p in pchild)//could trim p.innertext (because it copyes \n \r)
+                            //Get child nodes
+                            foreach (var node in pNodes)
                             {
-                                Console.WriteLine(p.InnerText); 
-                                //Trim text here and ad item to new List<string,string> (article,price) -->reuse Article Class on bottom ???
+                                //var child = node.SelectNodes(".//div");//all 11 divs (not needed)
+                                var achild = node.SelectNodes(".//div/a"); //all 4/6 outer <a> nodes
+                                var pchild = node.SelectNodes(".//div/p");// <p> elements <p class="opis mt-auto"> &  <p class="product-price mt-2">
+                                foreach (var p in pchild)//could trim p.innertext (because it copyes \n \r)
+                                {
+                                    Console.WriteLine(p.InnerText);
+                                    //Trim text here and ad item to new List<string,string> (article,price) -->reuse Article Class on bottom ???
+                                }
                             }
+                            //TODO: remove current item from list when scraped ....(might have problem ... cant update "updateList" while iterating over it ???)
+                            //might use for loop instead (https://stackoverflow.com/questions/16497028/how-add-or-remove-object-while-iterating-collection-in-c-sharp)
                         }
-                        //TODO: remove current item from list when scraped ....(might have problem ... cant update "updateList" while iterating over it ???)
-                        //might use for loop instead (https://stackoverflow.com/questions/16497028/how-add-or-remove-object-while-iterating-collection-in-c-sharp)
                     }
                 }
             }
