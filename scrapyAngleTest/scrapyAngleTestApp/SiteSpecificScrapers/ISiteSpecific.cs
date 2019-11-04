@@ -9,7 +9,7 @@ namespace SiteSpecificScrapers
 {
     //TODO:  leave only 1 method in base class  , and make children reuse it .....and extract all other props and method for scraping into interface ISiteSpecific !!!
 
-    interface ISiteSpecific
+    public interface ISiteSpecific
     {
         string Url { get; set; }
         List<string> InputList { get; set; }

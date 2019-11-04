@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using SiteSpecificScrapers;
 using System.Linq;
 using System.Reflection;
 
@@ -22,8 +23,9 @@ namespace scrapyAngleTestApp
             //In simple terms, think about a .NET type that implements an interface!!
 
             builder.RegisterAssemblyTypes(Assembly.Load(nameof(SiteSpecificScrapers)))//nameof makes it strongly typed, so better than string :)
-                                                                                      //.Where(t => t.Namespace.Contains("Services")) can filter it with lambda
-                .AsImplementedInterfaces();//Register the type as providing all of its public interfaces as services
+                    .As<ISiteSpecific>(); //Expose types via its Service
+            //.Where(t => t.Namespace.Contains("Services")) can filter it with lambda
+            //.AsImplementedInterfaces();//Register the type as providing all of its public interfaces as services
 
             return builder.Build();
         }
