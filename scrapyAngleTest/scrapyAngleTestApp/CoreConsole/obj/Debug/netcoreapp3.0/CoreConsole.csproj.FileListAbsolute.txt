@@ -1,0 +1,11 @@
+D:\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\CoreConsole\obj\Debug\netcoreapp3.0\CoreConsole.csprojAssemblyReference.cache
+D:\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\CoreConsole\obj\Debug\netcoreapp3.0\CoreConsole.AssemblyInfoInputs.cache
+D:\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\CoreConsole\obj\Debug\netcoreapp3.0\CoreConsole.AssemblyInfo.cs
+D:\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\CoreConsole\bin\Debug\netcoreapp3.0\CoreConsole.exe
+D:\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\CoreConsole\bin\Debug\netcoreapp3.0\CoreConsole.deps.json
+D:\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\CoreConsole\bin\Debug\netcoreapp3.0\CoreConsole.runtimeconfig.json
+D:\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\CoreConsole\bin\Debug\netcoreapp3.0\CoreConsole.runtimeconfig.dev.json
+D:\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\CoreConsole\bin\Debug\netcoreapp3.0\CoreConsole.dll
+D:\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\CoreConsole\bin\Debug\netcoreapp3.0\CoreConsole.pdb
+D:\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\CoreConsole\obj\Debug\netcoreapp3.0\CoreConsole.dll
+D:\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\CoreConsole\obj\Debug\netcoreapp3.0\CoreConsole.pdb
