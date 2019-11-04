@@ -1,7 +1,9 @@
 ﻿using HtmlAgilityPack;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ScrapySharp.Extensions;
 using ScrapySharp.Network;
+using SiteSpecificScrapers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,79 +14,78 @@ namespace scrapyAngleTestApp
 {
     class Program
     {
-        public static string Url { get; set; }
+        public static string Url { get; set; }//TEmp ...remove after refactor
         public static ScrapingBrowser Browser { get; set; }
         public static bool IsActiveNabavaScrape { get; private set; } = true;
         public static List<string> InputList { get; set; }
         public static List<string> WebShops { get; set; }
-        public static Dictionary<string, bool> ScrapedDictionary { get; set; }
+        public static Dictionary<string, bool> ScrapedDictionary { get; set; }//refactor this in hashset ? or some other key -value pair (maybe concurrent ?), parallel.foreach , caching ...
 
         // ALWAYS CHECK FOR " robots.txt" BEFORE SCRAPING WHOLE PAGE !
 
         static void Main(string[] args)
         {
-            Url = "http://nabava.net";
+            string url = Url = "http://nabava.net";
             ScrapedDictionary = new Dictionary<string, bool>();
             InputList = new List<string>();
             WebShops = new List<string>();
 
-            //FetchAbrakadabra(); comented for testing
             Browser = new ScrapingBrowser();//class also has async methods for fetching url's
 
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////7777
+            ContainerConfig.Configure();//DI init (not sure if ok ??)
+            /// <see cref="https://autofac.readthedocs.io/en/latest/getting-started/index.html#structuring-the-application"/>
             try
             {
-                //NabavaSitemapScrape();
+                NabavaNetSitemap nabavaSitemap = new NabavaNetSitemap(url, Browser, InputList, WebShops, ScrapedDictionary);
 
-                ////Scrape children
-                //while (IsActiveNabavaScrape)
-                //{
-                //    if (!ScrapedDictionary.ContainsKey(Url))
-                //    {
-                //        //Extract  shop links here (exit ,nabava.net after nodes.count =0)(continue scraping nabava.net)
-                //        var pageSource = Browser.NavigateToPage(new Uri(Url));
+                //If ScrapeSitemapLinks = Success
+                if (nabavaSitemap.ScrapeSitemapLinks().Result)
+                {
+                    #region AWS
 
-                //        #region Extract shop Links
+                    //TODO cache or local store shops list for set amount of time , + if( data is Stale before re-scrape) -->in new Helper folder->Helpers class
+                    //TEMP Store (final one will store shops in one of  AWS data stores--)check date "LastModifued" and if date > 48h ? scrape shops again ... and re-post to DB
+                    var tempWebshopCache = new List<string> {
+                        "https://www.adm.hr",
+                        "https://www.abrakadabra.com",
+                        "https://www.links.hr",
+                    };
 
-                //        var nodes = pageSource.Html.SelectNodes("//b");//get<b> nodes
-                //        if (nodes != null)
-                //        {
-                //            foreach (var node in nodes)
-                //            {
-                //                bool isLink = node.InnerHtml.StartsWith("http");
-                //                if (isLink)
-                //                {
-                //                    //InputList.Add(node.InnerHtml);
-                //                    WebShops.Add(node.InnerHtml);//add to separate "Shop" list
-                //                    Console.WriteLine(node.InnerHtml);
-                //                    break;
-                //                }
-                //            }
-                //        }
-                //        else
-                //        {
-                //            Console.WriteLine($"All [{WebShops.Count}] Shops scraped from nabava.net/sitemap.xml \n");
-                //            Console.WriteLine($"Remaining links in queue: {InputList.Count}");
-                //            //Exit out of nabava.net/sitemap
-                //            InputList = null;
-                //            IsActiveNabavaScrape = false;
+                    WebShops.AddRange(tempWebshopCache);
 
-                //            //Set url to [0] item in "Webshop" queue before exiting
-                //            Url = WebShops[0];
-                //            break;
-                //        }
+                    #endregion AWS
 
-                //        #endregion Extract shop Links
-                //    }
+                    if (tempWebshopCache.Count == 0)
+                    {
+                        //re-scrape
+                        nabavaSitemap.ScrapeWebshops();
+                    }
 
-                //    ScrapedDictionary.Add(Url, true);//added scraped links from sitemap here...
-                //    InputList.RemoveAt(0);//remove scraped links from sitemap
-                //    Url = InputList[0];
-                //}
+                    //dispose
+                    ///WE're exiting  <param name="http://nabava.net"/> at this point , so remove rest of the links from queue/list
 
+                    InputList = null;
+                    nabavaSitemap = null;
+                }
+                else
+                {
+                    Console.WriteLine($"Failed to scrape {url} sitemap.");
+                }
+
+                //Continue scraping from "Webshops" here:
+                url = WebShops[0];//check if needed after i exit nabavaSitemap.ScrapeWebshops();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            Console.ReadKey();
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////7777
+
+            try//could use try catch finaly (try ->nabava sitemap,shops scrape , catch .., finaly-> scrape each shop (2nd nested try ,catch inside)
+            {
                 //Start scraping Webshops Queue (check if shop has sitemap ...If it does scrape sitemap, else scrape whole site)
-
-                //TODO: make bellow code into while loop as well , and add else "true" that scrapes sitemap data !!!!!!
-                //NOTE : ....could make some kind of enum ...that has values for "SelectNodes()" based on current Url crawled !!!!!!!!!!??????
 
                 //temp set url to adm
                 Url = "https://www.adm.hr";
@@ -114,27 +115,23 @@ namespace scrapyAngleTestApp
                         Console.WriteLine(updateTwo);
                     }
                     //CONTINUE SCRAPING FROM "updatedlsit"
-                    var url = "";
+                    var tempurl = "";
                     foreach (var item in updatedList)
                     {
-                        url = item;
-                        webshopPage = Browser.NavigateToPageAsync(new Uri(url));
+                        tempurl = item;
+                        webshopPage = Browser.NavigateToPageAsync(new Uri(tempurl));
 
                         var pNodes = webshopPage.Result.Html.SelectNodes("//div[@class='lista col-12  mb-3']/div"); //select all "href's" in <a> inside <li> col-12 col-md-4 right-block d-flex flex-column align-items-center justify-content-center
 
                         if (pNodes != null)
                         {
-                            //Get child nodes
-                            foreach (var node in pNodes)
+                            //var child = node.SelectNodes(".//div");//all 11 divs (not needed)
+                            var achild = node.SelectNodes(".//div/a"); //all 4/6 outer <a> nodes
+                            var pchild = node.SelectNodes(".//div/p");// <p> elements <p class="opis mt-auto"> &  <p class="product-price mt-2">
+                            foreach (var p in pchild)//could trim p.innertext (because it copyes \n \r)
                             {
-                                //var child = node.SelectNodes(".//div");//all 11 divs (not needed)
-                                var achild = node.SelectNodes(".//div/a"); //all 4/6 outer <a> nodes
-                                var pchild = node.SelectNodes(".//div/p");// <p> elements <p class="opis mt-auto"> &  <p class="product-price mt-2">
-                                foreach (var p in pchild)//could trim p.innertext (because it copyes \n \r)
-                                {
-                                    Console.WriteLine(p.InnerText);
-                                    //Trim text here and ad item to new List<string,string> (article,price) -->reuse Article Class on bottom ???
-                                }
+                                Console.WriteLine(p.InnerText);
+                                //Trim text here and ad item to new List<string,string> (article,price) -->reuse Article Class on bottom ???
                             }
                             //TODO: remove current item from list when scraped ....(might have problem ... cant update "updateList" while iterating over it ???)
                             //might use for loop instead (https://stackoverflow.com/questions/16497028/how-add-or-remove-object-while-iterating-collection-in-c-sharp)
@@ -209,6 +206,7 @@ namespace scrapyAngleTestApp
 
             //serialize JSON to C# object with Newtonsoft
             Article article = new Article(dataLayerNode.InnerText);
+            List<Article> articles = article.DeserializeJSON();
         }
     }
 }
@@ -221,17 +219,28 @@ public class Article
     public int Price { get; set; }
     public string Category { get; set; }
     public string CurrencyCode { get; set; }
+    public string JSON { get; set; }
 
     public Article(string json)
     {
-        //Serialization cancled atm ..might reuse later!!
-        JObject jObject = JObject.Parse(json);//Unexpected character encountered while parsing value
-        JToken shopObject = jObject["article"];
-        Id = (int)shopObject["id"];
-        Name = (string)shopObject["name"];
-        Brand = (string)shopObject["brand"];
-        Price = (int)shopObject["price"];
-        Category = (string)shopObject["category"];
-        CurrencyCode = (string)shopObject["currencyCode"];
+        this.JSON = json;
+        //JObject jObject = JObject.Parse(json);//Unexpected character encountered while parsing value
+        //JToken shopObject = jObject["article"];
+        //Id = (int)shopObject["id"];
+        //Name = (string)shopObject["name"];
+        //Brand = (string)shopObject["brand"];
+        //Price = (int)shopObject["price"];
+        //Category = (string)shopObject["category"];
+        //CurrencyCode = (string)shopObject["currencyCode"];
+    }
+
+    public List<Article> DeserializeJSON()
+    {
+        var deserialzedList = JsonConvert.DeserializeObject<List<Article>>(this.JSON, new JsonSerializerSettings//validate json format first before inserting it here
+        {
+            Formatting = Formatting.Indented,//not usefull
+        });
+
+        return deserialzedList;
     }
 }
