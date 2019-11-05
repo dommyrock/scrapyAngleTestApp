@@ -33,7 +33,8 @@ namespace scrapyAngleTestApp
             Browser = new ScrapingBrowser();//class also has async methods for fetching url's
 
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////7777
-            ContainerConfig.Configure();//DI init (not sure if ok ??)
+            ContainerConfig.Configure();//DI init (not sure if ok ??) TODO:This shouldnt be here ???
+
             /// <see cref="https://autofac.readthedocs.io/en/latest/getting-started/index.html#structuring-the-application"/>
             try
             {
