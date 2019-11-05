@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SiteSpecificScrapers
 {
-    public class AdmScraper : BaseScraperClass, ISiteSpecific//TODOd...test this class ...
+    public class AdmScraper : BaseScraperClass, ISiteSpecific//TODO move  site scraping from main here
     {
         public string Url { get; set; }
         public List<string> InputList { get; set; }

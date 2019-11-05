@@ -1,4 +1,5 @@
-﻿using HtmlAgilityPack;
+﻿using Autofac;
+using HtmlAgilityPack;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ScrapySharp.Extensions;
@@ -33,12 +34,22 @@ namespace scrapyAngleTestApp
             Browser = new ScrapingBrowser();//class also has async methods for fetching url's
 
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////7777
-            ContainerConfig.Configure();//DI init (not sure if ok ??) TODO:This shouldnt be here ???
-
             /// <see cref="https://autofac.readthedocs.io/en/latest/getting-started/index.html#structuring-the-application"/>
+            ///
+            var container = ContainerConfig.Configure();//holds all our design/DI
+            using (var scope = container.BeginLifetimeScope())
+            {
+                //Retrieve service (manualy get iapplication ctx from container(not good for bigger projects)
+                ///By default the type which is registered last will be returned, which is what you are seeing. <see cref="https://stackoverflow.com/questions/45674063/autofac-multiple-classes-inherited-from-the-same-interface"/>
+                ///Solution : <see cref="https://stackoverflow.com/questions/22384884/autofac-with-multiple-implementations-of-the-same-interface"/>
+                var app = scope.Resolve<ISiteSpecific>();
+                app.ScrapeSitemapLinks();
+
+                //TODO: pass ISiteSpecific as param to constructor of each child class , so it "new It up's"/instantiates needed type(concrete class) -->looks inside container and finds type
+            }
             try
             {
-                NabavaNetSitemap nabavaSitemap = new NabavaNetSitemap(url, Browser, InputList, WebShops, ScrapedDictionary);
+                NabavaNetSitemap nabavaSitemap = new NabavaNetSitemap(/*url, Browser, InputList, WebShops, ScrapedDictionary*/);
 
                 //If ScrapeSitemapLinks = Success
                 if (nabavaSitemap.ScrapeSitemapLinks().Result)
