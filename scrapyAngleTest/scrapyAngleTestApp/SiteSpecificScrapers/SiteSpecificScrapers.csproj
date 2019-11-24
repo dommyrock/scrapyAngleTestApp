@@ -65,7 +65,8 @@
   <ItemGroup>
     <Compile Include="AdmScraper.cs" />
     <Compile Include="Base\BaseScraperClass.cs" />
-    <Compile Include="ISiteSpecific.cs" />
+    <Compile Include="Helpers\ReflectionHelper.cs" />
+    <Compile Include="Services\ISiteSpecific.cs" />
     <Compile Include="NabavaNetSitemap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -73,8 +74,6 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

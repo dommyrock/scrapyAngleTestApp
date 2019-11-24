@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using ScrapySharp.Extensions;
 using ScrapySharp.Network;
 using SiteSpecificScrapers;
+using SiteSpecificScrapers.BaseClass;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,25 +40,30 @@ namespace scrapyAngleTestApp
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////7777
             /// <see cref="https://autofac.readthedocs.io/en/latest/getting-started/index.html#structuring-the-application"/>
             ///
-            var container = ContainerConfig.Configure();//holds all our design/DI
-            using (var scope = container.BeginLifetimeScope())
-            {
-                //Retrieve service (manualy get iapplication ctx from container(not good for bigger projects)
-                ///By default the type which is registered last will be returned, which is what you are seeing. <see cref="https://stackoverflow.com/questions/45674063/autofac-multiple-classes-inherited-from-the-same-interface"/>
-                ///Solution : <see cref="https://stackoverflow.com/questions/22384884/autofac-with-multiple-implementations-of-the-same-interface"/>
-                ISiteSpecific app = scope.Resolve<ISiteSpecific>();
-                app.ScrapeSitemapLinks();
+            //var container = ContainerConfig.Configure();//holds all our design/DI
+            //using (var scope = container.BeginLifetimeScope())
+            //{
+            //    //Retrieve service (manualy get iapplication ctx from container(not good for bigger projects)
+            //    ///By default the type which is registered last will be returned, which is what you are seeing. <see cref="https://stackoverflow.com/questions/45674063/autofac-multiple-classes-inherited-from-the-same-interface"/>
+            //    ///Solution : <see cref="https://stackoverflow.com/questions/22384884/autofac-with-multiple-implementations-of-the-same-interface"/>
+            //    ISiteSpecific app = scope.Resolve<ISiteSpecific>();
+            //    app.ScrapeSitemapLinks();
 
-                app.ScrapeSitemapLinks();
-            }
+            //    app.ScrapeSitemapLinks();
+            //}
 
             #endregion DI
 
             //TODO Replace below code with foreach that goes through List<T> where T = object ("siteSpecificScraper" classes)
 
+            List<BaseScraperClass> bCList = new List<BaseScraperClass>();
+
             try
             {
                 NabavaNetSitemap nabavaSitemap = new NabavaNetSitemap(/*url, Browser, InputList, WebShops, ScrapedDictionary*/);
+
+                //test adding into base abstract class
+                bCList.Add(nabavaSitemap);
 
                 //If ScrapeSitemapLinks = Success
                 if (nabavaSitemap.ScrapeSitemapLinks().Result)
@@ -171,7 +177,6 @@ namespace scrapyAngleTestApp
 
             Console.ReadLine();
 
-            //get user agent if necessary
             //get user agent
             //var useragent = Browser.UserAgent;
             //urlsList.AddRange(goTo.GetResourceUrls());//gets File url's

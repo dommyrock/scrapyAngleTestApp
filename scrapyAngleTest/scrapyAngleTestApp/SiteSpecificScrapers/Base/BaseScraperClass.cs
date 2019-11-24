@@ -26,7 +26,6 @@ namespace SiteSpecificScrapers.BaseClass
         //constructor used to pass values to abstract class (has no instance !)
         protected BaseScraperClass()
         {
-            //Init base stuff here (browser ctx .... )
             //Browser = new ScrapingBrowser(); dont need this , since i dont want new instance for every child
         }
 
