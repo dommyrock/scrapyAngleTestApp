@@ -47,8 +47,7 @@ namespace SiteSpecificScrapers.BaseClass
                 //Check for /robots.txt
                 string sitemapSource = url + "/robots.txt";
 
-                var document = browser.DownloadString(new Uri(sitemapSource));//Temp fix for async
-                //var document = await browser.DownloadStringAsync(new Uri(sitemapSource)); async breaks with DI
+                var document = await browser.DownloadStringAsync(new Uri(sitemapSource));
 
                 var matchSitemap = Regex.Match(document, @"\b(?:https?://|www\.)\S+\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);//TODO :check this regex for other sitemaps ...not sure if ok
 
