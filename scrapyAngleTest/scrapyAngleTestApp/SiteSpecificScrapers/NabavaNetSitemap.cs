@@ -34,6 +34,7 @@ namespace SiteSpecificScrapers
             //Temp inatiations
             this.Url = "http://nabava.net";
             Browser = new ScrapingBrowser();
+            InputList = new List<string>();
         }
 
         //This class ment to only fetch sitemap (GetSitemap method --->
@@ -52,8 +53,7 @@ namespace SiteSpecificScrapers
                 //Specific  query for nabava.net
                 var nodes = document.Html.CssSelect("loc").ToList();
 
-                //Testing Parallel.foreach
-                foreach (var node in nodes)
+                foreach (var node in nodes)//Eventially replace this with parallel.foreach when app is completed
                 {
                     InputList.Add(node.InnerText);
                     //Console.WriteLine(node.InnerText + "\n");

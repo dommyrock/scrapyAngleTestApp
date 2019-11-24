@@ -33,6 +33,8 @@ namespace scrapyAngleTestApp
 
             Browser = new ScrapingBrowser();//class also has async methods for fetching url's
 
+            #region DI
+
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////7777
             /// <see cref="https://autofac.readthedocs.io/en/latest/getting-started/index.html#structuring-the-application"/>
             ///
@@ -42,11 +44,14 @@ namespace scrapyAngleTestApp
                 //Retrieve service (manualy get iapplication ctx from container(not good for bigger projects)
                 ///By default the type which is registered last will be returned, which is what you are seeing. <see cref="https://stackoverflow.com/questions/45674063/autofac-multiple-classes-inherited-from-the-same-interface"/>
                 ///Solution : <see cref="https://stackoverflow.com/questions/22384884/autofac-with-multiple-implementations-of-the-same-interface"/>
-                var app = scope.Resolve<ISiteSpecific>();
+                ISiteSpecific app = scope.Resolve<ISiteSpecific>();
                 app.ScrapeSitemapLinks();
 
                 //TODO: pass ISiteSpecific as param to constructor of each child class , so it "new It up's"/instantiates needed type(concrete class) -->looks inside container and finds type
             }
+
+            #endregion DI
+
             try
             {
                 NabavaNetSitemap nabavaSitemap = new NabavaNetSitemap(/*url, Browser, InputList, WebShops, ScrapedDictionary*/);
