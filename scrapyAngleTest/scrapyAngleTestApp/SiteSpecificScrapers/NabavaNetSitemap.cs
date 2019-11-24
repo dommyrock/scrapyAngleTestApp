@@ -18,6 +18,7 @@ namespace SiteSpecificScrapers
         public ScrapingBrowser Browser { get; set; }
         public Dictionary<string, bool> ScrapedKeyValuePairs { get; set; }
         private List<string> WebShops { get; set; }
+        private ISiteSpecific _siteSpecific;
 
         //ISiteSpecific _siteSpecific;
 
