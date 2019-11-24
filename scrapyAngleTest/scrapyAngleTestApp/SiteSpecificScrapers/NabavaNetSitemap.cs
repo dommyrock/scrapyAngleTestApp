@@ -99,7 +99,7 @@ namespace SiteSpecificScrapers
                     break;//to skip bellow code & exit while
                 }
 
-                if (!ScrapedKeyValuePairs.ContainsKey(Url))//TODO : use Hash(set)  or concurrent collection (parralel.foreach ..?)
+                if (!ScrapedKeyValuePairs.ContainsKey(Url))//TODO : use Hash(set)  or concurrent collection
                 {
                     ScrapedKeyValuePairs.Add(Url, true);//added scraped links from sitemap here...
                 }

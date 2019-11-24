@@ -21,10 +21,6 @@ namespace SiteSpecificScrapers.BaseClass
     {
         //Props that sould be inherited/implemented by children:
 
-        private string Url { get; set; }
-        private List<string> InputList { get; set; }
-        private Dictionary<string, bool> ScrapedKeyValuePairs { get; set; }//refactor this in hashset ? or some other key -value pair (maybe concurrent ?)
-        private bool HasSitemap { get; set; }
         private ScrapingBrowser Browser { get; set; }
 
         //constructor used to pass values to abstract class (has no instance !)
@@ -38,7 +34,7 @@ namespace SiteSpecificScrapers.BaseClass
         /// Derived classes should call this method to fetch .sitemap file if it exists.
         /// [Protected: only derived class can use this method]
         /// </summary>
-        protected async Task<string> GetSitemap(ScrapingBrowser browser, string url)//Todo..maybe it doesnt need to be async ...or find fix for async download with DI
+        protected async Task<string> GetSitemap(ScrapingBrowser browser, string url)
         {
             Browser = browser;
             if (Browser != null)

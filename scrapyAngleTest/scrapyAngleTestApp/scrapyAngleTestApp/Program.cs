@@ -23,6 +23,7 @@ namespace scrapyAngleTestApp
         public static Dictionary<string, bool> ScrapedDictionary { get; set; }//refactor this in hashset ? or some other key -value pair (maybe concurrent ?), parallel.foreach , caching ...
 
         // ALWAYS CHECK FOR " robots.txt" BEFORE SCRAPING WHOLE PAGE !
+        /// ildasm ...> <see cref="https://www.youtube.com/watch?v=eZFtSwh0k4E&list=PLRwVmtr-pp05brRDYXh-OTAIi-9kYcw3r&index=20&frags=wn"/>
 
         static void Main(string[] args)
         {
@@ -47,10 +48,12 @@ namespace scrapyAngleTestApp
                 ISiteSpecific app = scope.Resolve<ISiteSpecific>();
                 app.ScrapeSitemapLinks();
 
-                //TODO: pass ISiteSpecific as param to constructor of each child class , so it "new It up's"/instantiates needed type(concrete class) -->looks inside container and finds type
+                app.ScrapeSitemapLinks();
             }
 
             #endregion DI
+
+            //TODO Replace below code with foreach that goes through List<T> where T = object ("siteSpecificScraper" classes)
 
             try
             {
@@ -83,7 +86,7 @@ namespace scrapyAngleTestApp
                     ///WE're exiting  <param name="http://nabava.net"/> at this point , so remove rest of the links from queue/list
 
                     InputList = null;
-                    nabavaSitemap = null;// TODO : replace this since im using DI : its scope should kill instances (instead of me manualy )
+                    nabavaSitemap = null;
                 }
                 else
                 {
@@ -176,6 +179,8 @@ namespace scrapyAngleTestApp
             //var link2 = admNode.DescendantsAndSelf("a");
         }
 
+        #region Old Methods for site scraping
+
         /// <summary>
         /// Global method for scraping sitmap. Returns false if it doesnt exist!
         /// </summary>
@@ -230,6 +235,8 @@ namespace scrapyAngleTestApp
             Article article = new Article(dataLayerNode.InnerText);
             List<Article> articles = article.DeserializeJSON();
         }
+
+        #endregion Old Methods for site scraping
     }
 }
 
