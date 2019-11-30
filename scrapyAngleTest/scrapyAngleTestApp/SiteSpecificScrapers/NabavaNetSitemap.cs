@@ -33,9 +33,9 @@ namespace SiteSpecificScrapers
             //ScrapedKeyValuePairs = scrapedDictionary;
 
             //Temp inatiations
-            //this.Url = "http://nabava.net";
-            //Browser = new ScrapingBrowser();
-            //InputList = new List<string>();
+            this.Url = "http://nabava.net";
+            Browser = new ScrapingBrowser();
+            InputList = new List<string>();
         }
 
         //This class ment to only fetch sitemap (GetSitemap method --->

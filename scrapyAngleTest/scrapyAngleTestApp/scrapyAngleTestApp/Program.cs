@@ -17,12 +17,16 @@ namespace scrapyAngleTestApp
 {
     class Program
     {
+        #region Properties
+
         public static string Url { get; set; }//TEmp ...remove after refactor
         public static ScrapingBrowser Browser { get; set; }
         public static bool IsActiveNabavaScrape { get; private set; } = true;
         public static List<string> InputList { get; set; }
         public static List<string> WebShops { get; set; }
         public static Dictionary<string, bool> ScrapedDictionary { get; set; }//refactor this in hashset ? or some other key -value pair (maybe concurrent ?), parallel.foreach , caching ...
+
+        #endregion Properties
 
         // ALWAYS CHECK FOR " robots.txt" BEFORE SCRAPING WHOLE PAGE !
         /// ildasm ...> <see cref="https://www.youtube.com/watch?v=eZFtSwh0k4E&list=PLRwVmtr-pp05brRDYXh-OTAIi-9kYcw3r&index=20&frags=wn"/>
@@ -55,10 +59,13 @@ namespace scrapyAngleTestApp
 
             #endregion DI
 
-            //TODO Replace below code with foreach that goes through List<T> where T = object ("siteSpecificScraper" classes)
+            //TODO:
+            //1: Replace below code with foreach that goes through List<T> where T = object ("siteSpecificScraper" classes)
+            //2: Init Url prop to shop url in each constructor of derived classes (when they are reflected theyr prop will set current url to scrape automaticly to that shop) !
+            //3. Keep "ScrapingBrowser" class instance only one in program & remve all others in child classes !!!!
 
             //Get all classes that inherit from base class
-            var classCollection = ReflectiveEnumerator.GetEnumerableOfType<BaseScraperClass>();
+            //var classCollection = ReflectiveEnumerator.GetEnumerableOfType<BaseScraperClass>();
             //or
             var collection = ReflectiveEnumerator.GetDerivedCollection<BaseScraperClass>();
             try
