@@ -18,7 +18,7 @@ namespace SiteSpecificScrapers
         public ScrapingBrowser Browser { get; set; }
         public Dictionary<string, bool> ScrapedKeyValuePairs { get; set; }
         private List<string> WebShops { get; set; }
-        private ISiteSpecific _siteSpecific;
+        //private ISiteSpecific _siteSpecific;
 
         //ISiteSpecific _siteSpecific;
 
@@ -33,9 +33,9 @@ namespace SiteSpecificScrapers
             //ScrapedKeyValuePairs = scrapedDictionary;
 
             //Temp inatiations
-            this.Url = "http://nabava.net";
-            Browser = new ScrapingBrowser();
-            InputList = new List<string>();
+            //this.Url = "http://nabava.net";
+            //Browser = new ScrapingBrowser();
+            //InputList = new List<string>();
         }
 
         //This class ment to only fetch sitemap (GetSitemap method --->

@@ -19,7 +19,6 @@ namespace SiteSpecificScrapers
 
         public AdmScraper()
         {
-            this.Url = "testString...";
         }
 
         /// <summary>

@@ -6,6 +6,7 @@ using ScrapySharp.Extensions;
 using ScrapySharp.Network;
 using SiteSpecificScrapers;
 using SiteSpecificScrapers.BaseClass;
+using SiteSpecificScrapers.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,14 +57,15 @@ namespace scrapyAngleTestApp
 
             //TODO Replace below code with foreach that goes through List<T> where T = object ("siteSpecificScraper" classes)
 
-            List<BaseScraperClass> bCList = new List<BaseScraperClass>();
-
+            //Get all classes that inherit from base class
+            var classCollection = ReflectiveEnumerator.GetEnumerableOfType<BaseScraperClass>();
+            //or
+            var collection = ReflectiveEnumerator.GetDerivedCollection<BaseScraperClass>();
             try
             {
                 NabavaNetSitemap nabavaSitemap = new NabavaNetSitemap(/*url, Browser, InputList, WebShops, ScrapedDictionary*/);
 
                 //test adding into base abstract class
-                bCList.Add(nabavaSitemap);
 
                 //If ScrapeSitemapLinks = Success
                 if (nabavaSitemap.ScrapeSitemapLinks().Result)

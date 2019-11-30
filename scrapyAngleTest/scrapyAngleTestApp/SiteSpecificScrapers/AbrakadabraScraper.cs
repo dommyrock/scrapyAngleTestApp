@@ -1,0 +1,16 @@
+﻿using SiteSpecificScrapers.BaseClass;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SiteSpecificScrapers
+{
+    public class AbrakadabraScraper : BaseScraperClass
+    {
+        public AbrakadabraScraper()
+        {
+        }
+    }
+}
