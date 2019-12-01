@@ -61,7 +61,8 @@ namespace scrapyAngleTestApp
             #endregion DI
 
             //TODO:
-            //1. execute methods in foreach through reflection
+            //1. execute methods in foreach through reflection (with interface implementation) (Also make new method for error handling ---> so if one "scraperClass" fails it continues scraping the rest)!!! (later add retry logic...)
+            /// <see cref="https://stackoverflow.com/questions/32795582/c-sharp-loop-through-subclasses"/>
             //2: Init Url prop in each child constructor of derived classes (when they are reflected theyr prop will set current url to scrape automaticly to that shop) !
             //3. Keep "ScrapingBrowser" class instance only one in program & remove all others in child classes !!!!
 
