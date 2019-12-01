@@ -66,6 +66,7 @@
     <Compile Include="AbrakadabraScraper.cs" />
     <Compile Include="AdmScraper.cs" />
     <Compile Include="Base\BaseScraperClass.cs" />
+    <Compile Include="Helpers\CompositionRoot.cs" />
     <Compile Include="Helpers\ReflectiveEnumerator.cs" />
     <Compile Include="Services\ISiteSpecific.cs" />
     <Compile Include="NabavaNetSitemap.cs" />

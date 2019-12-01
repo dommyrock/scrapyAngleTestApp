@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 namespace SiteSpecificScrapers
 {
     //Interface props and methods are abstract by default
+
+    /// <summary>
+    /// All derived classes from "BaseScraperClass" should implement this Interface & non unique methods moved to BaseScraperClass
+    /// </summary>
     public interface ISiteSpecific
     {
         string Url { get; set; }
@@ -16,8 +20,8 @@ namespace SiteSpecificScrapers
         string SitemapUrl { get; set; }
         ScrapingBrowser Browser { get; set; }
 
-        Task<bool> ScrapeSitemapLinks(ScrapingBrowser browser);
+        Task<bool> ScrapeSitemapLinks(ScrapingBrowser browser);//this should be moved to Base class
 
-        //Task<bool> ScrapeSiteLinks();
+        Task<bool> ScrapeSiteLinks();
     }
 }

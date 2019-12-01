@@ -8,14 +8,13 @@ using System.Threading.Tasks;
 
 namespace SiteSpecificScrapers
 {
-    public class AdmScraper : BaseScraperClass, ISiteSpecific//TODO move  site scraping from main here
+    public class AdmScraper : BaseScraperClass, ISiteSpecific
     {
         public string Url { get; set; }
         public List<string> InputList { get; set; }
         public string SitemapUrl { get; set; }
         public ScrapingBrowser Browser { get; set; }
         public Dictionary<string, bool> ScrapedKeyValuePairs { get; set; }
-        private List<string> WebShops { get; set; }
 
         public AdmScraper()
         {
@@ -48,6 +47,11 @@ namespace SiteSpecificScrapers
                 return true;//true
             }
             return false;//false
+        }
+
+        public Task<bool> ScrapeSiteLinks()
+        {
+            throw new NotImplementedException();
         }
     }
 }

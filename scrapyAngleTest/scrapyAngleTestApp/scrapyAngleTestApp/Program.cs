@@ -22,10 +22,11 @@ namespace scrapyAngleTestApp
 
         public static string Url { get; set; }//TEmp ...remove after refactor
         public static ScrapingBrowser Browser { get; set; }
-        public static bool IsActiveNabavaScrape { get; private set; } = true;
         public static List<string> InputList { get; set; }
         public static List<string> WebShops { get; set; }
-        public static Dictionary<string, bool> ScrapedDictionary { get; set; }//refactor this in hashset ? or some other key -value pair (maybe concurrent ?), parallel.foreach , caching ...
+
+        //refactor this in hashset ? or some other key -value pair (maybe concurrent ?), parallel.foreach , caching ...
+        public static Dictionary<string, bool> ScrapedDictionary { get; set; }
 
         #endregion Properties
 
@@ -61,16 +62,28 @@ namespace scrapyAngleTestApp
             #endregion DI
 
             //TODO:
-            //1. execute methods in foreach through reflection (with interface implementation) (Also make new method for error handling ---> so if one "scraperClass" fails it continues scraping the rest)!!! (later add retry logic...)
+            //1. CompositionRoot pattern --> like exporting all app modules to Central one ("index" in vue/vuex)
             /// <see cref="https://stackoverflow.com/questions/32795582/c-sharp-loop-through-subclasses"/>
             //2: Init Url prop in each child constructor of derived classes (when they are reflected theyr prop will set current url to scrape automaticly to that shop) !
             //3. Keep "ScrapingBrowser" class instance only one in program & remove all others in child classes !!!!
+            //4. (Also make new method for error handling ---> so if one "scraperClass" fails it continues scraping the rest)!!! (later add retry logic...)
 
-            //Get all classes that inherit from base class
-            //var classCollection = ReflectiveEnumerator.GetEnumerableOfType<BaseScraperClass>();
-            //or
+            //Import & inti all modules (go with this implementation) !!!
+            //TODO:get List<T> Classes with reflection [SEE :ReflectiveEnumerator Region]
+            var compositionRoot = new CompositionRoot(
+                new NabavaNetSitemap(),
+                new AdmScraper(),
+                new AbrakadabraScraper()
+                );
+            compositionRoot.ScrapeSitemapLinks(Browser).Wait();
+
+            #region ReflectiveEnumerator
+
+            //reflection at least 2x less efficient
+
             var childCollection = ReflectiveEnumerator.GetDerivedCollection<BaseScraperClass>();
-            foreach (var i in childCollection.Skip(1))
+            //var classCollection = ReflectiveEnumerator.GetEnumerableOfType<BaseScraperClass>();
+            foreach (var i in childCollection.Skip(1)) //skip is temp for testing
             {
                 //Get constructor & create instance of each class
                 Type type = i.GetType();
@@ -103,11 +116,13 @@ namespace scrapyAngleTestApp
 
                 #endregion Reflection example
             }
+
+            #endregion ReflectiveEnumerator
+
+            //TODO: move this code to specific classes
             try
             {
-                NabavaNetSitemap nabavaSitemap = new NabavaNetSitemap(/*url, Browser, InputList, WebShops, ScrapedDictionary*/);
-
-                //test adding into base abstract class
+                NabavaNetSitemap nabavaSitemap = new NabavaNetSitemap();
 
                 //If ScrapeSitemapLinks = Success
                 if (nabavaSitemap.ScrapeSitemapLinks(Browser).Result)
@@ -266,23 +281,6 @@ namespace scrapyAngleTestApp
             }
             InputList.RemoveAt(0);
             Url = InputList[0];
-        }
-
-        //Test method for specific site
-        public static void FetchAbrakadabra()
-        {
-            //TODO : check for robots.txt before scraping site !!!!!(this site has it !!)
-
-            string url = "https://www.abrakadabra.com/hr-HR/Katalog/TV%2C-mobiteli-i-elektronika/Televizori-i-dodaci/c/FE100";//it has robots.txt--(and in it is "sitemap.xml")
-            //Fetch
-            WebPage source = Browser.NavigateToPage(new Uri(url));
-
-            //Take only script  node with dataLayer inside it (temp solution-specific to to the site)
-            HtmlNode dataLayerNode = source.Html.CssSelect("script").Skip(1).Take(1).SingleOrDefault();
-
-            //serialize JSON to C# object with Newtonsoft
-            Article article = new Article(dataLayerNode.InnerText);
-            List<Article> articles = article.DeserializeJSON();
         }
 
         #endregion Old Methods for site scraping

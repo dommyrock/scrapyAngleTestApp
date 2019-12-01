@@ -18,23 +18,11 @@ namespace SiteSpecificScrapers
         public ScrapingBrowser Browser { get; set; }
         public Dictionary<string, bool> ScrapedKeyValuePairs { get; set; }
         private List<string> WebShops { get; set; }
-        //private ISiteSpecific _siteSpecific;
 
-        //ISiteSpecific _siteSpecific;
-
-        public NabavaNetSitemap(/*string url, ScrapingBrowser browser, List<string> input, List<string> webShops, Dictionary<string, bool> scrapedDictionary*//*, ISiteSpecific siteSpecific*/)//called from program ->main
+        public NabavaNetSitemap()
         {
-            //_siteSpecific = siteSpecific;
-            //Before this constructro we call base.Constructor and init stuff there !!!
-            //this.Url = url;
-            //Browser = browser;//instance passed from Main (its static =1 instance anyway)
-            //InputList = input;
-            //WebShops = webShops;
-            //ScrapedKeyValuePairs = scrapedDictionary;
-
-            //Temp inatiations
             this.Url = "http://nabava.net";
-            InputList = new List<string>();
+            InputList = new List<string>(); //TODO:change to be same instance from main else i lose this
         }
 
         //This class ment to only fetch sitemap (GetSitemap method --->
@@ -53,13 +41,14 @@ namespace SiteSpecificScrapers
                 WebPage document = await Browser.NavigateToPageAsync(new Uri(SitemapUrl));//might replace with basic downloadstrignasync...
 
                 //Specific  query for nabava.net
-                var nodes = document.Html.CssSelect("loc").ToList();
-
-                foreach (var node in nodes)//Eventially replace this with parallel.foreach when app is completed
-                {
-                    InputList.Add(node.InnerText);
-                    //Console.WriteLine(node.InnerText + "\n");
-                }
+                var nodes = document.Html.CssSelect("loc").Select(i => i.InnerText).ToList();
+                InputList.AddRange(nodes);
+                //old
+                //foreach (var node in nodes)//Eventially replace this with parallel.foreach when app is completed
+                //{
+                //    InputList.Add(node.InnerText);
+                //    //Console.WriteLine(node.InnerText + "\n");
+                //}
 
                 InputList.RemoveAt(0);
                 Url = InputList[0];
@@ -108,6 +97,11 @@ namespace SiteSpecificScrapers
                 InputList.RemoveAt(0);//remove scraped links from sitemap
                 Url = InputList[0];
             }
+        }
+
+        public Task<bool> ScrapeSiteLinks()
+        {
+            throw new NotImplementedException();
         }
     }
 }

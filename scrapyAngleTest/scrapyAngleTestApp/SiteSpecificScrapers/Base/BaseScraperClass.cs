@@ -15,7 +15,7 @@ namespace SiteSpecificScrapers.BaseClass
     #endregion Info
 
     /// <summary>
-    /// Has common/shared code for Scraper Classes(Can't be instanciated)
+    /// Common/shared code for derived Scraper Classes(Can't be instanciated)
     /// </summary>
     public abstract class BaseScraperClass
     {
@@ -23,10 +23,11 @@ namespace SiteSpecificScrapers.BaseClass
 
         private ScrapingBrowser Browser { get; set; }
 
-        //constructor used to pass values to abstract class (has no instance !)
+        /// <summary>
+        /// Base constructor called before derived constructor
+        /// </summary>
         protected BaseScraperClass()
         {
-            //Browser = new ScrapingBrowser(); dont need this , since i dont want new instance for every child
         }
 
         /// <summary>
@@ -38,13 +39,11 @@ namespace SiteSpecificScrapers.BaseClass
             Browser = browser;
             if (Browser != null)
             {
-                //Dont need opening in headless browser for this url
-                //Check for /robots.txt
                 string sitemapSource = url + "/robots.txt";
 
                 var document = await browser.DownloadStringAsync(new Uri(sitemapSource));
-
-                var matchSitemap = Regex.Match(document, @"\b(?:https?://|www\.)\S+\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);//TODO :check this regex for other sitemaps ...not sure if ok
+                //TODO :check this regex for other sitemaps ...not sure if ok
+                var matchSitemap = Regex.Match(document, @"\b(?:https?://|www\.)\S+\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
                 if (matchSitemap.Success && matchSitemap.Value.Contains("sitemap"))
                 {
