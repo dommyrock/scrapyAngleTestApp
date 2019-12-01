@@ -34,7 +34,6 @@ namespace SiteSpecificScrapers
 
             //Temp inatiations
             this.Url = "http://nabava.net";
-            Browser = new ScrapingBrowser();
             InputList = new List<string>();
         }
 
@@ -43,8 +42,10 @@ namespace SiteSpecificScrapers
         /// <summary>
         /// True if Success(Adds webshop urls to "InputList".) / False if no sitemap has been found in robots.txt
         /// </summary>
-        public async Task<bool> ScrapeSitemapLinks()
+        public async Task<bool> ScrapeSitemapLinks(ScrapingBrowser browser)
         {
+            this.Browser = browser;
+
             SitemapUrl = await base.GetSitemap(Browser, Url);
 
             if (SitemapUrl != string.Empty)

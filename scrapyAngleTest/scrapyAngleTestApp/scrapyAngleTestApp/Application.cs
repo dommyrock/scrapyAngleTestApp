@@ -22,7 +22,7 @@ namespace scrapyAngleTestApp
         /// </summary>
         public void Run()
         {
-            _siteSpecific.ScrapeSitemapLinks();
+            //_siteSpecific.ScrapeSitemapLinks(); temp commented while testing reflections
         }
     }
 }

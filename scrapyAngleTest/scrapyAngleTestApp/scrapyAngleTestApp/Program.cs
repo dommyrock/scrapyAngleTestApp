@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace scrapyAngleTestApp
@@ -60,14 +61,47 @@ namespace scrapyAngleTestApp
             #endregion DI
 
             //TODO:
-            //1: Replace below code with foreach that goes through List<T> where T = object ("siteSpecificScraper" classes)
-            //2: Init Url prop to shop url in each constructor of derived classes (when they are reflected theyr prop will set current url to scrape automaticly to that shop) !
-            //3. Keep "ScrapingBrowser" class instance only one in program & remve all others in child classes !!!!
+            //1. execute methods in foreach through reflection
+            //2: Init Url prop in each child constructor of derived classes (when they are reflected theyr prop will set current url to scrape automaticly to that shop) !
+            //3. Keep "ScrapingBrowser" class instance only one in program & remove all others in child classes !!!!
 
             //Get all classes that inherit from base class
             //var classCollection = ReflectiveEnumerator.GetEnumerableOfType<BaseScraperClass>();
             //or
-            var collection = ReflectiveEnumerator.GetDerivedCollection<BaseScraperClass>();
+            var childCollection = ReflectiveEnumerator.GetDerivedCollection<BaseScraperClass>();
+            foreach (var i in childCollection.Skip(1))
+            {
+                //Get constructor & create instance of each class
+                Type type = i.GetType();
+                ConstructorInfo constInfo = type.GetConstructor(Type.EmptyTypes);
+                object classObject = constInfo.Invoke(new object[] { });
+                //Get ScrapeSitemapLinks method & invoke with params
+                MethodInfo mInfo = type.GetMethod("ScrapeSitemapLinks");
+                object mValue = mInfo.Invoke(classObject, new object[] { Browser });
+
+                //test
+                foreach (var item in mValue.GetType().GetMethods())
+                {
+                    Console.WriteLine(item.Name);
+                }
+
+                #region Reflection example
+
+                //example reflection methods
+                //var s = i.GetType().GetMembers();
+                //foreach (var item in s)
+                //{
+                //    Console.WriteLine("members info: " + item.Name);
+                //}
+                //Console.WriteLine("-----------------------------------");
+                //var d = i.GetType().GetMethods();
+                //foreach (var item in d)
+                //{
+                //    Console.WriteLine("\r methods: " + item.Name);
+                //}
+
+                #endregion Reflection example
+            }
             try
             {
                 NabavaNetSitemap nabavaSitemap = new NabavaNetSitemap(/*url, Browser, InputList, WebShops, ScrapedDictionary*/);
@@ -75,7 +109,7 @@ namespace scrapyAngleTestApp
                 //test adding into base abstract class
 
                 //If ScrapeSitemapLinks = Success
-                if (nabavaSitemap.ScrapeSitemapLinks().Result)
+                if (nabavaSitemap.ScrapeSitemapLinks(Browser).Result)
                 {
                     #region AWS
 

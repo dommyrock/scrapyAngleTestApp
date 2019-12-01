@@ -19,13 +19,16 @@ namespace SiteSpecificScrapers
 
         public AdmScraper()
         {
+            this.Url = "https://www.adm.hr";
         }
 
         /// <summary>
         /// True if Success(Adds webshop urls to "InputList".) / False if no sitemap has been found in robots.txt
         /// </summary>
-        public async Task<bool> ScrapeSitemapLinks()
+        public async Task<bool> ScrapeSitemapLinks(ScrapingBrowser browser)
         {
+            this.Browser = browser;
+
             SitemapUrl = await base.GetSitemap(Browser, Url);
 
             if (SitemapUrl != string.Empty)
