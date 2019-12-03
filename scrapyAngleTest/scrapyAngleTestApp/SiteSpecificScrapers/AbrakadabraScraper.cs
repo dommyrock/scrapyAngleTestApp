@@ -30,12 +30,11 @@ namespace SiteSpecificScrapers
             {
                 ScrapeSpecificSite(browser); //TODO
             }
-            Console.WriteLine("Entered Abrakadabra Scraper");
         }
 
         public void ScrapeSpecificSite(ScrapingBrowser browser)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Entered Abrakadabra Scraper");
         }
     }
 }
