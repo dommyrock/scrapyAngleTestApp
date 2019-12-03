@@ -62,20 +62,16 @@ namespace scrapyAngleTestApp
             #endregion DI
 
             //TODO:
-            //1. CompositionRoot pattern --> like exporting all app modules to Central one ("index" in vue/vuex)
-            /// <see cref="https://stackoverflow.com/questions/32795582/c-sharp-loop-through-subclasses"/>
-            //2: Init Url prop in each child constructor of derived classes (when they are reflected theyr prop will set current url to scrape automaticly to that shop) !
-            //3. Keep "ScrapingBrowser" class instance only one in program & remove all others in child classes !!!!
             //4. (Also make new method for error handling ---> so if one "scraperClass" fails it continues scraping the rest)!!! (later add retry logic...)
 
-            //Import & inti all modules (go with this implementation) !!!
-            //TODO:get List<T> Classes with reflection [SEE :ReflectiveEnumerator Region]
+            //Get all clases that implement ISiteSpecific (with Polymorphism)
             var compositionRoot = new CompositionRoot(
                 new NabavaNetSitemap(),
                 new AdmScraper(),
                 new AbrakadabraScraper()
                 );
-            compositionRoot.ScrapeSitemapLinks(Browser).Wait();
+            //compositionRoot.ScrapeSitemapLinks(Browser).Wait(); //REPLACED WITH "Run"
+            compositionRoot.Run(Browser);
 
             #region ReflectiveEnumerator
 
@@ -144,7 +140,7 @@ namespace scrapyAngleTestApp
                     if (tempWebshopCache.Count == 0)
                     {
                         //re-scrape
-                        nabavaSitemap.ScrapeWebshops();
+                        //nabavaSitemap.ScrapeWebshops(); refactored this to be private
                     }
 
                     //dispose

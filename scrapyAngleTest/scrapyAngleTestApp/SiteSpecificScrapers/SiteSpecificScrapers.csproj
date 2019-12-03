@@ -71,6 +71,7 @@
     <Compile Include="Services\ISiteSpecific.cs" />
     <Compile Include="NabavaNetSitemap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\ISiteSpecificExtension.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

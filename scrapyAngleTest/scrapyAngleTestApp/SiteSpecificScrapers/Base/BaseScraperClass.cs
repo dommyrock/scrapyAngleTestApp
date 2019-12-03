@@ -54,6 +54,29 @@ namespace SiteSpecificScrapers.BaseClass
             }
             return url;
         }
+
+        /// <summary>
+        /// Default method for sitemap scraping. (Overridable if needed!)
+        /// </summary>
+        /// <param name="browser"></param>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        protected virtual async Task<bool> ScrapeSitemapLinks(ScrapingBrowser browser, string url)
+        {
+            this.Browser = browser;
+
+            var sitemapUel = await GetSitemap(Browser, url);
+
+            if (sitemapUel != string.Empty)
+            {
+                WebPage document = await Browser.NavigateToPageAsync(new Uri(url));//might replace with basic downloadstrignasync...
+
+                //TODO: Scrape all links from "document"
+
+                return true;//true
+            }
+            return false;//false
+        }
     }
 }
 

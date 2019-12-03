@@ -1,5 +1,6 @@
 ﻿using ScrapySharp.Network;
 using SiteSpecificScrapers.BaseClass;
+using SiteSpecificScrapers.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SiteSpecificScrapers
 {
-    public class AbrakadabraScraper : BaseScraperClass, ISiteSpecific
+    public class AbrakadabraScraper : BaseScraperClass, ISiteSpecific, ISiteSpecificExtension
     {
         public string Url { get; set; }
         public List<string> InputList { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
@@ -21,12 +22,18 @@ namespace SiteSpecificScrapers
             this.Url = "https://www.abrakadabra.com";
         }
 
-        public Task<bool> ScrapeSiteLinks()
+        public void Run(ScrapingBrowser browser)
         {
-            throw new NotImplementedException();
+            var success = base.ScrapeSitemapLinks(browser, Url);
+
+            if (success.Result)
+            {
+                ScrapeSpecificSite(browser); //TODO
+            }
+            Console.WriteLine("Entered Abrakadabra Scraper");
         }
 
-        public Task<bool> ScrapeSitemapLinks(ScrapingBrowser browser)
+        public void ScrapeSpecificSite(ScrapingBrowser browser)
         {
             throw new NotImplementedException();
         }
@@ -47,4 +54,3 @@ namespace SiteSpecificScrapers
 //    //serialize JSON to C# object with Newtonsoft
 //    Article article = new Article(dataLayerNode.InnerText);
 //    List<Article> articles = article.DeserializeJSON();
-}

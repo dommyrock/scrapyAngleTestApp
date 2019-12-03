@@ -1,6 +1,7 @@
 ﻿using ScrapySharp.Extensions;
 using ScrapySharp.Network;
 using SiteSpecificScrapers.BaseClass;
+using SiteSpecificScrapers.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SiteSpecificScrapers
 {
-    public class AdmScraper : BaseScraperClass, ISiteSpecific
+    public class AdmScraper : BaseScraperClass, ISiteSpecific, ISiteSpecificExtension
     {
         public string Url { get; set; }
         public List<string> InputList { get; set; }
@@ -21,35 +22,18 @@ namespace SiteSpecificScrapers
             this.Url = "https://www.adm.hr";
         }
 
-        /// <summary>
-        /// True if Success(Adds webshop urls to "InputList".) / False if no sitemap has been found in robots.txt
-        /// </summary>
-        public async Task<bool> ScrapeSitemapLinks(ScrapingBrowser browser)
+        public void Run(ScrapingBrowser browser)
         {
-            this.Browser = browser;
+            var success = base.ScrapeSitemapLinks(browser, Url);
 
-            SitemapUrl = await base.GetSitemap(Browser, Url);
-
-            if (SitemapUrl != string.Empty)
+            if (success.Result)
             {
-                WebPage document = await Browser.NavigateToPageAsync(new Uri(Url));//might replace with basic downloadstrignasync...
-                //Specific  query for nabava.net
-                var nodes = document.Html.CssSelect("loc").ToList();
-
-                foreach (var node in nodes)
-                {
-                    InputList.Add(node.InnerText);
-                    Console.WriteLine(node.InnerText + "\n");
-                }
-
-                InputList.RemoveAt(0);
-                Url = InputList[0];
-                return true;//true
+                ScrapeSpecificSite(browser); //TODO
             }
-            return false;//false
+            Console.WriteLine("entered Adm Scraper");
         }
 
-        public Task<bool> ScrapeSiteLinks()
+        public void ScrapeSpecificSite(ScrapingBrowser browser)
         {
             throw new NotImplementedException();
         }

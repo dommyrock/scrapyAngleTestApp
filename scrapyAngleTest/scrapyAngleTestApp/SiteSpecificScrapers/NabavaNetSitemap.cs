@@ -43,12 +43,6 @@ namespace SiteSpecificScrapers
                 //Specific  query for nabava.net
                 var nodes = document.Html.CssSelect("loc").Select(i => i.InnerText).ToList();
                 InputList.AddRange(nodes);
-                //old
-                //foreach (var node in nodes)//Eventially replace this with parallel.foreach when app is completed
-                //{
-                //    InputList.Add(node.InnerText);
-                //    //Console.WriteLine(node.InnerText + "\n");
-                //}
 
                 InputList.RemoveAt(0);
                 Url = InputList[0];
@@ -60,7 +54,7 @@ namespace SiteSpecificScrapers
         /// <summary>
         /// Adds webshops scraped from sitemap to "WebShops" list.
         /// </summary>
-        public async void ScrapeWebshops()
+        private async void ScrapeWebshops()
         {
             while (true)
             {
@@ -99,9 +93,15 @@ namespace SiteSpecificScrapers
             }
         }
 
-        public Task<bool> ScrapeSiteLinks()
+        // Encapsulates scraping logic for each site specific scraper.(Must be async if it encapsulates async code)
+        public void Run(ScrapingBrowser browser)
         {
-            throw new NotImplementedException();
+            var success = ScrapeSitemapLinks(browser).GetAwaiter().GetResult();
+
+            if (success)
+            {
+                ScrapeWebshops();
+            }
         }
     }
 }

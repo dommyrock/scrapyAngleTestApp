@@ -23,18 +23,17 @@ namespace SiteSpecificScrapers.Helpers
             _specificScrapers = scrapers;
         }
 
-        public async Task<bool> ScrapeSitemapLinks(ScrapingBrowser browser)
+        /// <summary>
+        /// Encapsulates scraping logic for each site specific scraper.
+        /// </summary>
+        /// <param name="browser"></param>
+        /// <returns></returns>
+        public void Run(ScrapingBrowser browser) //TODO: if i want each scraper class to return an object {scraped lists, items ....} make this method return Task<object> or Task<Dictionary>
         {
             foreach (ISiteSpecific scraper in _specificScrapers)
             {
-                await scraper.ScrapeSitemapLinks(browser);
+                scraper.Run(browser);
             }
-            return true;
-        }
-
-        public Task<bool> ScrapeSiteLinks()
-        {
-            throw new NotImplementedException();
         }
     }
 }

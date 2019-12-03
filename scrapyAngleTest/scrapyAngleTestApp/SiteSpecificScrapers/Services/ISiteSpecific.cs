@@ -1,8 +1,5 @@
 ﻿using ScrapySharp.Network;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SiteSpecificScrapers
@@ -20,8 +17,10 @@ namespace SiteSpecificScrapers
         string SitemapUrl { get; set; }
         ScrapingBrowser Browser { get; set; }
 
-        Task<bool> ScrapeSitemapLinks(ScrapingBrowser browser);//this should be moved to Base class
-
-        Task<bool> ScrapeSiteLinks();
+        /// <summary>
+        /// Encapsulates scraping logic for each site specific scraper. (Must be async if it encapsulates async code)
+        /// </summary>
+        /// <returns></returns>
+        void Run(ScrapingBrowser browser);
     }
 }
