@@ -56,41 +56,41 @@ namespace SiteSpecificScrapers
         /// </summary>
         private async void ScrapeWebshops()
         {
-            while (true)
+            //while (true)
+            //{
+            WebPage pageSource = await Browser.NavigateToPageAsync(new Uri(Url));//can speed this up by using DownloadStringAsync(but need other filter to extract shop link (regex))
+
+            var node = pageSource.Html.SelectSingleNode("//b");//get<b> node/Link
+            if (node != null)
             {
-                WebPage pageSource = await Browser.NavigateToPageAsync(new Uri(Url));//can speed this up by using DownloadStringAsync(but need other filter to extract shop link (regex))
-
-                var node = pageSource.Html.SelectSingleNode("//b");//get<b> node/Link
-                if (node != null)
+                bool isLink = node.InnerHtml.StartsWith("http");
+                if (isLink)
                 {
-                    bool isLink = node.InnerHtml.StartsWith("http");
-                    if (isLink)
-                    {
-                        //InputList.Add(node.InnerHtml);
-                        WebShops.Add(node.InnerHtml);//add to separate "Shop" list
-                        //Reasign Url to real link
-                        Url = node.InnerHtml;
-                        Console.WriteLine(node.InnerHtml);
-                        //break; dont have loop here so i dont need it !!!
-                    }
+                    //InputList.Add(node.InnerHtml);
+                    WebShops.Add(node.InnerHtml);//add to separate "Shop" list
+                                                 //Reasign Url to real link
+                    Url = node.InnerHtml;
+                    Console.WriteLine(node.InnerHtml);
+                    //break; dont have loop here so i dont need it !!!
                 }
-                else
-                {
-                    Console.WriteLine($"All [{WebShops.Count}] Shops scraped from nabava.net/sitemap.xml \n");
-
-                    //Set url to [0] item in "Webshop" queue before exiting
-                    Url = WebShops[0];
-                    break;//to skip bellow code & exit while
-                }
-
-                if (!ScrapedKeyValuePairs.ContainsKey(Url))//TODO : use Hash(set)  or concurrent collection
-                {
-                    ScrapedKeyValuePairs.Add(Url, true);//added scraped links from sitemap here...
-                }
-
-                InputList.RemoveAt(0);//remove scraped links from sitemap
-                Url = InputList[0];
             }
+            else
+            {
+                Console.WriteLine($"All [{WebShops.Count}] Shops scraped from nabava.net/sitemap.xml \n");
+
+                //Set url to [0] item in "Webshop" queue before exiting
+                Url = WebShops[0];
+                //break;//to skip bellow code & exit while
+            }
+
+            if (!ScrapedKeyValuePairs.ContainsKey(Url))//TODO : use Hash(set)  or concurrent collection
+            {
+                ScrapedKeyValuePairs.Add(Url, true);//added scraped links from sitemap here...
+            }
+
+            InputList.RemoveAt(0);//remove scraped links from sitemap
+            Url = InputList[0];
+            //}
         }
 
         // Encapsulates scraping logic for each site specific scraper.(Must be async if it encapsulates async code)
@@ -100,7 +100,7 @@ namespace SiteSpecificScrapers
 
             if (success)
             {
-                ScrapeWebshops();
+                ScrapeWebshops(); //this one exits when unit testing without completion ( reason : async ??)
             }
         }
     }
