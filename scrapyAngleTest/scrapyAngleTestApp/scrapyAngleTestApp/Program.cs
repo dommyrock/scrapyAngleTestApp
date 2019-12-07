@@ -40,9 +40,9 @@ namespace scrapyAngleTestApp
             InputList = new List<string>();
             WebShops = new List<string>();
 
-            Browser = new ScrapingBrowser();//class also has async methods for fetching url's
+            Browser = new ScrapingBrowser();// Check this class for reusable API
 
-            #region DI
+            #region DI(container) testing
 
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////7777
             /// <see cref="https://autofac.readthedocs.io/en/latest/getting-started/index.html#structuring-the-application"/>
@@ -59,10 +59,14 @@ namespace scrapyAngleTestApp
             //    app.ScrapeSitemapLinks();
             //}
 
-            #endregion DI
+            #endregion DI(container) testing
 
             //TODO:
             //4. (Also make new method for error handling ---> so if one "scraperClass" fails it continues scraping the rest)!!! (later add retry logic...)
+            //5. since i have static instances of list , browser ..might be a problem to use async methods with them ??? (could ty concurent bags ...)(or new instances foreach async ) and store from each instance into concurent collection
+            //6.  //TODO: Replace async void with Task (because caller of this method has no way to await it ) only valid in event handlers...
+            /// <see cref="https://searchcode.com/codesearch/view/125929587/"/> for ScrapySharp async methods source code
+            ///
 
             //Get all clases that implement ISiteSpecific (with Polymorphism)
             var compositionRoot = new CompositionRoot(
@@ -70,7 +74,6 @@ namespace scrapyAngleTestApp
                 new AdmScraper(),
                 new AbrakadabraScraper()
                 );
-            //compositionRoot.ScrapeSitemapLinks(Browser).Wait(); //REPLACED WITH "Run"
             compositionRoot.Run(Browser);
 
             #region ReflectiveEnumerator

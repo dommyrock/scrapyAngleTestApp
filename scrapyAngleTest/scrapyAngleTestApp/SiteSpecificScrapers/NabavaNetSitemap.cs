@@ -54,7 +54,7 @@ namespace SiteSpecificScrapers
         /// <summary>
         /// Adds webshops scraped from sitemap to "WebShops" list.
         /// </summary>
-        private async void ScrapeWebshops()
+        private async void ScrapeWebshops() //TODO: Replace async void with Task (because caller of this method has no way to await it ) only valid in event handlers...
         {
             //while (true)
             //{

@@ -42,7 +42,8 @@ namespace SiteSpecificScrapers.BaseClass
                 string sitemapSource = url + "/robots.txt";
 
                 var document = await browser.DownloadStringAsync(new Uri(sitemapSource));
-                //TODO :check this regex for other sitemaps ...not sure if ok
+
+                //Global regex (might not be suited for all sites)
                 var matchSitemap = Regex.Match(document, @"\b(?:https?://|www\.)\S+\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
                 if (matchSitemap.Success && matchSitemap.Value.Contains("sitemap"))
