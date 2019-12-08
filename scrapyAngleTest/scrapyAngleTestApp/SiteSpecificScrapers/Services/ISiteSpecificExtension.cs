@@ -12,6 +12,6 @@ namespace SiteSpecificScrapers.Services
     /// </summary>
     public interface ISiteSpecificExtension
     {
-        void ScrapeSpecificSite(ScrapingBrowser browser); //Might make implementators return something in future {object, dictionary ....lists ??} instead of Void
+        void ScrapeSpecificSite(ScrapingBrowser browser); //TODO: make this Task ScrapeSpecificSite ...same as in ISiteSpecific ...so i can await allComleted ..or getresults .
     }
 }
