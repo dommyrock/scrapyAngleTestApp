@@ -105,3 +105,16 @@ namespace SiteSpecificScrapers
         }
     }
 }
+/*
+ * BLOCKING code leads to deadlocking
+ * 
+ * ask.Result() is blocking !! -- so its better to await all task's to complete ...so we don't deadlock
+ * 
+ * task.Run() -- wait for async func to complete in separate tread !
+ * 
+ * so the state machine runs in different thread than im blocking
+ * 
+ * best practice : call async methods in async methods (all the way up)
+ * 
+ * 
+ */
