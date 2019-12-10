@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScrapySharp.Network;
 using SiteSpecificScrapers;
@@ -10,7 +11,7 @@ namespace SiteSpecific_Scrapers_Test
     public class AdmScraperTest
     {
         [TestMethod]
-        public void AdmScraperTestMethod()
+        public async Task AdmScraperTestMethod()
         {
             //Scrape only single site
             AdmScraper nabava = new AdmScraper()
@@ -20,7 +21,7 @@ namespace SiteSpecific_Scrapers_Test
                 InputList = new List<string>(),
             };
 
-            nabava.Run(nabava.Browser);
+            await nabava.Run(nabava.Browser);
         }
     }
 }

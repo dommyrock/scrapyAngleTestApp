@@ -68,6 +68,7 @@
     <Compile Include="Base\BaseScraperClass.cs" />
     <Compile Include="Helpers\CompositionRoot.cs" />
     <Compile Include="Helpers\ReflectiveEnumerator.cs" />
+    <Compile Include="Services\IComposition.cs" />
     <Compile Include="Services\ISiteSpecific.cs" />
     <Compile Include="NabavaNetSitemap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

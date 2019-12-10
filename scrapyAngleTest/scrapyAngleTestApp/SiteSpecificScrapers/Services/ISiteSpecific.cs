@@ -21,6 +21,6 @@ namespace SiteSpecificScrapers
         /// Encapsulates scraping logic for each site specific scraper. (Must be async if it encapsulates async code)
         /// </summary>
         /// <returns></returns>
-        void Run(ScrapingBrowser browser);//TODO: tihs should be Task Run() ...so i can await alllCompleted ("Run's) of all scrapers ..
+        Task Run(ScrapingBrowser browser);
     }
 }

@@ -22,17 +22,17 @@ namespace SiteSpecificScrapers
             this.Url = "https://www.abrakadabra.com";
         }
 
-        public void Run(ScrapingBrowser browser)
+        public async Task Run(ScrapingBrowser browser)
         {
-            var success = base.ScrapeSitemapLinks(browser, Url);
+            var success = base.ScrapeSitemapLinks(browser, Url).GetAwaiter().GetResult();
 
-            if (success.Result)
+            if (success)
             {
-                ScrapeSpecificSite(browser); //TODO
+               await ScrapeSpecificSite(browser); //TODO
             }
         }
 
-        public void ScrapeSpecificSite(ScrapingBrowser browser)
+        public async Task ScrapeSpecificSite(ScrapingBrowser browser)
         {
             Console.WriteLine("Entered Abrakadabra Scraper");
         }

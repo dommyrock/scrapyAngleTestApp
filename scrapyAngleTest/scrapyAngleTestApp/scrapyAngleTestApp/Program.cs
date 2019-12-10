@@ -74,49 +74,7 @@ namespace scrapyAngleTestApp
                 new AdmScraper(),
                 new AbrakadabraScraper()
                 );
-            compositionRoot.Run(Browser);
-
-            #region ReflectiveEnumerator
-
-            //reflection at least 2x less efficient
-
-            var childCollection = ReflectiveEnumerator.GetDerivedCollection<BaseScraperClass>();
-            //var classCollection = ReflectiveEnumerator.GetEnumerableOfType<BaseScraperClass>();
-            foreach (var i in childCollection.Skip(1)) //skip is temp for testing
-            {
-                //Get constructor & create instance of each class
-                Type type = i.GetType();
-                ConstructorInfo constInfo = type.GetConstructor(Type.EmptyTypes);
-                object classObject = constInfo.Invoke(new object[] { });
-                //Get ScrapeSitemapLinks method & invoke with params
-                MethodInfo mInfo = type.GetMethod("ScrapeSitemapLinks");
-                object mValue = mInfo.Invoke(classObject, new object[] { Browser });
-
-                //test
-                foreach (var item in mValue.GetType().GetMethods())
-                {
-                    Console.WriteLine(item.Name);
-                }
-
-                #region Reflection example
-
-                //example reflection methods
-                //var s = i.GetType().GetMembers();
-                //foreach (var item in s)
-                //{
-                //    Console.WriteLine("members info: " + item.Name);
-                //}
-                //Console.WriteLine("-----------------------------------");
-                //var d = i.GetType().GetMethods();
-                //foreach (var item in d)
-                //{
-                //    Console.WriteLine("\r methods: " + item.Name);
-                //}
-
-                #endregion Reflection example
-            }
-
-            #endregion ReflectiveEnumerator
+            compositionRoot.RunAll(Browser);
 
             //TODO: move this code to specific classes
             try

@@ -1,10 +1,8 @@
-﻿using AngleSharp;
-using ScrapySharp.Extensions;
+﻿using ScrapySharp.Extensions;
 using ScrapySharp.Network;
 using SiteSpecificScrapers.BaseClass;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -54,13 +52,13 @@ namespace SiteSpecificScrapers
         /// <summary>
         /// Adds webshops scraped from sitemap to "WebShops" list.
         /// </summary>
-        private async void ScrapeWebshops() //TODO: Replace async void with Task (because caller of this method has no way to await it ) only valid in event handlers...
+        private async Task ScrapeWebshops() //TODO: Replace async void with Task (because caller of this method has no way to await it ) only valid in event handlers...
         {
             //while (true)
             //{
             WebPage pageSource = await Browser.NavigateToPageAsync(new Uri(Url));//can speed this up by using DownloadStringAsync(but need other filter to extract shop link (regex))
 
-            var node = pageSource.Html.SelectSingleNode("//b");//get<b> node/Link
+            var node = pageSource.Html.SelectSingleNode("//b");//get<b> node/Link select all nodes  
             if (node != null)
             {
                 bool isLink = node.InnerHtml.StartsWith("http");
@@ -94,13 +92,13 @@ namespace SiteSpecificScrapers
         }
 
         // Encapsulates scraping logic for each site specific scraper.(Must be async if it encapsulates async code)
-        public void Run(ScrapingBrowser browser)
+        public async Task Run(ScrapingBrowser browser)
         {
             var success = ScrapeSitemapLinks(browser).GetAwaiter().GetResult();
 
             if (success)
             {
-                ScrapeWebshops(); //this one exits when unit testing without completion ( reason : async ??)
+                await ScrapeWebshops(); //this one exits when unit testing without completion ( reason : async ??)
             }
         }
     }
@@ -108,13 +106,11 @@ namespace SiteSpecificScrapers
 /*
  * BLOCKING code leads to deadlocking
  * 
- * ask.Result() is blocking !! -- so its better to await all task's to complete ...so we don't deadlock
+ * task.Result() is blocking !! -- so its better to await all task's to complete ...so we don't deadlock
  * 
  * task.Run() -- wait for async func to complete in separate tread !
  * 
  * so the state machine runs in different thread than im blocking
  * 
  * best practice : call async methods in async methods (all the way up)
- * 
- * 
  */
