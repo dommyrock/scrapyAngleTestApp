@@ -42,27 +42,44 @@ namespace SiteSpecificScrapers.Helpers
         /// Runs all site scraper tasks Async.(Task.WaitAll() should be used)
         /// </summary>
         /// <returns></returns>
-        public Task<List<Task>> RunAll(ScrapingBrowser browser) //TODO: return list of completed task ---> results from this method(scraped sites & their articles,items..)make custom class
+        public async Task<IEnumerable<Task>> RunAll(ScrapingBrowser browser)
         {
-            var tasklist = new List<Task>();
+            //Task ...+await Task.WhenAll(tasklist.ToArray()) [await all tasks to complete ]
+
+            //TODO : ///<see cref="https://medium.com/@t.masonbarneydev/iterating-asynchronously-how-to-use-async-await-with-foreach-in-c-d7e6d21f89fa"/>  -->Returning Values
+            //make custom class ..than return Task<Ienumerable<CustomClass>>  from this method  (could reuse "Article" class from main method"
+
+            IEnumerable<Task> tasklist = new List<Task>();
             try
             {
+                //Run each scraper in parellel
                 foreach (ISiteSpecific scraper in _specificScrapers)
                 {
                     //Run each scraper async
-                    tasklist.Add(scraper.Run(browser)); //TODO:  call awaitAll() when i call this funition in main
+                    tasklist.Add(scraper.Run(browser)); //TODO:  call awaitAll() just for testing 2,3 sites , else catch and store/print results as they arive .
+
+                    //Task.Run(() => scraper.Run(browser));
                 }
 
-                Task.WaitAll(tasklist.ToArray()); ///<see cref="https://medium.com/@t.masonbarneydev/iterating-asynchronously-how-to-use-async-await-with-foreach-in-c-d7e6d21f89fa"/>  -->Returning Values
+                //Wait all tasks to complete
+                //Task.WaitAll(tasklist.ToArray());
             }
             catch (Exception ex)/// exceptions <see cref="https://markheath.net/post/async-antipatterns"/>
             {
                 throw ex;
             }
+
+            return await Task.WhenAll<Task>(tasklist);
         }
 
-        /// method arhitecture example <see cref="https://stackoverflow.com/questions/25720977/return-list-from-async-await-method"/>
+        /// <remarks The Result property is a blocking property. ></remarks>
+        /// In most cases, you should access the value by using await instead of accessing the property directly.
+        ///
+        /// Task.Run(()=> func) arhitecutre <see cref="https://stackoverflow.com/questions/25720977/return-list-from-async-await-method"/>
         ///
         /// multyple web requests async <see cref="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/how-to-make-multiple-web-requests-in-parallel-by-using-async-and-await"/>
+        ///for less memory alocation (non reference & return types <see cref="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.valuetask-1?view=netcore-3.0"/>
+
+        ///  yields back to the current context <see cref="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.yield?view=netframework-4.8"/>
     }
 }
