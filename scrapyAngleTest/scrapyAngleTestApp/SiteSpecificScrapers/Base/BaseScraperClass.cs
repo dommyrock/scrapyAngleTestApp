@@ -41,7 +41,7 @@ namespace SiteSpecificScrapers.BaseClass
 
                 var document = await browser.DownloadStringAsync(new Uri(sitemapSource));
 
-                //Global regex (might not be suited for all sites)
+                //NOTE: Global regex (might not be suited for all sites)
                 var matchSitemap = Regex.Match(document, @"\b(?:https?://|www\.)\S+\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
                 if (matchSitemap.Success && matchSitemap.Value.Contains("sitemap"))

@@ -5,9 +5,7 @@ using System.Reflection;
 
 namespace scrapyAngleTestApp
 {
-    /// <summary>
-    /// (D.Injection system makes dependency inversion principle easier)
-    /// </summary>
+    ///NOTE:  (D.Injection system makes dependency inversion principle easier)
     public static class ContainerConfig
     {
         public static IContainer Configure()//test this one

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace scrapyAngleTestApp
 {
-    //Cant do this in Program.cs because its static and HAS NO CONSTRUCTOR! (thats i created helper class)
+    //Cant do this in Program.cs because its static and HAS NO CONSTRUCTOR! (thats why i created helper class)
     public class Application : IApplication
     {
         ISiteSpecific _siteSpecific;

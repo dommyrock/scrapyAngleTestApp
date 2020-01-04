@@ -9,7 +9,7 @@ namespace SiteSpecificScrapers.Output
     /// <summary>
     /// this class represents output data from scraped sites. (return type of "Run" method)
     /// </summary>
-    public class OutputData
+    public class ScraperOutputClass
     {
         //might reuse some of old Article class
         /*
