@@ -19,8 +19,6 @@ namespace SiteSpecificScrapers.BaseClass
     /// </summary>
     public abstract class BaseScraperClass
     {
-        //Props that sould be inherited/implemented by children:
-
         private ScrapingBrowser Browser { get; set; }
 
         /// <summary>
@@ -59,8 +57,8 @@ namespace SiteSpecificScrapers.BaseClass
         /// <summary>
         /// Default method for sitemap scraping. (Overridable if needed!)
         /// </summary>
-        /// <param name="browser"></param>
-        /// <param name="url"></param>
+        /// <param name="browser">headless browser instance</param>
+        /// <param name="url">Current URI</param>
         /// <returns></returns>
         protected virtual async Task<bool> ScrapeSitemapLinks(ScrapingBrowser browser, string url)
         {
@@ -82,8 +80,8 @@ namespace SiteSpecificScrapers.BaseClass
 }
 
 /**********************************************************DI****************************************************************************************
- * when someone requests  IInterface service  we want ASP ,Core  to create instance of my Childclass & inject its instance into "controller"
- * By default ASp .core cant do that , we have to register interface , and class into container
+ * when someone requests  IInterface service  we want ASP.Core  to create instance of my Childclass & inject its instance into "controller"
+ * By default ASP.core can't do that , we have to register interface , and class into container
  * ---> Startup.cs --->ConfigureServices -->service.AddSingleton<IInterface,childClass>();
  * If someone requests service IInterface than create instance of "childClass" & inject that instance !
  *
@@ -91,7 +89,7 @@ namespace SiteSpecificScrapers.BaseClass
  *
  * addSingleton() --single instance of service is created & that instance is used throughout the liftime of app!
  * addTransient() --a new instance of transient service is created each time its requested !(overrides old instance ..same as new Class)
- *addScoped() -- new instance of scoped service is created once per(http) request within a scope
+ *  addScoped() -- new instance of scoped service is created once per(http) request within a scope
  *
  *
  *

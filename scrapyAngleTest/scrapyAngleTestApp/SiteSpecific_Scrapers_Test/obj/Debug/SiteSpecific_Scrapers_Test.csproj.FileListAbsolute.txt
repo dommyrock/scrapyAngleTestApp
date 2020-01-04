@@ -132,3 +132,5 @@ D:\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\SiteSpecific
 D:\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\SiteSpecific_Scrapers_Test\bin\Debug\tr\FSharp.Core.resources.dll
 D:\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\SiteSpecific_Scrapers_Test\bin\Debug\zh-Hans\FSharp.Core.resources.dll
 D:\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\SiteSpecific_Scrapers_Test\bin\Debug\zh-Hant\FSharp.Core.resources.dll
+E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\SiteSpecific_Scrapers_Test\bin\Debug\FSharp.Core.xml
+E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\SiteSpecific_Scrapers_Test\obj\Debug\SiteSpecific_Scrapers_Test.csprojAssemblyReference.cache

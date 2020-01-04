@@ -14,29 +14,13 @@ namespace SiteSpecificScrapers.Helpers
         public string SitemapUrl { get; set; }
         public ScrapingBrowser Browser { get; set; }
 
-        /// <summary>
-        /// Readonly indicates that assignment to the field can only occur as part of the declaration or in a constructor in the same class
-        /// </summary>
+        // readonly -> indicates that assignment to the field can only occur as part of the declaration or in a constructor in the same class
         private readonly ISiteSpecific[] _specificScrapers;
 
         public CompositionRoot(params ISiteSpecific[] scrapers)
         {
             _specificScrapers = scrapers;
         }
-
-        //REMOVED THIS ONE ...SINCE I DONT NEED IT ...INSTEAD I "RunAll" TASKS AND AWAIT THEM TO COMPLETE !!!
-        /// <summary>
-        /// Encapsulates scraping logic for each site specific scraper.
-        /// </summary>
-        /// <param name="browser"></param>
-        /// <returns></returns>
-        //public async Task Run(ScrapingBrowser browser) //TODO: if i want each scraper class to return an object {scraped lists, items ....} make this method return Task<object> or Task<Dictionary>
-        //{
-        //    foreach (ISiteSpecific scraper in _specificScrapers)
-        //    {
-        //        await scraper.Run(browser); //TODO:  call awaitAll() when i call this funition in main
-        //    }
-        //}
 
         /// <summary>
         /// Runs all site scraper tasks Async.(Task.WaitAll() should be used)
@@ -48,6 +32,10 @@ namespace SiteSpecificScrapers.Helpers
 
             //TODO : ///<see cref="https://medium.com/@t.masonbarneydev/iterating-asynchronously-how-to-use-async-await-with-foreach-in-c-d7e6d21f89fa"/>  -->Returning Values
             //make custom class ..than return Task<Ienumerable<CustomClass>>  from this method  (could reuse "Article" class from main method"
+            /* 1.1. than make SINGLE QUEUE per Specific site scraper
+             * 1.2. respect politeness policy --delay requests to single domain ..., and NEVER make async requests to same domain (only async other site scrapers)
+             * 1.3. make QUEUES SPECIFIC to  sites --ONE QUEUE per site !!
+             */
 
             IEnumerable<Task> tasklist = new List<Task>();
             try
@@ -72,7 +60,7 @@ namespace SiteSpecificScrapers.Helpers
             return await Task.WhenAll<Task>(tasklist);
         }
 
-        /// <remarks The Result property is a blocking property. ></remarks>
+        /// <remarks The task-Result property is a blocking property. ></remarks>
         /// In most cases, you should access the value by using await instead of accessing the property directly.
         ///
         /// Task.Run(()=> func) arhitecutre <see cref="https://stackoverflow.com/questions/25720977/return-list-from-async-await-method"/>
@@ -81,5 +69,8 @@ namespace SiteSpecificScrapers.Helpers
         ///for less memory alocation (non reference & return types <see cref="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.valuetask-1?view=netcore-3.0"/>
 
         ///  yields back to the current context <see cref="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.yield?view=netframework-4.8"/>
+        ///
+
+        ///For ERROR metadata file <see cref="https://stackoverflow.com/questions/1421862/metadata-file-dll-could-not-be-found"/>
     }
 }

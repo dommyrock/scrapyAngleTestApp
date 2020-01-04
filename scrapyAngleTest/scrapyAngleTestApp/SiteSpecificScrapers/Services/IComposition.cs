@@ -9,6 +9,6 @@ namespace SiteSpecificScrapers.Services
 {
     interface IComposition
     {
-        Task<List<Task>> RunAll(ScrapingBrowser browser);
+        Task<IEnumerable<Task>> RunAll(ScrapingBrowser browser);
     }
 }

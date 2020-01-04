@@ -28,7 +28,7 @@ namespace SiteSpecificScrapers
 
             if (success)
             {
-               await ScrapeSpecificSite(browser); //TODO
+                await ScrapeSpecificSite(browser); //TODO
             }
         }
 
@@ -39,9 +39,7 @@ namespace SiteSpecificScrapers
     }
 }
 
-//moved form main ...Reimplement here
-
-//public static void FetchAbrakadabra()
+//public static void FetchAbrakadabra() moved from Program ->main()
 //{
 //    string url = "https://www.abrakadabra.com/hr-HR/Katalog/TV%2C-mobiteli-i-elektronika/Televizori-i-dodaci/c/FE100";
 //    //Fetch
