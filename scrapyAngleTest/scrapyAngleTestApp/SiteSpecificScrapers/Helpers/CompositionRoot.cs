@@ -38,7 +38,7 @@ namespace SiteSpecificScrapers.Helpers
             //
 
             //List of completed tasks
-            List<Task<ScraperOutputClass>> tasklist = new List<Task<ScraperOutputClass>>();
+            List<ValueTask<ScraperOutputClass>> tasklist = new List<ValueTask<ScraperOutputClass>>();
 
             try
             {

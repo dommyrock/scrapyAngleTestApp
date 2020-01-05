@@ -22,6 +22,6 @@ namespace SiteSpecificScrapers
         /// Encapsulates scraping logic for each site specific scraper. (Must be async if it encapsulates async code)
         /// </summary>
         /// <returns></returns>
-        Task<ScraperOutputClass> Run(ScrapingBrowser browser);
+        ValueTask<ScraperOutputClass> Run(ScrapingBrowser browser);
     }
 }
