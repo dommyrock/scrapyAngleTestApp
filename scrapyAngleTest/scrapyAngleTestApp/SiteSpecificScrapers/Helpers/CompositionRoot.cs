@@ -38,8 +38,8 @@ namespace SiteSpecificScrapers.Helpers
             //
 
             //List of completed tasks
-            List<ValueTask<ScraperOutputClass>> tasklist = new List<ValueTask<ScraperOutputClass>>();
 
+            List<ValueTask<ScraperOutputClass>> tasklist = new List<ValueTask<ScraperOutputClass>>();
             try
             {
                 //TODO: 1.4. CHECK IF LIST IS THREAD SAFE & REPLACE WITH THREAD SAFE COLLECTION INSTEAD (ALSO CHECK OUT QUEUE'S --EACH QUEUE WILL BE SPECIFIC TO SCRAPER AND WILL RUN IT'S SCRAPERS IN NEW THREAD'S)
@@ -68,6 +68,15 @@ namespace SiteSpecificScrapers.Helpers
          * Support for generalized return types means that you can return a lightweight value type instead of a reference type to avoid additional memory allocations.
          /// <see cref="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/async-return-types" Generalized async return types -at the bottom of page />
          /// <see   https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.valuetask-1?view=netcore-3.1
+         */
+
+        /* CONCURRENT QUEUE https://michaelscodingspot.com/c-job-queues/ ,
+         * 1)List<T> This queue is not thread-safe. That’s because we’re using List<T>, which is not a thread-safe collection.
+         * Since we’re using at least 2 threads (to Enqueue and to Dequeue), bad things will happen.
+          2) The List<T> collection will provide terrible performance for this usage. It’s using a vector under the hood, which is essentially a dynamic size array.
+            An array is great for direct access operations, but not so great for adding and removing items.
+          3)  We are using a thread-pool thread (with Task.Run) for a thread that’s supposed to be alive during entire application lifecycle.
+            The rule of thumb is to use a regular Thread for long-running threads and pooled threads (thread-pool threads) for short running threads. Alternatively, we can change the Task’s creation options to  TaskCreationOptions.LongRunning
          */
 
         /// <remarks The task-Result property is a blocking property. ></remarks>
