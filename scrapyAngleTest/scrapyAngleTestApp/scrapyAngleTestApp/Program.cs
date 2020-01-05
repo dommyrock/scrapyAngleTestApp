@@ -40,7 +40,7 @@ namespace scrapyAngleTestApp
             InputList = new List<string>();
             WebShops = new List<string>();
 
-            Browser = new ScrapingBrowser();// Check this class for reusable API
+            Browser = new ScrapingBrowser() { UserAgent = FakeUserAgents.Chrome24 };// Check this class for reusable API
 
             #region DI(container) testing
 
@@ -64,8 +64,7 @@ namespace scrapyAngleTestApp
             //TODO:
             //4. (Also make new method for error handling ---> so if one "scraperClass" fails it continues scraping the rest)!!! (later add retry logic...)
             //5. since i have static instances of list , browser ..might be a problem to use async methods with them ??? (could ty concurent bags ...)(or new instances foreach async ) and store from each instance into concurent collection
-            //6.  //TODO: Replace async void with Task (because caller of this method has no way to await it ) only valid in event handlers...
-            /// <see cref="https://searchcode.com/codesearch/view/125929587/"/> for ScrapySharp async methods source code
+            /// <see cref="https://searchcode.com/codesearch/view/125929587/"/> for ScrapySharp ->"ScrapingBrowser"  source code
             ///
 
             //Get all clases that implement ISiteSpecific (with Polymorphism)
@@ -74,7 +73,9 @@ namespace scrapyAngleTestApp
                 new AdmScraper(),
                 new AbrakadabraScraper()
                 );
-            compositionRoot.RunAll(Browser).Wait();///Wait completion <see cref="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/async-return-types"/>
+            //Run scrapers in each of their own queue's & print results as they arrive(artuckes,prices....)
+            compositionRoot.RunAll(Browser).Wait();
+            ///Wait completion <see cref="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/async-return-types"/>
 
             //TODO: move this code to specific classes
             try

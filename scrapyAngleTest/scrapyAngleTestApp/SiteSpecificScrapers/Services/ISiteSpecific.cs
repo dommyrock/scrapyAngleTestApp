@@ -1,4 +1,5 @@
 ﻿using ScrapySharp.Network;
+using SiteSpecificScrapers.Output;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -21,6 +22,6 @@ namespace SiteSpecificScrapers
         /// Encapsulates scraping logic for each site specific scraper. (Must be async if it encapsulates async code)
         /// </summary>
         /// <returns></returns>
-        Task Run(ScrapingBrowser browser);
+        Task<ScraperOutputClass> Run(ScrapingBrowser browser);
     }
 }

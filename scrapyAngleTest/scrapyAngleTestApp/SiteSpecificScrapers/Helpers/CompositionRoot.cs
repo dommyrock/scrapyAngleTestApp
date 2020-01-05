@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ScrapySharp.Network;
+using SiteSpecificScrapers.Output;
 using SiteSpecificScrapers.Services;
 
 namespace SiteSpecificScrapers.Helpers
@@ -23,23 +24,26 @@ namespace SiteSpecificScrapers.Helpers
         }
 
         /// <summary>
-        /// Runs all site scraper tasks Async.(Task.WaitAll() should be used)
+        /// Runs all site scrapers in parrallel (each scraper should have its own queue!)
         /// </summary>
         /// <returns></returns>
-        public async Task<IEnumerable<Task>> RunAll(ScrapingBrowser browser)
+        public async ValueTask<List<ScraperOutputClass>> RunAll(ScrapingBrowser browser)
         {
-            //Task ...+await Task.WhenAll(tasklist.ToArray()) [await all tasks to complete ]
-
-            //TODO : ///<see cref="https://medium.com/@t.masonbarneydev/iterating-asynchronously-how-to-use-async-await-with-foreach-in-c-d7e6d21f89fa"/>  -->Returning Values
-            //make custom class ..than return Task<Ienumerable<CustomClass>>  from this method  (could reuse "Article" class from main method"
+            //TODO :
             /* 1.1. than make SINGLE QUEUE per Specific site scraper
              * 1.2. respect politeness policy --delay requests to single domain ..., and NEVER make async requests to same domain (only async other site scrapers)
              * 1.3. make QUEUES SPECIFIC to  sites --ONE QUEUE per site !!
+             *
              */
+            //
 
-            IEnumerable<Task> tasklist = new List<Task>();
+            //List of completed tasks
+            List<Task<ScraperOutputClass>> tasklist = new List<Task<ScraperOutputClass>>();
+
             try
             {
+                //TODO: 1.4. CHECK IF LIST IS THREAD SAFE & REPLACE WITH THREAD SAFE COLLECTION INSTEAD (ALSO CHECK OUT QUEUE'S --EACH QUEUE WILL BE SPECIFIC TO SCRAPER AND WILL RUN IT'S SCRAPERS IN NEW THREAD'S)
+
                 //Run each scraper in parellel
                 foreach (ISiteSpecific scraper in _specificScrapers)
                 {
@@ -48,20 +52,27 @@ namespace SiteSpecificScrapers.Helpers
 
                     //Task.Run(() => scraper.Run(browser));
                 }
-
-                //Wait all tasks to complete
-                //Task.WaitAll(tasklist.ToArray());
             }
-            catch (Exception ex)/// exceptions <see cref="https://markheath.net/post/async-antipatterns"/>
+            catch (Exception ex)
             {
                 throw ex;
             }
-
-            return await Task.WhenAll<Task>(tasklist);
+            //return await Task.WhenAll<Task>(tasklist); not efficient to wait on all to complete , instead await and print/outptut each result as they arrive
+            //
+            return await Task.FromResult(tasklist); //TODO: see "NEXT STEP" bellow
         }
+
+        /*NEXT STEP
+         * Because Task and Task<TResult> are reference types, memory allocation in performance-critical paths,
+         * particularly when allocations occur in tight loops, can adversely affect performance.
+         * Support for generalized return types means that you can return a lightweight value type instead of a reference type to avoid additional memory allocations.
+         /// <see cref="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/async-return-types" Generalized async return types -at the bottom of page />
+         /// <see   https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.valuetask-1?view=netcore-3.1
+         */
 
         /// <remarks The task-Result property is a blocking property. ></remarks>
         /// In most cases, you should access the value by using await instead of accessing the property directly.
+        /// exceptions <see cref="https://markheath.net/post/async-antipatterns"/>
         ///
         /// Task.Run(()=> func) arhitecutre <see cref="https://stackoverflow.com/questions/25720977/return-list-from-async-await-method"/>
         ///
@@ -72,5 +83,31 @@ namespace SiteSpecificScrapers.Helpers
         ///
 
         ///For ERROR metadata file <see cref="https://stackoverflow.com/questions/1421862/metadata-file-dll-could-not-be-found"/>
+        ///
+
+        #region LoopAsyncExample
+
+        /*
+         * //Async method to be awaited
+        public static Task<string> DoAsyncResult(string item)
+        {
+        Task.Delay(1000);
+        return Task.FromResult(item);
+        }
+
+        //Method to iterate over collection and await DoAsyncResult
+        public static async Task<IEnumerable<string>> LoopAsyncResult(IEnumerable<string> thingsToLoop)
+        {
+        List<Task<string>> listOfTasks = new List<Task<string>>();
+
+        foreach (var thing in thingsToLoop)
+        {
+        listOfTasks.Add(DoAsyncResult(thing));
+        }
+
+        return await Task.WhenAll<string>(listOfTasks);
+        */
+
+        #endregion LoopAsyncExample
     }
 }

@@ -7,10 +7,14 @@ using System.Threading.Tasks;
 namespace SiteSpecificScrapers.Output
 {
     /// <summary>
-    /// this class represents output data from scraped sites. (return type of "Run" method)
+    /// Contains scraped articles,prices, availibility ,img urls ...
     /// </summary>
     public class ScraperOutputClass
     {
+        public ScraperOutputClass()
+        {
+        }
+
         //might reuse some of old Article class
         /*
          *
