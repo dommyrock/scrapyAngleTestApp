@@ -1,4 +1,5 @@
 ﻿using ScrapySharp.Network;
+using SiteSpecificScrapers.Output;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace SiteSpecificScrapers.Services
 {
     interface IComposition
     {
-        Task<IEnumerable<Task>> RunAll(ScrapingBrowser browser);
+        ValueTask<List<ScraperOutputClass>> RunAll(ScrapingBrowser browser);
     }
 }

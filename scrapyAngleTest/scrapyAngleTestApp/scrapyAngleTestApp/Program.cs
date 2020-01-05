@@ -74,7 +74,7 @@ namespace scrapyAngleTestApp
                 new AbrakadabraScraper()
                 );
             //Run scrapers in each of their own queue's & print results as they arrive(artuckes,prices....)
-            compositionRoot.RunAll(Browser).Wait();
+            compositionRoot.RunAll(Browser).GetAwaiter();
             ///Wait completion <see cref="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/async-return-types"/>
 
             //TODO: move this code to specific classes
