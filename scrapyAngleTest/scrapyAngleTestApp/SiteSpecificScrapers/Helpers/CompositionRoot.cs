@@ -27,7 +27,7 @@ namespace SiteSpecificScrapers.Helpers
         /// Runs all site scrapers in parrallel (each scraper should have its own queue!)
         /// </summary>
         /// <returns></returns>
-        public async ValueTask<List<ScraperOutputClass>> RunAll(ScrapingBrowser browser)
+        public async Task<List<Task<ScraperOutputClass>>> RunAll(ScrapingBrowser browser)
         {
             //TODO :
             /* 1.1. than make SINGLE QUEUE per Specific site scraper
@@ -38,8 +38,7 @@ namespace SiteSpecificScrapers.Helpers
             //
 
             //List of completed tasks
-
-            List<ValueTask<ScraperOutputClass>> tasklist = new List<ValueTask<ScraperOutputClass>>();
+            List<Task<ScraperOutputClass>> tasklist = new List<Task<ScraperOutputClass>>();
             try
             {
                 //TODO: 1.4. CHECK IF LIST IS THREAD SAFE & REPLACE WITH THREAD SAFE COLLECTION INSTEAD (ALSO CHECK OUT QUEUE'S --EACH QUEUE WILL BE SPECIFIC TO SCRAPER AND WILL RUN IT'S SCRAPERS IN NEW THREAD'S)
@@ -67,10 +66,10 @@ namespace SiteSpecificScrapers.Helpers
          * particularly when allocations occur in tight loops, can adversely affect performance.
          * Support for generalized return types means that you can return a lightweight value type instead of a reference type to avoid additional memory allocations.
          /// <see cref="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/async-return-types" Generalized async return types -at the bottom of page />
-         /// <see   https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.valuetask-1?view=netcore-3.1
+         /// ValueTask--->> <see   https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.valuetask-1?view=netcore-3.1
          */
 
-        /* CONCURRENT QUEUE https://michaelscodingspot.com/c-job-queues/ ,
+        /* CONCURRENT QUEUE https://michaelscodingspot.com/c-job-queues/ ----> TPL DATAFLOW INSTEAD(built in async arhtecture w blocks)
          * 1)List<T> This queue is not thread-safe. That’s because we’re using List<T>, which is not a thread-safe collection.
          * Since we’re using at least 2 threads (to Enqueue and to Dequeue), bad things will happen.
           2) The List<T> collection will provide terrible performance for this usage. It’s using a vector under the hood, which is essentially a dynamic size array.

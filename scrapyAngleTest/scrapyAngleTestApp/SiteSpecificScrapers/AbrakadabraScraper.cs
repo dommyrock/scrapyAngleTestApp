@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SiteSpecificScrapers
 {
-    public class AbrakadabraScraper : BaseScraperClass, ISiteSpecific, ISiteSpecificExtension
+    public class AbrakadabraScraper : BaseScraperClass, /*ISiteSpecific,*/ ISiteSpecificExtension
     {
         public string Url { get; set; }
         public List<string> InputList { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }

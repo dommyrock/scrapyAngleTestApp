@@ -69,9 +69,9 @@ namespace scrapyAngleTestApp
 
             //Get all clases that implement ISiteSpecific (with Polymorphism)
             var compositionRoot = new CompositionRoot(
-                new NabavaNetSitemap(),
-                new AdmScraper(),
-                new AbrakadabraScraper()
+                new NabavaNetSitemap()
+                //new AdmScraper(),
+                //new AbrakadabraScraper()
                 );
             //Run scrapers in each of their own queue's & print results as they arrive(artuckes,prices....)
             compositionRoot.RunAll(Browser).GetAwaiter();

@@ -21,7 +21,7 @@ namespace SiteSpecific_Scrapers_Test
                 InputList = new List<string>(),
             };
 
-            await nabava.Run(nabava.Browser);
+            //await nabava.Run(nabava.Browser);
         }
     }
 }

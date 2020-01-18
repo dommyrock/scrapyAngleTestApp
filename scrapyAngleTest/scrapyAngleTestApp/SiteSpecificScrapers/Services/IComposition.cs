@@ -10,6 +10,6 @@ namespace SiteSpecificScrapers.Services
 {
     interface IComposition
     {
-        ValueTask<List<ScraperOutputClass>> RunAll(ScrapingBrowser browser);
+        Task<List<Task<ScraperOutputClass>>> RunAll(ScrapingBrowser browser);
     }
 }

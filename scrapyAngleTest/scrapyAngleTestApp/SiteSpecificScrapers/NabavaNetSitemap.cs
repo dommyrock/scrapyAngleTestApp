@@ -1,6 +1,7 @@
 ﻿using ScrapySharp.Extensions;
 using ScrapySharp.Network;
 using SiteSpecificScrapers.BaseClass;
+using SiteSpecificScrapers.Output;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,7 +59,7 @@ namespace SiteSpecificScrapers
             //{
             WebPage pageSource = await Browser.NavigateToPageAsync(new Uri(Url));//can speed this up by using DownloadStringAsync(but need other filter to extract shop link (regex))
 
-            var node = pageSource.Html.SelectSingleNode("//b");//get<b> node/Link select all nodes  
+            var node = pageSource.Html.SelectSingleNode("//b");//get<b> node/Link select all nodes
             if (node != null)
             {
                 bool isLink = node.InnerHtml.StartsWith("http");
@@ -101,16 +102,22 @@ namespace SiteSpecificScrapers
                 await ScrapeWebshops(); //this one exits when unit testing without completion ( reason : async ??)
             }
         }
+
+        Task<ScraperOutputClass> ISiteSpecific.Run(ScrapingBrowser browser)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
+
 /*
  * BLOCKING code leads to deadlocking
- * 
+ *
  * task.Result() is blocking !! -- so its better to await all task's to complete ...so we don't deadlock
- * 
+ *
  * task.Run() -- wait for async func to complete in separate tread !
- * 
+ *
  * so the state machine runs in different thread than im blocking
- * 
+ *
  * best practice : call async methods in async methods (all the way up)
  */
