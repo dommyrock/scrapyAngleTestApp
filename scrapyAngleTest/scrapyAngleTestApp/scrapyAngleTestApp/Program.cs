@@ -6,6 +6,7 @@ using ScrapySharp.Extensions;
 using ScrapySharp.Network;
 using SiteSpecificScrapers;
 using SiteSpecificScrapers.BaseClass;
+using SiteSpecificScrapers.DataflowPipeline;
 using SiteSpecificScrapers.Helpers;
 using System;
 using System.Collections.Generic;
@@ -42,30 +43,15 @@ namespace scrapyAngleTestApp
 
             Browser = new ScrapingBrowser() { UserAgent = FakeUserAgents.Chrome24 };// Check this class for reusable API
 
-            #region DI(container) testing
-
-            //////////////////////////////////////////////////////////////////////////////////////////////////////////////7777
-            /// <see cref="https://autofac.readthedocs.io/en/latest/getting-started/index.html#structuring-the-application"/>
-            ///
-            //var container = ContainerConfig.Configure();//holds all our design/DI
-            //using (var scope = container.BeginLifetimeScope())
-            //{
-            //    //Retrieve service (manualy get iapplication ctx from container(not good for bigger projects)
-            //    ///By default the type which is registered last will be returned, which is what you are seeing. <see cref="https://stackoverflow.com/questions/45674063/autofac-multiple-classes-inherited-from-the-same-interface"/>
-            //    ///Solution : <see cref="https://stackoverflow.com/questions/22384884/autofac-with-multiple-implementations-of-the-same-interface"/>
-            //    ISiteSpecific app = scope.Resolve<ISiteSpecific>();
-            //    app.ScrapeSitemapLinks();
-
-            //    app.ScrapeSitemapLinks();
-            //}
-
-            #endregion DI(container) testing
-
             //TODO:
             //4. (Also make new method for error handling ---> so if one "scraperClass" fails it continues scraping the rest)!!! (later add retry logic...)
             //5. since i have static instances of list , browser ..might be a problem to use async methods with them ??? (could ty concurent bags ...)(or new instances foreach async ) and store from each instance into concurent collection
             /// <see cref="https://searchcode.com/codesearch/view/125929587/"/> for ScrapySharp ->"ScrapingBrowser"  source code
             ///
+
+            //NEWWWWWWWWWWWWWWW Refactored Logic 26.1.2020. (Replaces compositionRoot !!!)
+            var pipeline = new DataflowPipeline();
+            //NEWWWWWWWWWWWWWWW Refactored Logic 26.1.2020.
 
             //Get all clases that implement ISiteSpecific (with Polymorphism)
             var compositionRoot = new CompositionRoot(
@@ -199,6 +185,25 @@ namespace scrapyAngleTestApp
             //urlsList.AddRange(goTo.GetResourceUrls());//gets File url's
             //             var link2 = admNode.Descendants("a");
             //var link2 = admNode.DescendantsAndSelf("a");
+
+            #region DI(container) testing
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////7777
+            /// <see cref="https://autofac.readthedocs.io/en/latest/getting-started/index.html#structuring-the-application"/>
+            ///
+            //var container = ContainerConfig.Configure();//holds all our design/DI
+            //using (var scope = container.BeginLifetimeScope())
+            //{
+            //    //Retrieve service (manualy get iapplication ctx from container(not good for bigger projects)
+            //    ///By default the type which is registered last will be returned, which is what you are seeing. <see cref="https://stackoverflow.com/questions/45674063/autofac-multiple-classes-inherited-from-the-same-interface"/>
+            //    ///Solution : <see cref="https://stackoverflow.com/questions/22384884/autofac-with-multiple-implementations-of-the-same-interface"/>
+            //    ISiteSpecific app = scope.Resolve<ISiteSpecific>();
+            //    app.ScrapeSitemapLinks();
+
+            //    app.ScrapeSitemapLinks();
+            //}
+
+            #endregion DI(container) testing
         }
 
         #region Old Methods for site scraping

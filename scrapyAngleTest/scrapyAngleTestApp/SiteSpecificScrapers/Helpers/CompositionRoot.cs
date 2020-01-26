@@ -24,7 +24,7 @@ namespace SiteSpecificScrapers.Helpers
         }
 
         /// <summary>
-        /// Runs all site scrapers in parrallel (each scraper should have its own queue!)
+        /// Runs all site scrapers in parrallel (each scraper should have its own queue!(in TPL DAtaflow)
         /// </summary>
         /// <returns></returns>
         public async Task<List<Task<ScraperOutputClass>>> RunAll(ScrapingBrowser browser)
