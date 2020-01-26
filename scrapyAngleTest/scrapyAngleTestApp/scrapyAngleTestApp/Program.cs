@@ -14,6 +14,8 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace scrapyAngleTestApp
 {
@@ -40,17 +42,26 @@ namespace scrapyAngleTestApp
             ScrapedDictionary = new Dictionary<string, bool>();
             InputList = new List<string>();
             WebShops = new List<string>();
-
             Browser = new ScrapingBrowser() { UserAgent = FakeUserAgents.Chrome24 };// Check this class for reusable API
 
-            //TODO:
-            //4. (Also make new method for error handling ---> so if one "scraperClass" fails it continues scraping the rest)!!! (later add retry logic...)
-            //5. since i have static instances of list , browser ..might be a problem to use async methods with them ??? (could ty concurent bags ...)(or new instances foreach async ) and store from each instance into concurent collection
-            /// <see cref="https://searchcode.com/codesearch/view/125929587/"/> for ScrapySharp ->"ScrapingBrowser"  source code
-            ///
-
             //NEWWWWWWWWWWWWWWW Refactored Logic 26.1.2020. (Replaces compositionRoot !!!)
-            var pipeline = new DataflowPipeline();
+            // only scraped output data/messages passed between blocks !!!
+            /// <see cref="https://searchcode.com/codesearch/view/125929587/"/> for ScrapySharp ->"ScrapingBrowser"  source code
+            //TODO : when complete, run separate pipelines for each scraper ??
+
+            var cts = new CancellationTokenSource();
+            var pipeline = new DataflowPipeline(Browser, new NabavaNetSitemap()); //NabavaNetSitemap same as "DataBusReader" class (follow as example)
+            var pipelineTask = Task.Run(async () =>
+            {
+                try
+                {
+                    await pipeline.StartPipelineAsync(cts.Token);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Pipeline terminated due to error {ex}");
+                }
+            });
             //NEWWWWWWWWWWWWWWW Refactored Logic 26.1.2020.
 
             //Get all clases that implement ISiteSpecific (with Polymorphism)

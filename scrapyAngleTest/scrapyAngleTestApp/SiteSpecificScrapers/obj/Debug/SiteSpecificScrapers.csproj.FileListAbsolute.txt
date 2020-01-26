@@ -258,3 +258,5 @@ E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\
 E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\SiteSpecificScrapers\obj\Debug\SiteSpecificScrapers.csproj.CopyComplete
 E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\SiteSpecificScrapers\obj\Debug\SiteSpecificScrapers.dll
 E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\SiteSpecificScrapers\obj\Debug\SiteSpecificScrapers.pdb
+E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\SiteSpecificScrapers\bin\Debug\System.Threading.Tasks.Dataflow.dll
+E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\SiteSpecificScrapers\bin\Debug\System.Threading.Tasks.Dataflow.xml

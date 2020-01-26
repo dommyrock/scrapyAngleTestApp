@@ -35,7 +35,6 @@ namespace SiteSpecificScrapers.Helpers
              * 1.3. make QUEUES SPECIFIC to  sites --ONE QUEUE per site !!
              *
              */
-            //
 
             //List of completed tasks
             List<Task<ScraperOutputClass>> tasklist = new List<Task<ScraperOutputClass>>();

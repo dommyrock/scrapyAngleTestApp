@@ -11,24 +11,23 @@ namespace SiteSpecificScrapers.Output
     /// </summary>
     public class ScraperOutputClass
     {
+        public string SourceHtml { get; set; }
+        public string Name { get; set; }
+        public int Id { get; set; }
+        public string Brand { get; set; }
+        public int Price { get; set; }
+        public string Category { get; set; }
+        public string CurrencyCode { get; set; }
+        public string JSON { get; set; }
+
         public ScraperOutputClass()
         {
         }
 
         //might reuse some of old Article class
         /*
-         *
-         *
          * public class Article
 {
-    public string Name { get; set; }
-    public int Id { get; set; }
-    public string Brand { get; set; }
-    public int Price { get; set; }
-    public string Category { get; set; }
-    public string CurrencyCode { get; set; }
-    public string JSON { get; set; }
-
     public Article(string json)
     {
         this.JSON = json;
@@ -51,10 +50,6 @@ namespace SiteSpecificScrapers.Output
 
         return deserialzedList;
     }
-         *
-         *
-         *
-         *
          */
     }
 }

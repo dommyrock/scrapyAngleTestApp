@@ -99,7 +99,7 @@ namespace SiteSpecificScrapers
 
             if (success)
             {
-                await ScrapeWebshops(); //this one exits when unit testing without completion ( reason : async ??)
+                await ScrapeWebshops().ContinueWith(i => Console.WriteLine("Scraping Webshops in Nabava.net DONE"));
             }
         }
 

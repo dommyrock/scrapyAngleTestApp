@@ -324,3 +324,5 @@ E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\
 E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\scrapyAngleTestApp\obj\Debug\scrapyAngleTestApp.csproj.CopyComplete
 E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\scrapyAngleTestApp\obj\Debug\scrapyAngleTestApp.exe
 E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\scrapyAngleTestApp\obj\Debug\scrapyAngleTestApp.pdb
+E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\scrapyAngleTestApp\bin\Debug\System.Threading.Tasks.Dataflow.dll
+E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\scrapyAngleTestApp\bin\Debug\System.Threading.Tasks.Dataflow.xml
