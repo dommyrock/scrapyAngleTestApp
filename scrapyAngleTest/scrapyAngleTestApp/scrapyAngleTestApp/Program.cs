@@ -50,7 +50,7 @@ namespace scrapyAngleTestApp
             //TODO : when complete, run separate pipelines for each scraper ??
 
             var cts = new CancellationTokenSource();
-            //initial sites,instances, get instantiate here
+            // init
             var pipeline = new DataflowPipeline(Browser, new NabavaNetSitemap()); //NabavaNetSitemap same as "DataBusReader" class (follow as example)
             var pipelineTask = Task.Run(async () =>
             {

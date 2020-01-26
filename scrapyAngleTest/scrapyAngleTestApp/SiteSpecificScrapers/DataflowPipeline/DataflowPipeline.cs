@@ -54,35 +54,19 @@ namespace SiteSpecificScrapers.DataflowPipeline
             }
 
             //Block definitions
+
             //Download pages here
-            //var transformBlock = new TransformBlock<string, IEnumerable<string>>(async (ScraperOutputClass msg) =>
-            //{
-            //    //download passed URL, and output parsed links
-            //}, largeBufferOptions);
+            var transformBlock = new TransformBlock<string, IEnumerable<string>>(async (ScraperOutputClass msg) => //SEE"DataBusReader" Class for example !!
+            {
+                //download passed URL, and output parsed links
+            }, largeBufferOptions);
 
-            // TODO: ENCAPSULATE THIS LOGIC HERE SOMEHOW
-            //public async Task<List<Task<ScraperOutputClass>>> RunAll(ScrapingBrowser browser)
-            //{
-            //    //List of completed tasks
-            //    List<Task<ScraperOutputClass>> tasklist = new List<Task<ScraperOutputClass>>();
-            //    try
-            //    {
-            //        //Run each scraper in parellel
-            //        foreach (ISiteSpecific scraper in _specificScrapers)
-            //        {
-            //            //Run each scraper async
-            //            tasklist.Add(scraper.Run(browser));
+            // pass output sites to transformmanyBlock
+            //do scraping logic in it
 
-            //            //Task.Run(() => scraper.Run(browser));
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        throw ex;
-            //    }
+            //pass output data to broadcast block
 
-            //    return await Task.FromResult(tasklist);
-            //}
+            //Broadcast output articles to real time service, + new links back to system !
         }
     }
 }
