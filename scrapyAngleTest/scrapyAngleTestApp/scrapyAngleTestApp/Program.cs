@@ -50,6 +50,7 @@ namespace scrapyAngleTestApp
             //TODO : when complete, run separate pipelines for each scraper ??
 
             var cts = new CancellationTokenSource();
+            //initial sites,instances, get instantiate here
             var pipeline = new DataflowPipeline(Browser, new NabavaNetSitemap()); //NabavaNetSitemap same as "DataBusReader" class (follow as example)
             var pipelineTask = Task.Run(async () =>
             {
@@ -64,6 +65,8 @@ namespace scrapyAngleTestApp
             });
             //NEWWWWWWWWWWWWWWW Refactored Logic 26.1.2020.
 
+            #region Composition Root( replaced w DataflowPipeline)
+
             //Get all clases that implement ISiteSpecific (with Polymorphism)
             var compositionRoot = new CompositionRoot(
                 new NabavaNetSitemap()
@@ -74,55 +77,9 @@ namespace scrapyAngleTestApp
             compositionRoot.RunAll(Browser).GetAwaiter();
             ///Wait completion <see cref="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/async-return-types"/>
 
-            //TODO: move this code to specific classes
-            try
-            {
-                NabavaNetSitemap nabavaSitemap = new NabavaNetSitemap();
+            #endregion Composition Root( replaced w DataflowPipeline)
 
-                //If ScrapeSitemapLinks = Success
-                if (nabavaSitemap.ScrapeSitemapLinks(Browser).Result)
-                {
-                    #region AWS
-
-                    //TODO cache or local store shops list for set amount of time , + if( data is Stale before re-scrape) -->in new Helper folder->Helpers class
-                    //TEMP Store (final one will store shops in one of  AWS data stores--)check date "LastModifued" and if date > 48h ? scrape shops again ... and re-post to DB
-                    var tempWebshopCache = new List<string> {
-                        "https://www.adm.hr",
-                        "https://www.abrakadabra.com",
-                        "https://www.links.hr",
-                    };
-
-                    WebShops.AddRange(tempWebshopCache);
-
-                    #endregion AWS
-
-                    if (tempWebshopCache.Count == 0)
-                    {
-                        //re-scrape
-                        //nabavaSitemap.ScrapeWebshops(); refactored this to be private
-                    }
-
-                    //dispose
-                    ///WE're exiting  <param name="http://nabava.net"/> at this point , so remove rest of the links from queue/list
-
-                    InputList = null;
-                    nabavaSitemap = null;
-                }
-                else
-                {
-                    Console.WriteLine($"Failed to scrape {url} sitemap.");
-                }
-
-                //Continue scraping from "Webshops" here:
-                url = WebShops[0];//check if needed after i exit nabavaSitemap.ScrapeWebshops();
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
             Console.ReadKey();
-            //////////////////////////////////////////////////////////////////////////////////////////////////////////////7777
-
             try//could use try catch finaly (try ->nabava sitemap,shops scrape , catch .., finaly-> scrape each shop (2nd nested try ,catch inside)
             {
                 //Start scraping Webshops Queue (check if shop has sitemap ...If it does scrape sitemap, else scrape whole site)
