@@ -1,4 +1,5 @@
 ﻿using ScrapySharp.Network;
+using SiteSpecificScrapers.DataflowPipeline.RealTimeFeed;
 using SiteSpecificScrapers.Output;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,8 @@ namespace SiteSpecificScrapers.DataflowPipeline
 
         //All site specific scrapers that implement ISiteSpecific
         private readonly ISiteSpecific[] _specificScrapers;
+
+        private readonly IRealTimePublisher _realTimeFeedPublisher;
 
         public ScrapingBrowser Browser { get; set; }
 
@@ -39,7 +42,7 @@ namespace SiteSpecificScrapers.DataflowPipeline
             var largeBufferOptions = new ExecutionDataflowBlockOptions() { BoundedCapacity = 600000 };
             var smallBufferOptions = new ExecutionDataflowBlockOptions() { BoundedCapacity = 1000 };
             var realTimeBufferOptions = new ExecutionDataflowBlockOptions() { BoundedCapacity = 6000 };
-            var parallelizedOptions = new ExecutionDataflowBlockOptions() { BoundedCapacity = 1000, MaxDegreeOfParallelism = 4 };
+            var parallelizedOptions = new ExecutionDataflowBlockOptions() { BoundedCapacity = 6000, MaxDegreeOfParallelism = 4 };//was 1000
             var batchOptions = new GroupingDataflowBlockOptions() { BoundedCapacity = 1000 };
 
             //NOTE: pipeline is only aware of messages it need's to process, not which scrapper called it !
@@ -56,17 +59,43 @@ namespace SiteSpecificScrapers.DataflowPipeline
             //Block definitions
 
             //Download pages here
-            var transformBlock = new TransformBlock<string, IEnumerable<string>>(async (ScraperOutputClass msg) => //SEE"DataBusReader" Class for example !!
+            var transformBlock = new TransformBlock<ScraperOutputClass, IEnumerable<string>>(async (ScraperOutputClass msg) => //SEE"DataBusReader" Class for example !!
             {
                 //download passed URL, and output parsed links
             }, largeBufferOptions);
 
-            // pass output sites to transformmanyBlock
-            //do scraping logic in it
+            var scrapeManyBlock = new TransformManyBlock<ScraperOutputClass, IEnumerable<string>(
+              (ScraperOutputClass msg) =>/* execute scraping logic for passed site source's  */, largeBufferOptions);
 
-            //pass output data to broadcast block
+            var broadcast = new BroadcastBlock<ScraperOutputClass>(msg => msg);
 
-            //Broadcast output articles to real time service, + new links back to system !
+            //Real time publish ...
+            var realTimeFeedBlock = new ActionBlock<ScraperOutputClass>(async
+               (ScraperOutputClass msg) => await _realTimeFeedPublisher.PublishAsync(msg), parallelizedOptions); //TODO: check <T> output type and , change it in IRealTimePub, and its class
+
+            //Link blocks together
+            transformBlock.LinkTo(scrapeManyBlock, linkOptions); //Can add 3rd param , ()=>  filter method msg need to pass to propagate from source to target!!
+            scrapeManyBlock.LinkTo(broadcast, linkOptions);
+            broadcast.LinkTo(realTimeFeedBlock, linkOptions);
+
+            //Start consuming data
+            //var consumer = //consume logic
+
+            //Keep going untill CancellationToken is cancelled or block is in the completed state either due to a fault or the completion of the pipeline.
+            while (!token.IsCancellationRequested
+               && !realTimeFeedBlock.Completion.IsCompleted
+                    )
+            {
+                await Task.Delay(25);
+            }
+
+            //the CancellationToken has been cancelled and our producer has stopped producing
+            transformBlock.Complete(); // call Complete on the first block, this will propagate down the pipeline
+
+            //Wait for all blocks to finish processing their data
+            await Task.WhenAll(realTimeFeedBlock.Completion);
+
+            // clean up any other resources like ZeroMQ for example
         }
     }
 }

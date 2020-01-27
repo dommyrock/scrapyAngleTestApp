@@ -22,3 +22,5 @@ E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\
 E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\CoreConsole\obj\Debug\netcoreapp3.0\CoreConsole.pdb
 E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\CoreConsole\bin\Debug\netcoreapp3.0\System.Threading.Tasks.Dataflow.dll
 E:\Programming\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\CoreConsole\obj\Debug\netcoreapp3.0\CoreConsole.csproj.CopyComplete
+D:\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\CoreConsole\bin\Debug\netcoreapp3.0\System.Threading.Tasks.Dataflow.dll
+D:\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\CoreConsole\obj\Debug\netcoreapp3.0\CoreConsole.csproj.CopyComplete
