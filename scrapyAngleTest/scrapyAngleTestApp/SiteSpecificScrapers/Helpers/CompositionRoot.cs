@@ -23,19 +23,21 @@ namespace SiteSpecificScrapers.Helpers
             _specificScrapers = scrapers;
         }
 
+        //TODO :
+        /* 1.1. than make SINGLE QUEUE per Specific site scraper
+         * 1.2. respect politeness policy --delay requests to single domain ..., and NEVER make async requests to same domain (only async other site scrapers)
+         * 1.3. make QUEUES SPECIFIC to  sites --ONE QUEUE per site !!
+         *
+         *
+         * TODO: run scraper and await task completion...than run next one
+         */
+
         /// <summary>
         /// Runs all site scrapers in parrallel (each scraper should have its own queue!(in TPL DAtaflow)
         /// </summary>
         /// <returns></returns>
         public async Task<List<Task<ScraperOutputClass>>> RunAll(ScrapingBrowser browser)
         {
-            //TODO :
-            /* 1.1. than make SINGLE QUEUE per Specific site scraper
-             * 1.2. respect politeness policy --delay requests to single domain ..., and NEVER make async requests to same domain (only async other site scrapers)
-             * 1.3. make QUEUES SPECIFIC to  sites --ONE QUEUE per site !!
-             *
-             */
-
             //List of completed tasks
             List<Task<ScraperOutputClass>> tasklist = new List<Task<ScraperOutputClass>>();
             try
@@ -45,10 +47,13 @@ namespace SiteSpecificScrapers.Helpers
                 //Run each scraper in parellel
                 foreach (ISiteSpecific scraper in _specificScrapers)
                 {
+                    //Await completion , than go to next Task
+                    //var completedTask = await scraper.Run(browser);
+
                     //Run each scraper async
                     tasklist.Add(scraper.Run(browser)); //TODO:  call awaitAll() just for testing 2,3 sites , else catch and store/print results as they arive .
 
-                    //Task.Run(() => scraper.Run(browser));
+                    await Task.Run(async () => await scraper.Run(browser));
                 }
             }
             catch (Exception ex)
@@ -59,6 +64,8 @@ namespace SiteSpecificScrapers.Helpers
             //
             return await Task.FromResult(tasklist); //TODO: see "NEXT STEP" bellow
         }
+
+        /// ildasm ...> <see cref="https://www.youtube.com/watch?v=eZFtSwh0k4E&list=PLRwVmtr-pp05brRDYXh-OTAIi-9kYcw3r&index=20&frags=wn"/>
 
         /*NEXT STEP
          * Because Task and Task<TResult> are reference types, memory allocation in performance-critical paths,

@@ -34,8 +34,6 @@ namespace scrapyAngleTestApp
         #endregion Properties
 
         // ALWAYS CHECK FOR " robots.txt" BEFORE SCRAPING WHOLE PAGE !
-        /// ildasm ...> <see cref="https://www.youtube.com/watch?v=eZFtSwh0k4E&list=PLRwVmtr-pp05brRDYXh-OTAIi-9kYcw3r&index=20&frags=wn"/>
-
         static void Main(string[] args)
         {
             string url = Url = "http://nabava.net";
@@ -43,6 +41,8 @@ namespace scrapyAngleTestApp
             InputList = new List<string>();
             WebShops = new List<string>();
             Browser = new ScrapingBrowser() { UserAgent = FakeUserAgents.Chrome24 };// Check this class for reusable API
+
+            #region DF Pipeline
 
             //NEWWWWWWWWWWWWWWW Refactored Logic 26.1.2020. (Replaces compositionRoot !!!)
             // only scraped output data/messages passed between blocks !!!
@@ -52,6 +52,8 @@ namespace scrapyAngleTestApp
             var cts = new CancellationTokenSource();
             // init
             var pipeline = new DataflowPipeline(Browser, new NabavaNetSitemap()); //NabavaNetSitemap same as "DataBusReader" class (follow as example)
+
+            //TODO: execute this inside composition root foreach "scraper", await completion , than start next scraper (in future if i have more threads ...can make few pipes run in parallel as well)
             var pipelineTask = Task.Run(async () =>
             {
                 try
@@ -64,6 +66,8 @@ namespace scrapyAngleTestApp
                 }
             });
             //NEWWWWWWWWWWWWWWW Refactored Logic 26.1.2020.
+
+            #endregion DF Pipeline
 
             #region Composition Root( replaced w DataflowPipeline)
 

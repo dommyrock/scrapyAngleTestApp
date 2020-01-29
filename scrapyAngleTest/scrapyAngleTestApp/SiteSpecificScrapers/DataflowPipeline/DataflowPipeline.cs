@@ -95,7 +95,7 @@ namespace SiteSpecificScrapers.DataflowPipeline
             //Wait for all blocks to finish processing their data
             await Task.WhenAll(realTimeFeedBlock.Completion);
 
-            // clean up any other resources like ZeroMQ for example
+            // clean up any other resources like ZeroMQ/kafka for example
         }
     }
 }
