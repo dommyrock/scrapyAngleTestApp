@@ -54,6 +54,7 @@ namespace scrapyAngleTestApp
             var pipeline = new DataflowPipeline(Browser, new NabavaNetSitemap()); //NabavaNetSitemap same as "DataBusReader" class (follow as example)
 
             //TODO: execute this inside composition root foreach "scraper", await completion , than start next scraper (in future if i have more threads ...can make few pipes run in parallel as well)
+            //pass : _specificScrapers --> new DataflowPipeline(Browser, _specificScrapers)
             var pipelineTask = Task.Run(async () =>
             {
                 try
