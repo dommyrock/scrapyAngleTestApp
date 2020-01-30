@@ -34,7 +34,7 @@ namespace SiteSpecificScrapers.Helpers
          * TODO: run scraper and await task completion...than run next one
          */
 
-        protected async Task InitPipelines(ISiteSpecific scraper)
+        protected async Task InitPipeline(ISiteSpecific scraper)
         {
             var cts = new CancellationTokenSource();
             // init
@@ -67,7 +67,7 @@ namespace SiteSpecificScrapers.Helpers
             {
                 try
                 {
-                    Task task = Task.Run(async () => await InitPipelines(scraper));
+                    Task task = Task.Run(async () => await InitPipeline(scraper));
                 }
                 catch (Exception ex)
                 {
@@ -89,7 +89,7 @@ namespace SiteSpecificScrapers.Helpers
             {
                 try
                 {
-                    await InitPipelines(scraper); //I ONLY WANT 1 PIPE FOR NOW (RUN MSG PASSING INSIDE PIPE ASYNC INSTEAD + MAKE ANOTHER SYNC VESION OF "RunAll" since i dont async run pipes atm)
+                    await InitPipeline(scraper); //I ONLY WANT 1 PIPE FOR NOW (RUN MSG PASSING INSIDE PIPE ASYNC INSTEAD + MAKE ANOTHER SYNC VESION OF "RunAll" since i dont async run pipes atm)
 
                     ////Await completion , than go to next Task
                     ////var completedTask = await scraper.Run(browser);
@@ -115,6 +115,7 @@ namespace SiteSpecificScrapers.Helpers
          * Support for generalized return types means that you can return a lightweight value type instead of a reference type to avoid additional memory allocations.
          /// <see cref="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/async-return-types" Generalized async return types -at the bottom of page />
          /// ValueTask--->> <see   https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.valuetask-1?view=netcore-3.1
+         ///for less memory alocation (non reference & return types <see cref="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.valuetask-1?view=netcore-3.0"/>
          */
 
         /* CONCURRENT QUEUE https://michaelscodingspot.com/c-job-queues/ ----> TPL DATAFLOW INSTEAD(built in async arhtecture w blocks)
@@ -133,7 +134,6 @@ namespace SiteSpecificScrapers.Helpers
         /// Task.Run(()=> func) arhitecutre <see cref="https://stackoverflow.com/questions/25720977/return-list-from-async-await-method"/>
         ///
         /// multyple web requests async <see cref="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/how-to-make-multiple-web-requests-in-parallel-by-using-async-and-await"/>
-        ///for less memory alocation (non reference & return types <see cref="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.valuetask-1?view=netcore-3.0"/>
 
         ///  yields back to the current context <see cref="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.yield?view=netframework-4.8"/>
         ///
