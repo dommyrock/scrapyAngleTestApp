@@ -43,6 +43,8 @@ namespace scrapyAngleTestApp
             Browser = new ScrapingBrowser() { UserAgent = FakeUserAgents.Chrome24 };// Check this class for reusable API
             /// <see cref="https://searchcode.com/codesearch/view/125929587/"/> for ScrapySharp ->"ScrapingBrowser"  source code
 
+            //TODO : fix dataflow pipeline and slice up already made scraping logic into DF pipeline blocks
+
             #region Composition Root
 
             //Pass all scraper clases that implement ISiteSpecific (with Polymorphism)
