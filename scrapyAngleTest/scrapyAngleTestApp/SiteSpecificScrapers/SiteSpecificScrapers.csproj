@@ -72,7 +72,7 @@
     <Compile Include="AbrakadabraScraper.cs" />
     <Compile Include="AdmScraper.cs" />
     <Compile Include="Base\BaseScraperClass.cs" />
-    <Compile Include="DataflowPipeline\DataflowPipeline.cs" />
+    <Compile Include="DataflowPipeline\DataflowPipelineClass.cs" />
     <Compile Include="DataflowPipeline\RealTimeFeed\IRealTimePublisher.cs" />
     <Compile Include="DataflowPipeline\RealTimeFeed\RealTimePublisher.cs" />
     <Compile Include="Helpers\CompositionRoot.cs" />

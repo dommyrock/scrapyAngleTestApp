@@ -11,7 +11,7 @@ using System.Threading.Tasks.Dataflow;
 
 namespace SiteSpecificScrapers.DataflowPipeline
 {
-    public class DataflowPipeline
+    public class DataflowPipelineClass
     {
         //TPL DATAFLOW ONLY DEFINES PIPELINE FOR MESSAGE FLOW & TRHOUGHPUT !!! (can extend it with kafka,0mq for load balancing)
 
@@ -28,7 +28,7 @@ namespace SiteSpecificScrapers.DataflowPipeline
         /// </summary>
         /// <param name="browser"></param>
         /// <param name="scrapers"></param>
-        public DataflowPipeline(ScrapingBrowser browser, params ISiteSpecific[] scrapers)//no other params can go after params keyword!
+        public DataflowPipelineClass(ScrapingBrowser browser, params ISiteSpecific[] scrapers)//no other params can go after params keyword!
         {
             _specificScrapers = scrapers;
             Browser = browser;

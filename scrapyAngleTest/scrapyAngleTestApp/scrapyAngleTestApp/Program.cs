@@ -41,48 +41,27 @@ namespace scrapyAngleTestApp
             InputList = new List<string>();
             WebShops = new List<string>();
             Browser = new ScrapingBrowser() { UserAgent = FakeUserAgents.Chrome24 };// Check this class for reusable API
-
-            #region DF Pipeline
-
-            //NEWWWWWWWWWWWWWWW Refactored Logic 26.1.2020. (Replaces compositionRoot !!!)
-            // only scraped output data/messages passed between blocks !!!
             /// <see cref="https://searchcode.com/codesearch/view/125929587/"/> for ScrapySharp ->"ScrapingBrowser"  source code
-            //TODO : when complete, run separate pipelines for each scraper ??
 
-            var cts = new CancellationTokenSource();
-            // init
-            var pipeline = new DataflowPipeline(Browser, new NabavaNetSitemap()); //NabavaNetSitemap same as "DataBusReader" class (follow as example)
+            #region Composition Root
 
-            //TODO: execute this inside composition root foreach "scraper", await completion , than start next scraper (in future if i have more threads ...can make few pipes run in parallel as well)
-            //pass : _specificScrapers --> new DataflowPipeline(Browser, _specificScrapers)
-            var pipelineTask = Task.Run(async () =>
+            //Pass all scraper clases that implement ISiteSpecific (with Polymorphism)
+            try
             {
-                try
-                {
-                    await pipeline.StartPipelineAsync(cts.Token);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Pipeline terminated due to error {ex}");
-                }
-            });
-            //NEWWWWWWWWWWWWWWW Refactored Logic 26.1.2020.
-
-            #endregion DF Pipeline
-
-            #region Composition Root( replaced w DataflowPipeline)
-
-            //Get all clases that implement ISiteSpecific (with Polymorphism)
-            var compositionRoot = new CompositionRoot(
-                new NabavaNetSitemap()
-                //new AdmScraper(),
-                //new AbrakadabraScraper()
-                );
-            //Run scrapers in each of their own queue's & print results as they arrive(artuckes,prices....)
-            compositionRoot.RunAll(Browser).GetAwaiter();
+                var compositionRoot = new CompositionRoot(
+                        new NabavaNetSitemap()
+                        //new AdmScraper(),
+                        //new AbrakadabraScraper()
+                        );
+                compositionRoot.RunAllAsync(Browser).GetAwaiter();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
             ///Wait completion <see cref="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/async-return-types"/>
 
-            #endregion Composition Root( replaced w DataflowPipeline)
+            #endregion Composition Root
 
             Console.ReadKey();
             try//could use try catch finaly (try ->nabava sitemap,shops scrape , catch .., finaly-> scrape each shop (2nd nested try ,catch inside)

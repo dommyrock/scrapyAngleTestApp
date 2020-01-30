@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using ScrapySharp.Network;
+using SiteSpecificScrapers.DataflowPipeline;
 using SiteSpecificScrapers.Output;
 using SiteSpecificScrapers.Services;
 
@@ -32,33 +34,73 @@ namespace SiteSpecificScrapers.Helpers
          * TODO: run scraper and await task completion...than run next one
          */
 
+        protected async Task InitPipelines(ISiteSpecific scraper)
+        {
+            var cts = new CancellationTokenSource();
+            // init
+            var pipeline = new DataflowPipelineClass(Browser, scraper);
+
+            //TODO:  await completion , than start next scraper (in future if i have more threads ...can make few pipes run in parallel as well)
+            //pass : _specificScrapers --> new DataflowPipeline(Browser, _specificScrapers)
+            Task pipelineTask = Task.Run(async () =>
+            {
+                try
+                {
+                    await pipeline.StartPipelineAsync(cts.Token);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Pipeline terminated due to error {ex}");
+                }
+            });
+
+            await pipelineTask;
+        }
+
         /// <summary>
-        /// Runs all site scrapers in parrallel (each scraper should have its own queue!(in TPL DAtaflow)
+        /// Runs SINGLE synchronous pipe & await completion , than run next.
         /// </summary>
         /// <returns></returns>
-        public async Task<List<Task<ScraperOutputClass>>> RunAll(ScrapingBrowser browser)
+        public void RunAll(ScrapingBrowser browser)
+        {
+            foreach (ISiteSpecific scraper in _specificScrapers)
+            {
+                try
+                {
+                    Task task = Task.Run(async () => await InitPipelines(scraper));
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Runs multiple pipeline's in parallel(not supported yet since i dont have that many threads for this to be efficient.)
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<Task<ScraperOutputClass>>> RunAllAsync(ScrapingBrowser browser)
         {
             //List of completed tasks
             List<Task<ScraperOutputClass>> tasklist = new List<Task<ScraperOutputClass>>();
-            try
+            //Run each scraper in parellel
+            foreach (ISiteSpecific scraper in _specificScrapers)
             {
-                //TODO: 1.4. CHECK IF LIST IS THREAD SAFE & REPLACE WITH THREAD SAFE COLLECTION INSTEAD (ALSO CHECK OUT QUEUE'S --EACH QUEUE WILL BE SPECIFIC TO SCRAPER AND WILL RUN IT'S SCRAPERS IN NEW THREAD'S)
-
-                //Run each scraper in parellel
-                foreach (ISiteSpecific scraper in _specificScrapers)
+                try
                 {
-                    //Await completion , than go to next Task
-                    //var completedTask = await scraper.Run(browser);
+                    await InitPipelines(scraper); //I ONLY WANT 1 PIPE FOR NOW (RUN MSG PASSING INSIDE PIPE ASYNC INSTEAD + MAKE ANOTHER SYNC VESION OF "RunAll" since i dont async run pipes atm)
 
-                    //Run each scraper async
-                    tasklist.Add(scraper.Run(browser)); //TODO:  call awaitAll() just for testing 2,3 sites , else catch and store/print results as they arive .
-
-                    await Task.Run(async () => await scraper.Run(browser));
+                    ////Await completion , than go to next Task
+                    ////var completedTask = await scraper.Run(browser);
+                    ////Run each scraper async
+                    //tasklist.Add(scraper.Run(browser)); //TODO:  call awaitAll() just for testing 2,3 sites , else catch and store/print results as they arive .
+                    //await Task.Run(async () => await scraper.Run(browser));
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
             }
             //return await Task.WhenAll<Task>(tasklist); not efficient to wait on all to complete , instead await and print/outptut each result as they arrive
             //
