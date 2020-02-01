@@ -58,44 +58,44 @@ namespace SiteSpecificScrapers.DataflowPipeline
 
             //Block definitions
 
-            //Download pages here
-            var transformBlock = new TransformBlock<ScraperOutputClass, IEnumerable<string>>(async (ScraperOutputClass msg) => //SEE"DataBusReader" Class for example !!
-            {
-                //download passed URL, and output parsed links
-            }, largeBufferOptions);
+            ////Download pages here
+            //var transformBlock = new TransformBlock<ScraperOutputClass, IEnumerable<string>>(async (ScraperOutputClass msg) => //SEE"DataBusReader" Class for example !!
+            //{
+            //    //download passed URL, and output parsed links
+            //}, largeBufferOptions);
 
-            var scrapeManyBlock = new TransformManyBlock<ScraperOutputClass, IEnumerable<string>(
-              (ScraperOutputClass msg) =>/* execute scraping logic for passed site source's  */, largeBufferOptions);
+            //var scrapeManyBlock = new TransformManyBlock<ScraperOutputClass, IEnumerable<string>(
+            //  (ScraperOutputClass msg) =>/* execute scraping logic for passed site source's  */, largeBufferOptions);
 
-            var broadcast = new BroadcastBlock<ScraperOutputClass>(msg => msg);
+            //var broadcast = new BroadcastBlock<ScraperOutputClass>(msg => msg);
 
-            //Real time publish ...
-            var realTimeFeedBlock = new ActionBlock<ScraperOutputClass>(async
-               (ScraperOutputClass msg) => await _realTimeFeedPublisher.PublishAsync(msg), parallelizedOptions); //TODO: check <T> output type and , change it in IRealTimePub, and its class
+            ////Real time publish ...
+            //var realTimeFeedBlock = new ActionBlock<ScraperOutputClass>(async
+            //   (ScraperOutputClass msg) => await _realTimeFeedPublisher.PublishAsync(msg), parallelizedOptions); //TODO: check <T> output type and , change it in IRealTimePub, and its class
 
-            //Link blocks together
-            transformBlock.LinkTo(scrapeManyBlock, linkOptions); //Can add 3rd param , ()=>  filter method msg need to pass to propagate from source to target!!
-            scrapeManyBlock.LinkTo(broadcast, linkOptions);
-            broadcast.LinkTo(realTimeFeedBlock, linkOptions);
+            ////Link blocks together
+            //transformBlock.LinkTo(scrapeManyBlock, linkOptions); //Can add 3rd param , ()=>  filter method msg need to pass to propagate from source to target!!
+            //scrapeManyBlock.LinkTo(broadcast, linkOptions);
+            //broadcast.LinkTo(realTimeFeedBlock, linkOptions);
 
-            //Start consuming data
-            //var consumer = //consume logic
+            ////Start consuming data
+            ////var consumer = //consume logic
 
-            //Keep going untill CancellationToken is cancelled or block is in the completed state either due to a fault or the completion of the pipeline.
-            while (!token.IsCancellationRequested
-               && !realTimeFeedBlock.Completion.IsCompleted
-                    )
-            {
-                await Task.Delay(25);
-            }
+            ////Keep going untill CancellationToken is cancelled or block is in the completed state either due to a fault or the completion of the pipeline.
+            //while (!token.IsCancellationRequested
+            //   && !realTimeFeedBlock.Completion.IsCompleted
+            //        )
+            //{
+            //    await Task.Delay(25);
+            //}
 
-            //the CancellationToken has been cancelled and our producer has stopped producing
-            transformBlock.Complete(); // call Complete on the first block, this will propagate down the pipeline
+            ////the CancellationToken has been cancelled and our producer has stopped producing
+            //transformBlock.Complete(); // call Complete on the first block, this will propagate down the pipeline
 
-            //Wait for all blocks to finish processing their data
-            await Task.WhenAll(realTimeFeedBlock.Completion);
+            ////Wait for all blocks to finish processing their data
+            //await Task.WhenAll(realTimeFeedBlock.Completion);
 
-            // clean up any other resources like ZeroMQ/kafka for example
+            //// clean up any other resources like ZeroMQ/kafka for example
         }
     }
 }

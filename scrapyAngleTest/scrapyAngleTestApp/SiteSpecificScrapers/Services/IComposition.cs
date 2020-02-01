@@ -10,6 +10,6 @@ namespace SiteSpecificScrapers.Services
 {
     interface IComposition
     {
-        Task<List<Task<ScraperOutputClass>>> RunAllAsync(ScrapingBrowser browser);
+        Task<List<Task<ScraperOutputClass>>> RunAllAsync();
     }
 }

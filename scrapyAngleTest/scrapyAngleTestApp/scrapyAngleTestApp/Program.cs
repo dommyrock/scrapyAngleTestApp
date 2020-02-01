@@ -44,18 +44,21 @@ namespace scrapyAngleTestApp
             /// <see cref="https://searchcode.com/codesearch/view/125929587/"/> for ScrapySharp ->"ScrapingBrowser"  source code
 
             //TODO : fix dataflow pipeline and slice up already made scraping logic into DF pipeline blocks
+            // 2. than test out if i await all properly to complete. with (console logg: order -->
+            //"scraper # started" , "Pipe # done processing msgs","All scrapers completed. [EXITING] Scraping now.")
 
             #region Composition Root
 
             //Pass all scraper clases that implement ISiteSpecific (with Polymorphism)
             try
             {
-                var compositionRoot = new CompositionRoot(
+                var compositionRoot = new CompositionRoot(Browser,
                         new NabavaNetSitemap()
                         //new AdmScraper(),
                         //new AbrakadabraScraper()
                         );
-                compositionRoot.RunAllAsync(Browser).GetAwaiter();
+                compositionRoot.RunAll();
+                //TODO : await async pipes Task.WhenAll() ...compositionRoot.RunAllAsync() ....
             }
             catch (Exception ex)
             {
@@ -66,10 +69,8 @@ namespace scrapyAngleTestApp
             #endregion Composition Root
 
             Console.ReadKey();
-            try//could use try catch finaly (try ->nabava sitemap,shops scrape , catch .., finaly-> scrape each shop (2nd nested try ,catch inside)
+            try
             {
-                //Start scraping Webshops Queue (check if shop has sitemap ...If it does scrape sitemap, else scrape whole site)
-
                 //temp set url to adm
                 Url = "https://www.adm.hr";
                 if (!GetSitemap())

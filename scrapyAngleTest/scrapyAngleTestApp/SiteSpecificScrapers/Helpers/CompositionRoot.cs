@@ -16,11 +16,12 @@ namespace SiteSpecificScrapers.Helpers
         public Dictionary<string, bool> ScrapedKeyValuePairs { get; set; }
         public string SitemapUrl { get; set; }
         public ScrapingBrowser Browser { get; set; }
+        public int PipeIndex { get; private set; } = 0;
 
         // readonly -> indicates that assignment to the field can only occur as part of the declaration or in a constructor in the same class
         private readonly ISiteSpecific[] _specificScrapers;
 
-        public CompositionRoot(params ISiteSpecific[] scrapers)
+        public CompositionRoot(ScrapingBrowser browser, params ISiteSpecific[] scrapers)
         {
             _specificScrapers = scrapers;
         }
@@ -50,8 +51,9 @@ namespace SiteSpecificScrapers.Helpers
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Pipeline terminated due to error {ex}");
+                    Console.WriteLine($"Pipeline {PipeIndex} terminated due to error {ex}");
                 }
+                Console.WriteLine($"Pipe -->[{++PipeIndex}] done processing Messages!");
             });
 
             await pipelineTask;
@@ -61,26 +63,29 @@ namespace SiteSpecificScrapers.Helpers
         /// Runs SINGLE synchronous pipe & await completion , than run next.
         /// </summary>
         /// <returns></returns>
-        public void RunAll(ScrapingBrowser browser)
+        public void RunAll()
         {
             foreach (ISiteSpecific scraper in _specificScrapers)
             {
+                Console.WriteLine($"Scraper [{scraper.Url}] started:");
                 try
                 {
                     Task task = Task.Run(async () => await InitPipeline(scraper));
+                    //NOTE: Left InitPipeline async ...so i can reuse it for RunAllAsync
                 }
                 catch (Exception ex)
                 {
                     throw ex;
                 }
             }
+            Console.WriteLine("All scrapers completed. [EXITING] Scraping now.");
         }
 
         /// <summary>
         /// Runs multiple pipeline's in parallel(not supported yet since i dont have that many threads for this to be efficient.)
         /// </summary>
         /// <returns></returns>
-        public async Task<List<Task<ScraperOutputClass>>> RunAllAsync(ScrapingBrowser browser)
+        public async Task<List<Task<ScraperOutputClass>>> RunAllAsync()
         {
             //List of completed tasks
             List<Task<ScraperOutputClass>> tasklist = new List<Task<ScraperOutputClass>>();
@@ -91,11 +96,11 @@ namespace SiteSpecificScrapers.Helpers
                 {
                     await InitPipeline(scraper); //I ONLY WANT 1 PIPE FOR NOW (RUN MSG PASSING INSIDE PIPE ASYNC INSTEAD + MAKE ANOTHER SYNC VESION OF "RunAll" since i dont async run pipes atm)
 
-                    ////Await completion , than go to next Task
-                    ////var completedTask = await scraper.Run(browser);
+                    //Await completion , than go to next Task
+                    //var completedTask = await scraper.Run(browser);
                     ////Run each scraper async
-                    //tasklist.Add(scraper.Run(browser)); //TODO:  call awaitAll() just for testing 2,3 sites , else catch and store/print results as they arive .
-                    //await Task.Run(async () => await scraper.Run(browser));
+                    //tasklist.Add(scraper.Run(Browser)); //TODO:  call awaitAll() just for testing 2,3 sites , else catch and store/print results as they arive .
+                    //await Task.Run(async () => await scraper.Run(Browser));
                 }
                 catch (Exception ex)
                 {
@@ -106,6 +111,8 @@ namespace SiteSpecificScrapers.Helpers
             //
             return await Task.FromResult(tasklist); //TODO: see "NEXT STEP" bellow
         }
+
+        //*** Task.WhenAll -->asynchronously awaits the result. calling Task.WaitAll blocks the calling thread until all tasks are completed
 
         /// ildasm ...> <see cref="https://www.youtube.com/watch?v=eZFtSwh0k4E&list=PLRwVmtr-pp05brRDYXh-OTAIi-9kYcw3r&index=20&frags=wn"/>
 
