@@ -10,8 +10,8 @@ namespace SiteSpecificScrapers.Services
     /// <summary>
     /// Extends methods that site specific scrapers need to implement.
     /// </summary>
-    public interface ISiteSpecificExtension
+    public interface ISiteSpecificExtension : ISiteSpecific
     {
-         Task ScrapeSpecificSite(ScrapingBrowser browser);
+        Task ScrapeSpecificSite(ScrapingBrowser browser);
     }
 }

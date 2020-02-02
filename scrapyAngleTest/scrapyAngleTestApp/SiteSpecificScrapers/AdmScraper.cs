@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SiteSpecificScrapers
 {
-    public class AdmScraper : BaseScraperClass,/* ISiteSpecific,*/ ISiteSpecificExtension
+    public class AdmScraper : BaseScraperClass, /*ISiteSpecificExtension*/
     {
         public string Url { get; set; }
         public List<string> InputList { get; set; }
@@ -31,7 +31,6 @@ namespace SiteSpecificScrapers
         //    {
         //        await ScrapeSpecificSite(browser); //TODO
         //    }
-
         //}
 
         public async Task ScrapeSpecificSite(ScrapingBrowser browser)

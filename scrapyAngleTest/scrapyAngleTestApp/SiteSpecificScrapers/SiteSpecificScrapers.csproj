@@ -77,7 +77,7 @@
     <Compile Include="DataflowPipeline\RealTimeFeed\RealTimePublisher.cs" />
     <Compile Include="Helpers\CompositionRoot.cs" />
     <Compile Include="Helpers\ReflectiveEnumerator.cs" />
-    <Compile Include="ScraperOutput\ScraperOutputClass.cs" />
+    <Compile Include="Messages\ScraperOutputClass.cs" />
     <Compile Include="Services\IComposition.cs" />
     <Compile Include="Services\ISiteSpecific.cs" />
     <Compile Include="NabavaNetSitemap.cs" />

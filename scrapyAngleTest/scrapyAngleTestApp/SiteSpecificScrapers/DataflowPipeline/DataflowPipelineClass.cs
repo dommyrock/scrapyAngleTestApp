@@ -51,10 +51,11 @@ namespace SiteSpecificScrapers.DataflowPipeline
 
             //Block definitions
 
-            //Download pages here
-            var transformBlock = new TransformBlock<ScraperOutputClass, IEnumerable<string>>(async (ScraperOutputClass msg) => //SEE"DataBusReader" Class for example !!
+            //Download page here---> <site link,downloaded site source>
+            var transformBlock = new TransformBlock<ScraperOutputClass, string>(async (ScraperOutputClass msg) => //SEE"DataBusReader" Class for example !!
             {
-                //download passed URL, and output parsed links
+                //make interface that contains method for scraping site source , + class that implements it ...like "MessageFileWriter"
+                return msg.SourceHtml;
             }, largeBufferOptions);
 
             var scrapeManyBlock = new TransformManyBlock<ScraperOutputClass, IEnumerable<string>(
