@@ -58,7 +58,7 @@ namespace scrapyAngleTestApp
                         //new AbrakadabraScraper()
                         );
                 compositionRoot.RunAll();
-                //TODO : await async pipes Task.WhenAll() ...compositionRoot.RunAllAsync() ....
+                //TODO (after sync pipe's are done): await async pipes Task.WhenAll() ...compositionRoot.RunAllAsync() ....
             }
             catch (Exception ex)
             {

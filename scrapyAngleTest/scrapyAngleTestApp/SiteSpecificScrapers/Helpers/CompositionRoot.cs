@@ -152,6 +152,7 @@ namespace SiteSpecificScrapers.Helpers
 
         /*
          * //Async method to be awaited
+         *
         public static Task<string> DoAsyncResult(string item)
         {
         Task.Delay(1000);
@@ -159,14 +160,15 @@ namespace SiteSpecificScrapers.Helpers
         }
 
         //Method to iterate over collection and await DoAsyncResult
+
         public static async Task<IEnumerable<string>> LoopAsyncResult(IEnumerable<string> thingsToLoop)
         {
-        List<Task<string>> listOfTasks = new List<Task<string>>();
+            List<Task<string>> listOfTasks = new List<Task<string>>();
 
-        foreach (var thing in thingsToLoop)
-        {
-        listOfTasks.Add(DoAsyncResult(thing));
-        }
+            foreach (var thing in thingsToLoop)
+            {
+               listOfTasks.Add(DoAsyncResult(thing));
+            }
 
         return await Task.WhenAll<string>(listOfTasks);
         */
