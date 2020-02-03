@@ -46,15 +46,16 @@ namespace SiteSpecificScrapers.DataflowPipeline
 
             //NOTE: pipeline is only aware of messages it need's to process, not which scrapper called it !
 
-            //TODO: there should be separate piepe for each scraper(in V2 )FIrst do bellow :
+            //TODO: there should be separate pipe for each scraper(in V2 )FIrst do bellow :
             //4. line 120--_dataBusReader.StartConsuming() --- execute scraping logic here (move my methods inside it)
 
             //Block definitions
 
             //Download page here---> <site link,downloaded site source>
-            var transformBlock = new TransformBlock<ScraperOutputClass, string>(async (ScraperOutputClass msg) => //SEE"DataBusReader" Class for example !!
+            var transformBlock = new TransformBlock<string, ScraperOutputClass>(async (string msg) => //SEE"DataBusReader" Class for example !!
             {
                 //make interface that contains method for scraping site source , + class that implements it ...like "MessageFileWriter"
+                //await
                 return msg.SourceHtml;
             }, largeBufferOptions);
 
