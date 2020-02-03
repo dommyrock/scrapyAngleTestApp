@@ -44,17 +44,14 @@ namespace SiteSpecificScrapers.DataflowPipeline
 
             //NOTE: pipeline is only aware of messages it need's to process, not which scrapper called it !
 
-            //TODO: there should be separate pipe for each scraper(in V2 )FIrst do bellow :
-            //4. line 120--_dataBusReader.StartConsuming() --- execute scraping logic here (move my methods inside it)
-
+            ///TODO:  When we get <remarks transformBlock we skipp it and exit pipeline ...fix that !!!!
             //Block definitions
 
             //Download page here---> <site link,downloaded site source>
             var transformBlock = new TransformBlock<Message, Message>(async (Message msg) => //SEE"DataBusReader" Class for example !!
             {
-                //make interface that contains method for scraping site source , + class that implements it ...like "MessageFileWriter"
-                //await _fetchSource.NavigateToPage(msg.SourceHtml);
-                //await _specificScraper.ScrapeSitemapLinks(); 2nd options is to add  ScrapeSitemapLinks to ISiteSpecific and call it here
+                //same browser instance all the way ( Ptogram -->CompositionRoot-->DFPipeline-->method)
+                await _specificScraper.ScrapeSitemapLinks(this.Browser);
                 return msg;
             }, largeBufferOptions);
 
@@ -77,8 +74,7 @@ namespace SiteSpecificScrapers.DataflowPipeline
 
             //Keep going untill CancellationToken is cancelled or block is in the completed state either due to a fault or the completion of the pipeline.
             while (!token.IsCancellationRequested
-               && !realTimeFeedBlock.Completion.IsCompleted
-                    )
+               && !realTimeFeedBlock.Completion.IsCompleted)
             {
                 await Task.Delay(25);
             }

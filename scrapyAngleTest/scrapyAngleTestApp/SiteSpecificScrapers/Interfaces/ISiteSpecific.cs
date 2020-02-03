@@ -23,5 +23,7 @@ namespace SiteSpecificScrapers
         /// </summary>
         /// <returns></returns>
         Task<Message> Run(ScrapingBrowser browser);
+
+        Task<bool> ScrapeSitemapLinks(ScrapingBrowser browser);
     }
 }

@@ -57,7 +57,7 @@ namespace scrapyAngleTestApp
                         //new AdmScraper(),
                         //new AbrakadabraScraper()
                         );
-                compositionRoot.RunAll();
+                compositionRoot.RunAll();//this one is Synchronous pipe so i dont need to await it!
                 //TODO (after sync pipe's are done): await async pipes Task.WhenAll() ...compositionRoot.RunAllAsync() ....
             }
             catch (Exception ex)

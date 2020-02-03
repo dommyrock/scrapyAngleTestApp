@@ -1,16 +1,12 @@
-﻿using ScrapySharp.Extensions;
-using ScrapySharp.Network;
+﻿using ScrapySharp.Network;
 using SiteSpecificScrapers.BaseClass;
-using SiteSpecificScrapers.Output;
-using SiteSpecificScrapers.Services;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SiteSpecificScrapers
 {
-    public class AdmScraper : BaseScraperClass, /*ISiteSpecificExtension*/
+    public class AdmScraper : BaseScraperClass /*ISiteSpecificExtension*/
     {
         public string Url { get; set; }
         public List<string> InputList { get; set; }

@@ -24,6 +24,7 @@ namespace SiteSpecificScrapers.Helpers
         public CompositionRoot(ScrapingBrowser browser, params ISiteSpecific[] scrapers)
         {
             _specificScrapers = scrapers;
+            this.Browser = browser;
         }
 
         //TODO :
@@ -88,7 +89,7 @@ namespace SiteSpecificScrapers.Helpers
         public async Task<List<Task<Message>>> RunAllAsync()
         {
             //List of completed tasks
-            List<Task<ScraperOutputClass>> tasklist = new List<Task<ScraperOutputClass>>();
+            List<Task<Message>> tasklist = new List<Task<Message>>();
             //Run each scraper in parellel
             foreach (ISiteSpecific scraper in _specificScrapers)
             {
