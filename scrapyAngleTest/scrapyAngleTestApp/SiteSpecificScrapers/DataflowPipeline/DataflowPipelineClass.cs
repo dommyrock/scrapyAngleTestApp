@@ -50,17 +50,18 @@ namespace SiteSpecificScrapers.DataflowPipeline
             //Block definitions
 
             //Download page here---> <site link,downloaded site source>
-            var transformBlock = new TransformBlock<string, Message>(async (string msg) => //SEE"DataBusReader" Class for example !!
+            var transformBlock = new TransformBlock<Message, Message>(async (Message msg) => //SEE"DataBusReader" Class for example !!
             {
                 //make interface that contains method for scraping site source , + class that implements it ...like "MessageFileWriter"
-                await _fetchSource.NavigateToPage(msg);
+                //await _fetchSource.NavigateToPage(msg.SourceHtml);
+                //await _specificScraper.ScrapeSitemapLinks(); 2nd options is to add  ScrapeSitemapLinks to ISiteSpecific and call it here
                 return msg;
             }, largeBufferOptions);
 
-            var scrapeManyBlock = new TransformManyBlock<Message, IEnumerable<string>(
+            var scrapeManyBlock = new TransformManyBlock<Message, IEnumerable<Message>(
               (Message msg) =>/* execute scraping logic for passed site source's  */, largeBufferOptions);
 
-            var broadcast = new BroadcastBlock<Message>(msg => msg);
+            var broadcast = new BroadcastBlock<IEnumerable<Message>>(msg => msg);
 
             //Real time publish ...
             var realTimeFeedBlock = new ActionBlock<Message>(async
