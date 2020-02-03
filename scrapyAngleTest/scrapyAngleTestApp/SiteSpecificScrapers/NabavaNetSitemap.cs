@@ -1,7 +1,7 @@
 ﻿using ScrapySharp.Extensions;
 using ScrapySharp.Network;
 using SiteSpecificScrapers.BaseClass;
-using SiteSpecificScrapers.Output;
+using SiteSpecificScrapers.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -103,7 +103,7 @@ namespace SiteSpecificScrapers
             }
         }
 
-        Task<ScraperOutputClass> ISiteSpecific.Run(ScrapingBrowser browser)
+        Task<Message> ISiteSpecific.Run(ScrapingBrowser browser)
         {
             throw new NotImplementedException();
         }

@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using ScrapySharp.Network;
 using System.Threading.Tasks;
 
 namespace SiteSpecificScrapers.Interfaces
 {
     public interface IFetchSource
     {
-        Task DownloadSource();
+        //Note: We inject scrapers into dataflowPipeline , therefore we have access to all its methods and baseScraperClass like "GetSitemap"
+        Task<WebPage> NavigateToPage(string site);
     }
 }

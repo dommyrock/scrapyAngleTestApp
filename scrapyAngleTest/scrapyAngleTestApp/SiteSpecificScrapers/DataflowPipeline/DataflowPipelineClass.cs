@@ -1,10 +1,8 @@
 ﻿using ScrapySharp.Network;
 using SiteSpecificScrapers.DataflowPipeline.RealTimeFeed;
-using SiteSpecificScrapers.Output;
-using System;
+using SiteSpecificScrapers.Interfaces;
+using SiteSpecificScrapers.Messages;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
@@ -16,8 +14,8 @@ namespace SiteSpecificScrapers.DataflowPipeline
         //NOTE: TPL DATAFLOW ONLY DEFINES PIPELINE FOR MESSAGE FLOW & TRHOUGHPUT !!! (can extend it with kafka,0mq for load balancing)
 
         private readonly ISiteSpecific _specificScraper;
-
         private readonly IRealTimePublisher _realTimeFeedPublisher;
+        private readonly IFetchSource _fetchSource;
 
         public ScrapingBrowser Browser { get; set; }
 
@@ -27,7 +25,7 @@ namespace SiteSpecificScrapers.DataflowPipeline
         /// </summary>
         /// <param name="browser"></param>
         /// <param name="scrapers"></param>
-        public DataflowPipelineClass(ScrapingBrowser browser, ISiteSpecific scraper)//no other params can go after params keyword!
+        public DataflowPipelineClass(ScrapingBrowser browser, ISiteSpecific scraper)
         {
             _specificScraper = scraper;
             Browser = browser;
@@ -52,21 +50,21 @@ namespace SiteSpecificScrapers.DataflowPipeline
             //Block definitions
 
             //Download page here---> <site link,downloaded site source>
-            var transformBlock = new TransformBlock<string, ScraperOutputClass>(async (string msg) => //SEE"DataBusReader" Class for example !!
+            var transformBlock = new TransformBlock<string, Message>(async (string msg) => //SEE"DataBusReader" Class for example !!
             {
                 //make interface that contains method for scraping site source , + class that implements it ...like "MessageFileWriter"
-                //await
-                return msg.SourceHtml;
+                await _fetchSource.NavigateToPage(msg);
+                return msg;
             }, largeBufferOptions);
 
-            var scrapeManyBlock = new TransformManyBlock<ScraperOutputClass, IEnumerable<string>(
-              (ScraperOutputClass msg) =>/* execute scraping logic for passed site source's  */, largeBufferOptions);
+            var scrapeManyBlock = new TransformManyBlock<Message, IEnumerable<string>(
+              (Message msg) =>/* execute scraping logic for passed site source's  */, largeBufferOptions);
 
-            var broadcast = new BroadcastBlock<ScraperOutputClass>(msg => msg);
+            var broadcast = new BroadcastBlock<Message>(msg => msg);
 
             //Real time publish ...
-            var realTimeFeedBlock = new ActionBlock<ScraperOutputClass>(async
-               (ScraperOutputClass msg) => await _realTimeFeedPublisher.PublishAsync(msg), parallelizedOptions); //TODO: check <T> output type and , change it in IRealTimePub, and its class
+            var realTimeFeedBlock = new ActionBlock<Message>(async
+               (Message msg) => await _realTimeFeedPublisher.PublishAsync(msg), parallelizedOptions); //TODO: check <T> output type and , change it in IRealTimePub, and its class
 
             //Link blocks together
             transformBlock.LinkTo(scrapeManyBlock, linkOptions); //Can add 3rd param , ()=>  filter method msg need to pass to propagate from source to target!!

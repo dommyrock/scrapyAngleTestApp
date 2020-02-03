@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ScrapySharp.Network;
 using SiteSpecificScrapers.DataflowPipeline;
-using SiteSpecificScrapers.Output;
+using SiteSpecificScrapers.Messages;
 using SiteSpecificScrapers.Services;
 
 namespace SiteSpecificScrapers.Helpers
@@ -85,7 +85,7 @@ namespace SiteSpecificScrapers.Helpers
         /// Runs multiple pipeline's in parallel(not supported yet since i dont have that many threads for this to be efficient.)
         /// </summary>
         /// <returns></returns>
-        public async Task<List<Task<ScraperOutputClass>>> RunAllAsync()
+        public async Task<List<Task<Message>>> RunAllAsync()
         {
             //List of completed tasks
             List<Task<ScraperOutputClass>> tasklist = new List<Task<ScraperOutputClass>>();

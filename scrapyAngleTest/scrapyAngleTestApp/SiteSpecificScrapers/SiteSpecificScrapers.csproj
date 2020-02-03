@@ -76,11 +76,12 @@
     <Compile Include="DataflowPipeline\RealTimeFeed\IRealTimePublisher.cs" />
     <Compile Include="DataflowPipeline\RealTimeFeed\RealTimePublisher.cs" />
     <Compile Include="Helpers\CompositionRoot.cs" />
+    <Compile Include="Helpers\FetchSource.cs" />
     <Compile Include="Helpers\ReflectiveEnumerator.cs" />
     <Compile Include="Interfaces\IFetchSource.cs" />
-    <Compile Include="Messages\ScraperOutputClass.cs" />
     <Compile Include="Interfaces\IComposition.cs" />
     <Compile Include="Interfaces\ISiteSpecific.cs" />
+    <Compile Include="Messages\Message.cs" />
     <Compile Include="NabavaNetSitemap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Interfaces\ISiteSpecificExtension.cs" />
