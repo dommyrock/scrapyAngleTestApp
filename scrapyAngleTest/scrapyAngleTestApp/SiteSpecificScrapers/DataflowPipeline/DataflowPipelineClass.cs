@@ -44,19 +44,21 @@ namespace SiteSpecificScrapers.DataflowPipeline
 
             //NOTE: pipeline is only aware of messages it need's to process, not which scrapper called it !
 
-            ///TODO:  When we get <remarks transformBlock we skipp it and exit pipeline ...fix that !!!!
+            ///TODO:  When we get <remarks transformBlock ... we skipp it and exit pipeline ...fix that !!!!
+            /// check out  await Task.Yield(); to yeald to same context
             //Block definitions
 
             //Download page here---> <site link,downloaded site source>
             var transformBlock = new TransformBlock<Message, Message>(async (Message msg) => //SEE"DataBusReader" Class for example !!
             {
-                //same browser instance all the way ( Ptogram -->CompositionRoot-->DFPipeline-->method)
-                await _specificScraper.ScrapeSitemapLinks(this.Browser);
+                await _specificScraper.ScrapeSitemapLinks(this.Browser);//Same browser instance all the way ( Program -->CompositionRoot-->DFPipeline-->method)
+
                 return msg;
             }, largeBufferOptions);
 
             var scrapeManyBlock = new TransformManyBlock<Message, IEnumerable<Message>(
-              (Message msg) =>/* execute scraping logic for passed site source's  */, largeBufferOptions);
+              //TODOshould call scrapeWebshops here in nabavaNet ..but for others it will be different method...so cant reuse this one!
+              (Message msg) => await _specificScraper.scra/* execute scraping logic for passed site source's  */, largeBufferOptions);
 
             var broadcast = new BroadcastBlock<IEnumerable<Message>>(msg => msg);
 

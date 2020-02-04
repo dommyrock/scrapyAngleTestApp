@@ -64,9 +64,9 @@ namespace SiteSpecificScrapers.BaseClass
         {
             this.Browser = browser;
 
-            var sitemapUel = await GetSitemap(Browser, url);
+            var sitemapUrl = await GetSitemap(Browser, url);
 
-            if (sitemapUel != string.Empty)
+            if (sitemapUrl != string.Empty)
             {
                 WebPage document = await Browser.NavigateToPageAsync(new Uri(url));//might replace with basic downloadstrignasync...
 
