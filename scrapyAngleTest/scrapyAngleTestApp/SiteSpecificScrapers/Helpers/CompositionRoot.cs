@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ScrapySharp.Network;
 using SiteSpecificScrapers.DataflowPipeline;
+using SiteSpecificScrapers.DataflowPipeline.RealTimeFeed;
 using SiteSpecificScrapers.Messages;
 using SiteSpecificScrapers.Services;
 
@@ -40,7 +41,7 @@ namespace SiteSpecificScrapers.Helpers
         {
             var cts = new CancellationTokenSource();
             // init
-            var pipeline = new DataflowPipelineClass(Browser, scraper);
+            var pipeline = new DataflowPipelineClass(Browser, scraper, new RealTimePublisher, new DataConsumer);
 
             //TODO:  await completion , than start next scraper (in future if i have more threads ...can make few pipes run in parallel as well)
             //pass : _specificScrapers --> new DataflowPipeline(Browser, _specificScrapers)

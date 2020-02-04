@@ -72,12 +72,14 @@
     <Compile Include="AbrakadabraScraper.cs" />
     <Compile Include="AdmScraper.cs" />
     <Compile Include="Base\BaseScraperClass.cs" />
+    <Compile Include="DataflowPipeline\DataConsumer.cs" />
     <Compile Include="DataflowPipeline\DataflowPipelineClass.cs" />
     <Compile Include="DataflowPipeline\RealTimeFeed\IRealTimePublisher.cs" />
     <Compile Include="DataflowPipeline\RealTimeFeed\RealTimePublisher.cs" />
     <Compile Include="Helpers\CompositionRoot.cs" />
     <Compile Include="Helpers\FetchSource.cs" />
     <Compile Include="Helpers\ReflectiveEnumerator.cs" />
+    <Compile Include="Interfaces\IDataConsumer.cs" />
     <Compile Include="Interfaces\IFetchSource.cs" />
     <Compile Include="Interfaces\IComposition.cs" />
     <Compile Include="Interfaces\ISiteSpecific.cs" />

@@ -15,8 +15,7 @@ namespace SiteSpecificScrapers.DataflowPipeline
 
         private readonly ISiteSpecific _specificScraper;
         private readonly IRealTimePublisher _realTimeFeedPublisher;
-        private readonly IFetchSource _fetchSource;
-
+        private readonly IDataConsumer _dataConsumer;
         public ScrapingBrowser Browser { get; set; }
 
         /// <summary>
@@ -25,10 +24,15 @@ namespace SiteSpecificScrapers.DataflowPipeline
         /// </summary>
         /// <param name="browser"></param>
         /// <param name="scrapers"></param>
-        public DataflowPipelineClass(ScrapingBrowser browser, ISiteSpecific scraper)
+        public DataflowPipelineClass(ScrapingBrowser browser,
+                                    ISiteSpecific scraper,
+                                    IRealTimePublisher realTimePublisher,
+                                    IDataConsumer dataConsumer)
         {
-            _specificScraper = scraper;
             Browser = browser;
+            _specificScraper = scraper;
+            _realTimeFeedPublisher = realTimePublisher;
+            _dataConsumer = dataConsumer;
         }
 
         public async Task StartPipelineAsync(CancellationToken token)
@@ -46,19 +50,20 @@ namespace SiteSpecificScrapers.DataflowPipeline
 
             ///TODO:  When we get <remarks transformBlock ... we skipp it and exit pipeline ...fix that !!!!
             /// check out  await Task.Yield(); to yeald to same context
+            /// _specificScraper.Run(browser) --> Run method will have different implementation in each scraper( problem is logic separation which it does in it )
+
             //Block definitions
 
             //Download page here---> <site link,downloaded site source>
             var transformBlock = new TransformBlock<Message, Message>(async (Message msg) => //SEE"DataBusReader" Class for example !!
             {
-                await _specificScraper.ScrapeSitemapLinks(this.Browser);//Same browser instance all the way ( Program -->CompositionRoot-->DFPipeline-->method)
+                await _specificScraper.Run(this.Browser);//Same browser instance all the way ( Program -->CompositionRoot-->DFPipeline-->method)
 
                 return msg;
             }, largeBufferOptions);
 
-            var scrapeManyBlock = new TransformManyBlock<Message, IEnumerable<Message>(
-              //TODOshould call scrapeWebshops here in nabavaNet ..but for others it will be different method...so cant reuse this one!
-              (Message msg) => await _specificScraper.scra/* execute scraping logic for passed site source's  */, largeBufferOptions);
+            var scrapeManyBlock = new TransformManyBlock<Message, IEnumerable<Message>(//figure out what we pass from transformblock to here
+              (Message msg) => /* execute scraping logic for passed site source's  */, largeBufferOptions);
 
             var broadcast = new BroadcastBlock<IEnumerable<Message>>(msg => msg);
 
@@ -72,7 +77,7 @@ namespace SiteSpecificScrapers.DataflowPipeline
             broadcast.LinkTo(realTimeFeedBlock, linkOptions);
 
             //Start consuming data
-            //var consumer = //consume logic
+            var consumer = _dataConsumer.StartConsuming(transformBlock, token);
 
             //Keep going untill CancellationToken is cancelled or block is in the completed state either due to a fault or the completion of the pipeline.
             while (!token.IsCancellationRequested
@@ -85,7 +90,7 @@ namespace SiteSpecificScrapers.DataflowPipeline
             transformBlock.Complete(); // call Complete on the first block, this will propagate down the pipeline
 
             //Wait for all blocks to finish processing their data
-            await Task.WhenAll(realTimeFeedBlock.Completion);
+            await Task.WhenAll(realTimeFeedBlock.Completion, consumer);
 
             // clean up any other resources like ZeroMQ/kafka for example
         }
