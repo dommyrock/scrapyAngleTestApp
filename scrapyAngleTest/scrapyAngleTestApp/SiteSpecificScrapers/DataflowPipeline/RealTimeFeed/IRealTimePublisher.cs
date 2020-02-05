@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SiteSpecificScrapers.Messages;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace SiteSpecificScrapers.DataflowPipeline.RealTimeFeed
 {
     public interface IRealTimePublisher
     {
-        Task PublishAsync(string message);
+        Task PublishAsync(ProcessedMessage message);
     }
 }

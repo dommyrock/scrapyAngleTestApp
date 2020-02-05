@@ -84,6 +84,7 @@
     <Compile Include="Interfaces\IComposition.cs" />
     <Compile Include="Interfaces\ISiteSpecific.cs" />
     <Compile Include="Messages\Message.cs" />
+    <Compile Include="Messages\ProcessedMessage.cs" />
     <Compile Include="NabavaNetSitemap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Interfaces\ISiteSpecificExtension.cs" />

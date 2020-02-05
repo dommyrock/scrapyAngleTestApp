@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SiteSpecificScrapers.Messages
 {
-    public class Message
+    public class ProcessedMessage
     {
         public string SourceHtml { get; set; }
         public string Name { get; set; }
