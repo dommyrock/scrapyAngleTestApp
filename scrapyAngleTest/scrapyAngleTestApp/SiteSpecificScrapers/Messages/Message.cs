@@ -9,7 +9,7 @@ namespace SiteSpecificScrapers.Messages
     public class Message
     {
         public string SourceHtml { get; set; }
-        public string Name { get; set; }
+        public string SiteUrl { get; set; }
         public int Id { get; set; }
         public string Brand { get; set; }
         public int Price { get; set; }

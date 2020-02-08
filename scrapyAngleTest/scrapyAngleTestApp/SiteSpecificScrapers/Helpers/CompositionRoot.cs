@@ -41,7 +41,7 @@ namespace SiteSpecificScrapers.Helpers
         {
             var cts = new CancellationTokenSource();
             // init
-            var pipeline = new DataflowPipelineClass(Browser, scraper, new RealTimePublisher, new DataConsumer);
+            var pipeline = new DataflowPipelineClass(Browser, scraper, new RealTimePublisher(), new DataConsumer());
 
             //TODO:  await completion , than start next scraper (in future if i have more threads ...can make few pipes run in parallel as well)
             //pass : _specificScrapers --> new DataflowPipeline(Browser, _specificScrapers)
@@ -149,6 +149,7 @@ namespace SiteSpecificScrapers.Helpers
 
         ///For ERROR metadata file <see cref="https://stackoverflow.com/questions/1421862/metadata-file-dll-could-not-be-found"/>
         ///
+        //Parallel.Foreach & For are blocking (like built in await all)... they block code execution untill loop is done iterating !!!
 
         #region LoopAsyncExample
 

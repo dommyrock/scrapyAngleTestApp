@@ -19,7 +19,7 @@ namespace SiteSpecificScrapers.DataflowPipeline
         public ScrapingBrowser Browser { get; set; }
 
         /// <summary>
-        /// Executes specific scraping logic for each passed scraper.
+        /// Executes specific scraping logic for passed scraper.
         /// (Only role is message propagation! )
         /// </summary>
         /// <param name="browser"></param>
@@ -40,17 +40,17 @@ namespace SiteSpecificScrapers.DataflowPipeline
             //Pipeline config
             var linkOptions = new DataflowLinkOptions { PropagateCompletion = true };
             //Block config
+            //We should set BoundedCapacity to a low number: when we want to maintain throttling throughout a pipeline
             var largeBufferOptions = new ExecutionDataflowBlockOptions() { BoundedCapacity = 600000 };
             var smallBufferOptions = new ExecutionDataflowBlockOptions() { BoundedCapacity = 1000 };
             var realTimeBufferOptions = new ExecutionDataflowBlockOptions() { BoundedCapacity = 6000 };
             var parallelizedOptions = new ExecutionDataflowBlockOptions() { BoundedCapacity = 6000, MaxDegreeOfParallelism = 4 };//was 1000
             var batchOptions = new GroupingDataflowBlockOptions() { BoundedCapacity = 1000 };
 
-            //NOTE: pipeline is only aware of messages it need's to process, not which scrapper called it !
-
             ///TODO:  When we get <remarks transformBlock ... we skipp it and exit pipeline ...fix that !!!!
             /// check out  await Task.Yield(); to yeald to same context
             /// _specificScraper.Run(browser) --> Run method will have different implementation in each scraper( problem is logic separation which it does in it )
+            /// Parsing and source fetching takes most time so i should paralelise that task the most!
 
             //Block definitions
 
@@ -67,7 +67,8 @@ namespace SiteSpecificScrapers.DataflowPipeline
             var scrapeManyBlock = new TransformManyBlock<Message, ProcessedMessage>(
               (Message msg) => /* execute scraping logic for passed site source's  */, largeBufferOptions); //TODO: figure out flow of data in https://jack-vanlightly.com/blog/2018/4/18/processing-pipelines-series-tpl-dataflow and try decide where my scraping logic happens in pipeline (might just happen somwhere else and feed it into pipeline ?)
 
-            //Branches out the messages to other consumer blocks linked!
+            #region BroadcasterBlock info
+
             //BroadcastBlock has a buffer of one message that gets overwritten by each incoming message.
             //So if the BroadcastBlock cannot forward a message to downstream blocks then the message is lost when the next message arrives. This is load-shedding.
             //Only the blocks up until the first BroadcastBlock could force producer slowdown or load shedding as the BroadcastBlock simply overwrites its buffer on each new message
@@ -75,6 +76,10 @@ namespace SiteSpecificScrapers.DataflowPipeline
             //The broadcast block will make an attempt to pass the message onto all downstream linked blocks before allowing the message to get overwritten.
             //But if a linked block has a bounded buffer which is full, the message gets discarded - load shedding.
             //So as long as the linked blocks have capacity, then the broadcast block ensures all of them get the message.
+
+            #endregion BroadcasterBlock info
+
+            //Branches out the messages to other consumer blocks linked!
             var broadcast = new BroadcastBlock<ProcessedMessage>(msg => msg);
 
             //Real time publish ...
@@ -87,7 +92,7 @@ namespace SiteSpecificScrapers.DataflowPipeline
             broadcast.LinkTo(realTimeFeedBlock, linkOptions);
 
             //Start consuming data
-            var consumer = _dataConsumer.StartConsuming(transformBlock, token);
+            var consumer = _dataConsumer.StartConsuming(transformBlock, token, _specificScraper);
 
             //Keep going untill CancellationToken is cancelled or block is in the completed state either due to a fault or the completion of the pipeline.
             while (!token.IsCancellationRequested

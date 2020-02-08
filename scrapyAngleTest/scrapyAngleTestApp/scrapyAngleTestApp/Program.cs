@@ -59,6 +59,7 @@ namespace scrapyAngleTestApp
                         );
                 compositionRoot.RunAll();//this one is Synchronous pipe so i dont need to await it!
                 //TODO (after sync pipe's are done): await async pipes Task.WhenAll() ...compositionRoot.RunAllAsync() ....
+                //Also check on FB in my inbox for awaiting async data .GetAwaiter().GetResult().....
             }
             catch (Exception ex)
             {

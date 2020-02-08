@@ -12,22 +12,78 @@ namespace SiteSpecificScrapers.DataflowPipeline
 {
     public class DataConsumer : IDataConsumer
     {
+        private int _counter;
+
         public DataConsumer()
         {
+            //TODO: init scraping class here or implement its scraping method through interface
         }
 
-        public Task StartConsuming(ITargetBlock<Message> target, CancellationToken token)
+        public Task StartConsuming(ITargetBlock<Message> target, CancellationToken token, ISiteSpecific scraper)
         {
-            return Task.Factory.StartNew(() => ConsumeWithDiscard(target, token));
+            return Task.Factory.StartNew(() => ConsumeWithDiscard(target, token, scraper), TaskCreationOptions.LongRunning);
         }
 
-        //TODO :rest of logic
-        private void ConsumeWithDiscard(ITargetBlock<Message> target, CancellationToken token)
+        //Post messages to the 1st block and propagate them through pipeline.
+        private void ConsumeWithDiscard(ITargetBlock<Message> target, CancellationToken token, ISiteSpecific scraper)
         {
             while (!token.IsCancellationRequested)
             {
-                Console.WriteLine($"Read message on thread {Thread.CurrentThread.ManagedThreadId}");
+                _counter++;
+                Console.WriteLine($"Read message num[{_counter}] from [{scraper.Url}] on thread [{Thread.CurrentThread.ManagedThreadId}]");
+
+                //TODO: Read scraped site source data  & assign it to message object
+
+                var message = new Message();
+                //message.SourceHtml = //scraped data
+                message.Id = _counter;
+                message.SiteUrl = scraper.Url;
+
+                //Post msg & report if buffer is full
+                var post = target.Post(message);
+                if (!post)
+                    Console.WriteLine("Buffer full, Could not post!");
             }
         }
+
+        /* Example from stream porcessing
+        private DataBusInterface _dataBus;
+        private int _counter;
+
+        public DataBusReader()
+        {
+            _dataBus = new DataBusInterface();
+            _dataBus.Initialize();
+        }
+         *
+         *         private void ConsumeWithDiscard(ITargetBlock<RawBusMessage> target, CancellationToken token, TimeSpan interval)
+        {
+            long lastTicks = 0;
+            while (!token.IsCancellationRequested)
+            {
+                _counter++;
+                var reading = _dataBus.Read();
+
+                if (ShowMessages.PrintReader)
+                    Console.WriteLine($"Read message {_counter} on thread {Thread.CurrentThread.ManagedThreadId}");
+
+                var message = new RawBusMessage();
+                message.Data = reading.Data;
+                message.ReadingTime = new DateTime(reading.Ticks);
+                message.Counter = _counter;
+
+                if (lastTicks < reading.Ticks)
+                {
+                    var posted = target.Post(message);
+                    if (!posted && ShowMessages.PrintFullBuffers)
+                        Console.WriteLine("Buffer full. Could not post");
+                }
+
+                lastTicks = reading.Ticks;
+
+                Thread.Sleep(interval);
+            }
+        }
+         */
     }
 }
