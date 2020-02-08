@@ -103,7 +103,7 @@ namespace SiteSpecificScrapers
             }
         }
 
-        Task<Message> ISiteSpecific.Run(ScrapingBrowser browser)
+        Task<IEnumerable<ProcessedMessage>> ISiteSpecific.Run(ScrapingBrowser browser, Message message)
         {
             throw new NotImplementedException();
         }

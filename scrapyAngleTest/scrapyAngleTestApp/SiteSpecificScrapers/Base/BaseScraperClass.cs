@@ -8,7 +8,7 @@ namespace SiteSpecificScrapers.BaseClass
 {
     #region Info
 
-    //Abstract Class REASON :Interfaces only have props,methods,struct signatures ... i needed to pass defined method to Children
+    //Abstract Class REASON :Interfaces only have props,methods,struct signatures ... i needed to allow children access to defined method
     //also methods  (could be virtual ... so i can override them in childs if needed )
     //and can have abstract prefix(methods can't have implementations here , only in child class) to note that they need to be inherited & implemented !!
 
@@ -21,10 +21,8 @@ namespace SiteSpecificScrapers.BaseClass
     {
         private ScrapingBrowser Browser { get; set; }
 
-        /// <summary>
-        /// Base constructor called before derived constructor
-        /// </summary>
-        protected BaseScraperClass()
+        protected BaseScraperClass()// Base constructor called before derived constructor
+
         {
         }
 

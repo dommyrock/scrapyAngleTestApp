@@ -29,7 +29,7 @@ namespace SiteSpecificScrapers.Helpers
         }
 
         //TODO :
-        /* 1.1. than make SINGLE QUEUE per Specific site scraper
+        /*
          * 1.2. respect politeness policy --delay requests to single domain ..., and NEVER make async requests to same domain (only async other site scrapers)
          * 1.3. make QUEUES SPECIFIC to  sites --ONE QUEUE per site !!
          *

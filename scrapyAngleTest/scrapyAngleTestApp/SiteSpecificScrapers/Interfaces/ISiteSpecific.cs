@@ -18,12 +18,12 @@ namespace SiteSpecificScrapers
         string SitemapUrl { get; set; }
         ScrapingBrowser Browser { get; set; }
 
+        Task<bool> ScrapeSitemapLinks(ScrapingBrowser browser);
+
         /// <summary>
         /// Encapsulates scraping logic for each site specific scraper. (Must be async if it encapsulates async code)
         /// </summary>
         /// <returns></returns>
-        Task<Message> Run(ScrapingBrowser browser);
-
-        Task<bool> ScrapeSitemapLinks(ScrapingBrowser browser);
+        Task<IEnumerable<ProcessedMessage>> Run(ScrapingBrowser browser, Message message);
     }
 }

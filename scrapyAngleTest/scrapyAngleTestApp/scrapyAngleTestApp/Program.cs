@@ -1,21 +1,11 @@
-﻿using Autofac;
-using HtmlAgilityPack;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using ScrapySharp.Extensions;
+﻿using ScrapySharp.Extensions;
 using ScrapySharp.Network;
 using SiteSpecificScrapers;
-using SiteSpecificScrapers.BaseClass;
-using SiteSpecificScrapers.DataflowPipeline;
 using SiteSpecificScrapers.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Reflection;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace scrapyAngleTestApp
 {
@@ -43,9 +33,7 @@ namespace scrapyAngleTestApp
             Browser = new ScrapingBrowser() { UserAgent = FakeUserAgents.Chrome24 };// Check this class for reusable API
             /// <see cref="https://searchcode.com/codesearch/view/125929587/"/> for ScrapySharp ->"ScrapingBrowser"  source code
 
-            //TODO : fix dataflow pipeline and slice up already made scraping logic into DF pipeline blocks
-            // 2. than test out if i await all properly to complete. with (console logg: order -->
-            //"scraper # started" , "Pipe # done processing msgs","All scrapers completed. [EXITING] Scraping now.")
+            //TODO : after pipeline is complete ,try improve content fetching speed/parallelism
 
             #region Composition Root
 

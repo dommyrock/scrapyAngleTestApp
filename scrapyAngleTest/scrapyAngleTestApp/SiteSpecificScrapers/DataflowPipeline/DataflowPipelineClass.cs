@@ -58,14 +58,17 @@ namespace SiteSpecificScrapers.DataflowPipeline
             //For each message it consumes, it outputs another.
             var transformBlock = new TransformBlock<Message, Message>(async (Message msg) => //SEE"DataBusReader" Class for example !!
             {
-                await _specificScraper.Run(this.Browser);//Same browser instance all the way ( Program -->CompositionRoot-->DFPipeline-->method)
+                await _specificScraper.Run(this.Browser, msg);//Same browser instance all the way ( Program -->CompositionRoot-->DFPipeline-->method)
 
                 return msg;
             }, largeBufferOptions);
 
+            /*TODO: execute scraping logic for passed site source's, might not need "TransformBlock" since i always return many  */
+            //1. see "Decoder" Clas for example and use generic ienum<decodedmessage> as example to fix this compile error
+
             //It is like the TransformBlock but it outputs an IEnumerable<TOutput> for each message it consumes.
             var scrapeManyBlock = new TransformManyBlock<Message, ProcessedMessage>(
-              (Message msg) => /* execute scraping logic for passed site source's  */, largeBufferOptions); //TODO: figure out flow of data in https://jack-vanlightly.com/blog/2018/4/18/processing-pipelines-series-tpl-dataflow and try decide where my scraping logic happens in pipeline (might just happen somwhere else and feed it into pipeline ?)
+               (Message msg) => _specificScraper.Run(this.Browser, msg), largeBufferOptions);
 
             #region BroadcasterBlock info
 
