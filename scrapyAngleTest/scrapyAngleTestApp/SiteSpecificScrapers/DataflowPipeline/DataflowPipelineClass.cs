@@ -68,7 +68,7 @@ namespace SiteSpecificScrapers.DataflowPipeline
 
             //It is like the TransformBlock but it outputs an IEnumerable<TOutput> for each message it consumes.
             var scrapeManyBlock = new TransformManyBlock<Message, ProcessedMessage>(
-               (Message msg) => _specificScraper.Run(this.Browser, msg), largeBufferOptions);
+              async (Message msg) => await _specificScraper.Run(this.Browser, msg), largeBufferOptions);
 
             #region BroadcasterBlock info
 
