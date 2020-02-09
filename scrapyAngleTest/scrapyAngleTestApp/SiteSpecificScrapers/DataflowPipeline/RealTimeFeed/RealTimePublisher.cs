@@ -15,3 +15,6 @@ namespace SiteSpecificScrapers.DataflowPipeline.RealTimeFeed
         }
     }
 }
+
+//Decode function in StreamProcessing ->
+//yield return Decode(reading, sensorConfig, decodeCounter);//next time the itteration is started , we continue from last element we returned(and dont return previous elements again !!)

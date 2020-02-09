@@ -42,15 +42,17 @@ namespace SiteSpecificScrapers.DataflowPipeline
             //Block config
             //We should set BoundedCapacity to a low number: when we want to maintain throttling throughout a pipeline
             var largeBufferOptions = new ExecutionDataflowBlockOptions() { BoundedCapacity = 600000 };
+            var largeBufferOptionsSingleProd = new ExecutionDataflowBlockOptions() { BoundedCapacity = 600000, SingleProducerConstrained = true };
             var smallBufferOptions = new ExecutionDataflowBlockOptions() { BoundedCapacity = 1000 };
             var realTimeBufferOptions = new ExecutionDataflowBlockOptions() { BoundedCapacity = 6000 };
             var parallelizedOptions = new ExecutionDataflowBlockOptions() { BoundedCapacity = 6000, MaxDegreeOfParallelism = 4 };//was 1000
             var batchOptions = new GroupingDataflowBlockOptions() { BoundedCapacity = 1000 };
 
-            ///TODO:  When we get <remarks transformBlock ... we skipp it and exit pipeline ...fix that !!!!
+            ///TODO:
             /// check out  await Task.Yield(); to yeald to same context
             /// _specificScraper.Run(browser) --> Run method will have different implementation in each scraper( problem is logic separation which it does in it )
             /// Parsing and source fetching takes most time so i should paralelise that task the most!
+            /// Temp disabled "transformBlock" while debugging
 
             //Block definitions
 
@@ -67,8 +69,8 @@ namespace SiteSpecificScrapers.DataflowPipeline
             //1. see "Decoder" Clas for example and use generic ienum<decodedmessage> as example to fix this compile error
 
             //It is like the TransformBlock but it outputs an IEnumerable<TOutput> for each message it consumes.
-            var scrapeManyBlock = new TransformManyBlock<Message, ProcessedMessage>(
-              async (Message msg) => await _specificScraper.Run(this.Browser, msg), largeBufferOptions);
+            var scrapeManyBlock = new TransformManyBlock<Message, ProcessedMessage>(async (Message msg) =>
+             await _specificScraper.Run(this.Browser, msg), largeBufferOptions);
 
             #region BroadcasterBlock info
 
@@ -86,8 +88,8 @@ namespace SiteSpecificScrapers.DataflowPipeline
             var broadcast = new BroadcastBlock<ProcessedMessage>(msg => msg);
 
             //Real time publish ...
-            var realTimeFeedBlock = new ActionBlock<ProcessedMessage>(async
-               (ProcessedMessage msg) => await _realTimeFeedPublisher.PublishAsync(msg), parallelizedOptions);
+            var realTimeFeedBlock = new ActionBlock<ProcessedMessage>(async (ProcessedMessage msg) =>
+            await _realTimeFeedPublisher.PublishAsync(msg), largeBufferOptions);
 
             //Link blocks together
             transformBlock.LinkTo(scrapeManyBlock, linkOptions); //Can add 3rd param , ()=>  filter method msg need to pass to propagate from source to target!!
@@ -95,7 +97,7 @@ namespace SiteSpecificScrapers.DataflowPipeline
             broadcast.LinkTo(realTimeFeedBlock, linkOptions);
 
             //Start consuming data
-            var consumer = _dataConsumer.StartConsuming(transformBlock, token, _specificScraper);
+            var consumerTask = _dataConsumer.StartConsuming(/*transformBlock*/scrapeManyBlock, token, _specificScraper);
 
             //Keep going untill CancellationToken is cancelled or block is in the completed state either due to a fault or the completion of the pipeline.
             while (!token.IsCancellationRequested
@@ -105,10 +107,12 @@ namespace SiteSpecificScrapers.DataflowPipeline
             }
 
             //the CancellationToken has been cancelled and our producer has stopped producing
-            transformBlock.Complete(); // call Complete on the first block, this will propagate down the pipeline
+            //Call Complete on the first block, this will propagate down the pipeline
+            transformBlock.Complete();
+            //scrapeManyBlock.Complete();
 
             //Wait for all blocks to finish processing their data
-            await Task.WhenAll(realTimeFeedBlock.Completion, consumer);
+            await Task.WhenAll(realTimeFeedBlock.Completion, consumerTask);
 
             // clean up any other resources like ZeroMQ/kafka for example
         }

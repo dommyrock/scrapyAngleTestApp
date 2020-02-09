@@ -10,7 +10,7 @@ using SiteSpecificScrapers.Services;
 
 namespace SiteSpecificScrapers.Helpers
 {
-    public class CompositionRoot : /*ISiteSpecific,*/ IComposition
+    public class CompositionRoot : IComposition
     {
         public string Url { get; set; }
         public List<string> InputList { get; set; }
@@ -72,7 +72,7 @@ namespace SiteSpecificScrapers.Helpers
                 Console.WriteLine($"Scraper [{scraper.Url}] started:");
                 try
                 {
-                    Task task = Task.Run(async () => await InitPipeline(scraper)).ContinueWith((i) => Console.WriteLine("All scrapers completed. [EXITING] Scraping now."));
+                    Task task = Task.Run(async () => await InitPipeline(scraper)).ContinueWith((i) => Console.WriteLine("All scrapers completed. [EXITING] Scraper now."));
                     //NOTE: Left InitPipeline async ...so i can reuse it for RunAllAsync
                 }
                 catch (Exception ex)
