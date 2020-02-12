@@ -49,6 +49,7 @@ namespace SiteSpecificScrapers.DataflowPipeline
             var batchOptions = new GroupingDataflowBlockOptions() { BoundedCapacity = 1000 };
 
             ///TODO:
+            /// implement singleR fist with dashboard example (in PRogram.cs) and output stream to external react app (1st version will act as live debugger console ...to uotput pipeline stream from action block /broadcast block )
             /// check out  await Task.Yield(); to yeald to same context
             /// _specificScraper.Run(browser) --> Run method will have different implementation in each scraper( problem is logic separation which it does in it )
             /// Parsing and source fetching takes most time so i should paralelise that task the most!

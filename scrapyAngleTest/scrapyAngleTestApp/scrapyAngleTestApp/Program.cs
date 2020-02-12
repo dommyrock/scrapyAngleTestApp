@@ -33,8 +33,6 @@ namespace scrapyAngleTestApp
             Browser = new ScrapingBrowser() { UserAgent = FakeUserAgents.Chrome24 };// Check this class for reusable API
             /// <see cref="https://searchcode.com/codesearch/view/125929587/"/> for ScrapySharp ->"ScrapingBrowser"  source code
 
-            //TODO : after pipeline is complete ,try improve content fetching speed/parallelism
-
             #region Composition Root
 
             //Pass all scraper clases that implement ISiteSpecific (with Polymorphism)
@@ -46,6 +44,10 @@ namespace scrapyAngleTestApp
                         //new AbrakadabraScraper()
                         );
                 compositionRoot.RunAll();//this one is Synchronous pipe so i dont need to await it!
+                //TODO: after pipeline is flowig , SingleR for real time data streaming (might use Rx too if needed )
+                /// <see cref="https://github.com/dsuryd/dotNetify-react-template/tree/master/ReactTemplate/content"/>  example project using SingleR + React front -Real time dashboard
+                ///
+                /// IObservable (generalized mechanism for push-based notification); https://docs.microsoft.com/en-us/dotnet/api/system.iobservable-1?view=netframework-4.8
                 //TODO (after sync pipe's are done): await async pipes Task.WhenAll() ...compositionRoot.RunAllAsync() ....
                 //Also check on FB in my inbox for awaiting async data .GetAwaiter().GetResult().....
             }
