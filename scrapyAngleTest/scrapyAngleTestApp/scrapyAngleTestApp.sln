@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{01D2254D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiteSpecific_Scrapers_Test", "SiteSpecific_Scrapers_Test\SiteSpecific_Scrapers_Test.csproj", "{46851C28-B18E-427A-954A-B8F3DB0A8BF7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamOutputWebApp", "StreamOutputWebApp\StreamOutputWebApp.csproj", "{BC5D6E19-1091-4C6E-88FB-E5BBA878DEF0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{46851C28-B18E-427A-954A-B8F3DB0A8BF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46851C28-B18E-427A-954A-B8F3DB0A8BF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46851C28-B18E-427A-954A-B8F3DB0A8BF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC5D6E19-1091-4C6E-88FB-E5BBA878DEF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC5D6E19-1091-4C6E-88FB-E5BBA878DEF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC5D6E19-1091-4C6E-88FB-E5BBA878DEF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC5D6E19-1091-4C6E-88FB-E5BBA878DEF0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
