@@ -34,7 +34,7 @@ namespace StreamOutputWebApp
                 options.EnableDetailedErrors = true;
             });
 
-            services.AddSingleton<>();
+            //services.AddSingleton<>(); todo  add my own class/service here
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
