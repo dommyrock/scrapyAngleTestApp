@@ -43,7 +43,7 @@ const Home = () => (
 
 export default connect()(Home);
 
-/* client side hub example: TODO: call it here in home.tsx or in index.tsx
+/* client side hub example: TODO: call it here in home.tsx
     <script>
         (async () => {
             const latestSensorData = { x: 0, y: 0, z: 0 };
