@@ -62,7 +62,7 @@ namespace StreamOutputWebApp
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapHub<StreamOutputHub>("/stream");
+                endpoints.MapHub<StreamOutputHub>("/outputstream");
                 // initial template code
                 //endpoints.MapControllerRoute(
                 //    name: "default",

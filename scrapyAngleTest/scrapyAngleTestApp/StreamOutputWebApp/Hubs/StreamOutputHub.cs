@@ -16,5 +16,6 @@ namespace StreamOutputWebApp.Hubs
         // 2. implement client side hub (not in index.html since im using react, )-->in home component instead...[example-->IEvangelist.SignalRStreaming -home.component]
         //3. if i want message pack protocol add
         //import { MessagePackHubProtocol } from '@aspnet/signalr-protocol-msgpack'; + .withHubProtocol(new MessagePackHubProtocol()) to client side hub config
+        ///for hooks hub setup  <see cref="https://fulgenc.io/react-typescript-with-signalr-chat-app-pt-1/"/>
     }
 }
