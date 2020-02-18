@@ -49,7 +49,7 @@ namespace SiteSpecificScrapers.Helpers
             {
                 try
                 {
-                    await pipeline.StartPipelineAsync(cts.Token);
+                    await pipeline.StartPipelineAsync(cts.Token);   //ORDER IS ---> Start consuming ---> ConsumeWithDIscard -->
                 }
                 catch (Exception ex)
                 {

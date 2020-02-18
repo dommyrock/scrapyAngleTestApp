@@ -26,8 +26,6 @@ namespace SiteSpecificScrapers.DataflowPipeline
         {
             while (!token.IsCancellationRequested)
             {
-                //TODO: Read scraped site source data  & assign it to message object
-
                 var message = new Message();
                 //message.SourceHtml = //scraped data
                 message.Id = _counter;
@@ -36,7 +34,7 @@ namespace SiteSpecificScrapers.DataflowPipeline
                 _counter++;
                 Console.WriteLine($"Read message num[{_counter}] from [{scraper.Url}] on thread [{Thread.CurrentThread.ManagedThreadId}]");//TODO: remove this temp logging
 
-                //Post msg & report if buffer is full
+                //Post MSG TO 1ST BLOCK IN PIPELINE!! & Report if buffer is full
                 var post = target.Post(message);
                 if (!post)
                     Console.WriteLine("Buffer full, Could not post!");

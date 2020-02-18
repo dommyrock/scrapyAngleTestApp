@@ -25,5 +25,7 @@ namespace SiteSpecificScrapers
         /// </summary>
         /// <returns></returns>
         Task<IEnumerable<ProcessedMessage>> Run(ScrapingBrowser browser, Message message);
+
+        Task RunInitMsg(ScrapingBrowser browser, Message message);
     }
 }

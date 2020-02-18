@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SiteSpecificScrapers.Messages
 {
@@ -13,5 +14,6 @@ namespace SiteSpecificScrapers.Messages
         public string CurrencyCode { get; set; }
         public string JSON { get; set; }
         public DateTime ReadingTime { get; set; }
+        public List<string> Webshops { get; set; }
     }
 }

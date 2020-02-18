@@ -55,45 +55,50 @@ namespace SiteSpecificScrapers
         /// </summary>
         private async Task ScrapeWebshops()
         {
-            //while (true)
-            //{
-            WebPage pageSource = await Browser.NavigateToPageAsync(new Uri(Url));//can speed this up by using DownloadStringAsync(but need other filter to extract shop link (regex))
+            WebShops = new List<string>();
+            ScrapedKeyValuePairs = new Dictionary<string, bool>(); //TODO :loop is infinite att , debug this methods and figure out the buffer sizes in TPL and why i post extra 2k msgs per read ???
 
-            var node = pageSource.Html.SelectSingleNode("//b");//get<b> node/Link select all nodes
-            if (node != null)
+            while (true)
             {
-                bool isLink = node.InnerHtml.StartsWith("http");
-                if (isLink)
+                WebPage pageSource = await Browser.NavigateToPageAsync(new Uri(Url));//can speed this up by using DownloadStringAsync(but need other filter to extract shop link (regex))
+
+                var node = pageSource.Html.SelectSingleNode("//b");//get<b> node/Link select all nodes
+                if (node != null)
                 {
-                    //InputList.Add(node.InnerHtml);
-                    WebShops.Add(node.InnerHtml);//add to separate "Shop" list
-                                                 //Reasign Url to real link
-                    Url = node.InnerHtml;
-                    Console.WriteLine(node.InnerHtml);
-                    //break; dont have loop here so i dont need it !!!
+                    bool isLink = node.InnerHtml.StartsWith("http");
+                    if (isLink)
+                    {
+                        //InputList.Add(node.InnerHtml);
+
+                        WebShops.Add(node.InnerHtml);
+
+                        //Reasign Url to real link
+                        Url = node.InnerHtml;
+                        Console.WriteLine(node.InnerHtml);
+                        //break; dont have loop here so i dont need it !!!
+                    }
                 }
-            }
-            else
-            {
-                Console.WriteLine($"All [{WebShops.Count}] Shops scraped from nabava.net/sitemap.xml \n");
+                else
+                {
+                    Console.WriteLine($"All [{WebShops.Count}] Shops scraped from nabava.net/sitemap.xml \n");
 
-                //Set url to [0] item in "Webshop" queue before exiting
-                Url = WebShops[0];
-                //break;//to skip bellow code & exit while
-            }
+                    //Set url to [0] item in "Webshop" queue before exiting
+                    Url = WebShops[0];
+                    //break;//to skip bellow code & exit while
+                }
 
-            if (!ScrapedKeyValuePairs.ContainsKey(Url))//TODO : use Hash(set)  or concurrent collection
-            {
-                ScrapedKeyValuePairs.Add(Url, true);//added scraped links from sitemap here...
-            }
+                if (!ScrapedKeyValuePairs.ContainsKey(Url))//TODO : use Hash(set)  or concurrent collection
+                {
+                    ScrapedKeyValuePairs.Add(Url, true);//added scraped links from sitemap here...
+                }
 
-            InputList.RemoveAt(0);//remove scraped links from sitemap
-            Url = InputList[0];
-            //}
+                InputList.RemoveAt(0);//remove scraped links from sitemap
+                Url = InputList[0];
+            }
         }
 
-        // Encapsulates scraping logic for each site specific scraper.(Must be async if it encapsulates async code)
-        public async Task Run(ScrapingBrowser browser)
+        // Encapsulates scraping logic for each site specific scraper.(Must be async if it encapsulates async code)     OLD METHOD,,,REMOVE WHEN REPLACED
+        public async Task RunInitMsg(ScrapingBrowser browser, Message msg)
         {
             var success = ScrapeSitemapLinks(browser).GetAwaiter().GetResult();
 
@@ -101,10 +106,13 @@ namespace SiteSpecificScrapers
             {
                 await ScrapeWebshops().ContinueWith(i => Console.WriteLine("Scraping Webshops in Nabava.net DONE"));
             }
+
+            await Task.Yield();
         }
 
-        Task<IEnumerable<ProcessedMessage>> ISiteSpecific.Run(ScrapingBrowser browser, Message message)
+        async Task<IEnumerable<ProcessedMessage>> ISiteSpecific.Run(ScrapingBrowser browser, Message message)
         {
+            //TODO: make this method get shops/link data and assigns it to message.Webshops ---TEST FLOW ON "RunInitMsg" FIST HAN REPLACE IT WITH THIS METHOD
             throw new NotImplementedException();
         }
     }
