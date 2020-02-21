@@ -58,6 +58,9 @@ namespace SiteSpecificScrapers
             WebShops = new List<string>();
             ScrapedKeyValuePairs = new Dictionary<string, bool>(); //TODO :loop is infinite att , debug this methods and figure out the buffer sizes in TPL and why i post extra 2k msgs per read ???
 
+            //TODO: add cache check  before this method so i dont have to re-run this method (cache for 24hr localy)
+
+            //NOTE: we fetch 1by one node because shop links still need to be scraped from nabava.net(direct Urls-are not in sitemap)
             while (true)
             {
                 WebPage pageSource = await Browser.NavigateToPageAsync(new Uri(Url));//can speed this up by using DownloadStringAsync(but need other filter to extract shop link (regex))
@@ -72,10 +75,9 @@ namespace SiteSpecificScrapers
 
                         WebShops.Add(node.InnerHtml);
 
-                        //Reasign Url to real link
+                        //Real link assignment
                         Url = node.InnerHtml;
                         Console.WriteLine(node.InnerHtml);
-                        //break; dont have loop here so i dont need it !!!
                     }
                 }
                 else
@@ -84,7 +86,8 @@ namespace SiteSpecificScrapers
 
                     //Set url to [0] item in "Webshop" queue before exiting
                     Url = WebShops[0];
-                    //break;//to skip bellow code & exit while
+                    //Exit loop when all webshops are scraped
+                    break;
                 }
 
                 if (!ScrapedKeyValuePairs.ContainsKey(Url))//TODO : use Hash(set)  or concurrent collection
