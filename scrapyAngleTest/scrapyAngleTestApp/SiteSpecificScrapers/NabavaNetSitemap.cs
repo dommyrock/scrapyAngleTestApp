@@ -1,6 +1,7 @@
 ﻿using ScrapySharp.Extensions;
 using ScrapySharp.Network;
 using SiteSpecificScrapers.BaseClass;
+using SiteSpecificScrapers.Helpers;
 using SiteSpecificScrapers.Messages;
 using System;
 using System.Collections.Generic;
@@ -56,47 +57,52 @@ namespace SiteSpecificScrapers
         private async Task ScrapeWebshops()
         {
             WebShops = new List<string>();
-            ScrapedKeyValuePairs = new Dictionary<string, bool>(); //TODO :loop is infinite att , debug this methods and figure out the buffer sizes in TPL and why i post extra 2k msgs per read ???
+            ScrapedKeyValuePairs = new Dictionary<string, bool>();
 
-            //TODO: add cache check  before this method so i dont have to re-run this method (cache for 24hr localy)
-
-            //NOTE: we fetch 1by one node because shop links still need to be scraped from nabava.net(direct Urls-are not in sitemap)
-            while (true)
+            WebShops = NewtonsoftExtension.GetFromLocalCache();
+            if (WebShops.Count == 0)
             {
-                WebPage pageSource = await Browser.NavigateToPageAsync(new Uri(Url));//can speed this up by using DownloadStringAsync(but need other filter to extract shop link (regex))
-
-                var node = pageSource.Html.SelectSingleNode("//b");//get<b> node/Link select all nodes
-                if (node != null)
+                while (true)
                 {
-                    bool isLink = node.InnerHtml.StartsWith("http");
-                    if (isLink)
+                    //NOTE: we fetch 1 by 1 node because shop links still need to be scraped from nabava.net(direct Urls-are not in sitemap)
+                    WebPage pageSource = await Browser.NavigateToPageAsync(new Uri(Url));//can speed this up by using DownloadStringAsync(but need other filter to extract shop link (regex))
+
+                    var node = pageSource.Html.SelectSingleNode("//b");//get<b> node/Link select all nodes
+                    if (node != null)
                     {
-                        //InputList.Add(node.InnerHtml);
+                        bool isLink = node.InnerHtml.StartsWith("http");
+                        if (isLink)
+                        {
+                            //InputList.Add(node.InnerHtml);
 
-                        WebShops.Add(node.InnerHtml);
+                            WebShops.Add(node.InnerHtml);
 
-                        //Real link assignment
-                        Url = node.InnerHtml;
-                        Console.WriteLine(node.InnerHtml);
+                            //Real link assignment
+                            Url = node.InnerHtml;
+                            Console.WriteLine(node.InnerHtml);
+                        }
                     }
-                }
-                else
-                {
-                    Console.WriteLine($"All [{WebShops.Count}] Shops scraped from nabava.net/sitemap.xml \n");
+                    else
+                    {
+                        Console.WriteLine($"All [{WebShops.Count}] Shops scraped from nabava.net/sitemap.xml \n");
 
-                    //Set url to [0] item in "Webshop" queue before exiting
-                    Url = WebShops[0];
-                    //Exit loop when all webshops are scraped
-                    break;
-                }
+                        //Set url to [0] item in "Webshop" queue before exiting
+                        Url = WebShops[0];
 
-                if (!ScrapedKeyValuePairs.ContainsKey(Url))//TODO : use Hash(set)  or concurrent collection
-                {
-                    ScrapedKeyValuePairs.Add(Url, true);//added scraped links from sitemap here...
-                }
+                        NewtonsoftExtension.CacheWebshopsToLocalCache(WebShops);
 
-                InputList.RemoveAt(0);//remove scraped links from sitemap
-                Url = InputList[0];
+                        //Exit loop when all webshops are scraped
+                        break;
+                    }
+
+                    if (!ScrapedKeyValuePairs.ContainsKey(Url))//TODO : use Hash(set)  or concurrent collection
+                    {
+                        ScrapedKeyValuePairs.Add(Url, true);//added scraped links from sitemap here...
+                    }
+
+                    InputList.RemoveAt(0);//remove scraped links from sitemap
+                    Url = InputList[0];
+                }
             }
         }
 
@@ -120,15 +126,3 @@ namespace SiteSpecificScrapers
         }
     }
 }
-
-/*
- * BLOCKING code leads to deadlocking
- *
- * task.Result() is blocking !! -- so its better to await all task's to complete ...so we don't deadlock
- *
- * task.Run() -- wait for async func to complete in separate tread !
- *
- * so the state machine runs in different thread than im blocking
- *
- * best practice : call async methods in async methods (all the way up)
- */
