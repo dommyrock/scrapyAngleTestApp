@@ -276,7 +276,7 @@ D:\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\SiteSpecific
 D:\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\SiteSpecificScrapers\bin\Debug\tr\FSharp.Core.resources.dll
 D:\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\SiteSpecificScrapers\bin\Debug\zh-Hans\FSharp.Core.resources.dll
 D:\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\SiteSpecificScrapers\bin\Debug\zh-Hant\FSharp.Core.resources.dll
+D:\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\SiteSpecificScrapers\obj\Debug\SiteSpecificScrapers.csprojAssemblyReference.cache
 D:\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\SiteSpecificScrapers\obj\Debug\SiteSpecificScrapers.csproj.CopyComplete
 D:\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\SiteSpecificScrapers\obj\Debug\SiteSpecificScrapers.dll
 D:\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\SiteSpecificScrapers\obj\Debug\SiteSpecificScrapers.pdb
-D:\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\SiteSpecificScrapers\obj\Debug\SiteSpecificScrapers.csprojAssemblyReference.cache

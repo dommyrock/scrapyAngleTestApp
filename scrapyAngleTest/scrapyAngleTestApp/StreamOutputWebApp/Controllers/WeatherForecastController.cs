@@ -7,6 +7,8 @@ using Microsoft.Extensions.Logging;
 
 namespace StreamOutputWebApp.Controllers
 {
+    //example only ...auto generated
+
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
