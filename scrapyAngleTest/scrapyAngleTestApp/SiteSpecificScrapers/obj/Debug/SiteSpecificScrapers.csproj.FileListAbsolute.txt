@@ -279,3 +279,4 @@ D:\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\SiteSpecific
 D:\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\SiteSpecificScrapers\obj\Debug\SiteSpecificScrapers.csproj.CopyComplete
 D:\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\SiteSpecificScrapers\obj\Debug\SiteSpecificScrapers.dll
 D:\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\SiteSpecificScrapers\obj\Debug\SiteSpecificScrapers.pdb
+D:\GithubRepo\scrapyAngleTestApp\scrapyAngleTest\scrapyAngleTestApp\SiteSpecificScrapers\obj\Debug\SiteSpecificScrapers.csprojAssemblyReference.cache

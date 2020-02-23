@@ -25,8 +25,6 @@ namespace SiteSpecificScrapers
             InputList = new List<string>(); //TODO:change to be same instance from main else i lose this
         }
 
-        //This class ment to only fetch sitemap (GetSitemap method --->
-
         /// <summary>
         /// True if Success(Adds webshop urls to "InputList".) / False if no sitemap has been found in robots.txt
         /// </summary>
@@ -60,6 +58,7 @@ namespace SiteSpecificScrapers
             ScrapedKeyValuePairs = new Dictionary<string, bool>();
 
             WebShops = NewtonsoftExtension.GetFromLocalCache();
+            InputList = NewtonsoftExtension.GetFromLocalCache(true, "nNetSections.json");
             if (WebShops.Count == 0)
             {
                 while (true)
@@ -89,8 +88,8 @@ namespace SiteSpecificScrapers
                         //Set url to [0] item in "Webshop" queue before exiting
                         Url = WebShops[0];
 
-                        NewtonsoftExtension.CacheWebshopsToLocalCache(WebShops);
-
+                        NewtonsoftExtension.CacheToLocalCache(WebShops);
+                        NewtonsoftExtension.CacheToLocalCache(InputList, "nNetSections.json");
                         //Exit loop when all webshops are scraped
                         break;
                     }

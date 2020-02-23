@@ -126,15 +126,6 @@ namespace SiteSpecificScrapers.Helpers
          ///for less memory alocation (non reference & return types <see cref="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.valuetask-1?view=netcore-3.0"/>
          */
 
-        /* CONCURRENT QUEUE https://michaelscodingspot.com/c-job-queues/ ----> TPL DATAFLOW INSTEAD(built in async arhtecture w blocks)
-         * 1)List<T> This queue is not thread-safe. That’s because we’re using List<T>, which is not a thread-safe collection.
-         * Since we’re using at least 2 threads (to Enqueue and to Dequeue), bad things will happen.
-          2) The List<T> collection will provide terrible performance for this usage. It’s using a vector under the hood, which is essentially a dynamic size array.
-            An array is great for direct access operations, but not so great for adding and removing items.
-          3)  We are using a thread-pool thread (with Task.Run) for a thread that’s supposed to be alive during entire application lifecycle.
-            The rule of thumb is to use a regular Thread for long-running threads and pooled threads (thread-pool threads) for short running threads. Alternatively, we can change the Task’s creation options to  TaskCreationOptions.LongRunning
-         */
-
         /// <remarks The task-Result property is a blocking property. ></remarks>
         /// In most cases, you should access the value by using await instead of accessing the property directly.
         /// exceptions <see cref="https://markheath.net/post/async-antipatterns"/>

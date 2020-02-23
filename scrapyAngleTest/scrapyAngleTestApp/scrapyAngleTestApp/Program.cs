@@ -30,7 +30,12 @@ namespace scrapyAngleTestApp
             ScrapedDictionary = new Dictionary<string, bool>();
             InputList = new List<string>();
             WebShops = new List<string>();
-            Browser = new ScrapingBrowser() { UserAgent = FakeUserAgents.Chrome24 };// Check this class for reusable API
+            Browser = new ScrapingBrowser()
+            {
+                UserAgent = FakeUserAgents.Chrome24,
+                IgnoreCookies = true,
+                AutoDownloadPagesResources = false,
+            };
             /// <see cref="https://searchcode.com/codesearch/view/125929587/"/> for ScrapySharp ->"ScrapingBrowser"  source code
 
             #region Composition Root
