@@ -34,7 +34,8 @@ namespace StreamOutputWebApp
                 options.EnableDetailedErrors = true;
             });
 
-            services.AddSingleton<StreamOutputService>();
+            //since we use dependency injection , need to add interface too
+            services.AddSingleton<IStreamOutputService, StreamOutputService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
