@@ -34,7 +34,7 @@ namespace StreamOutputWebApp
                 options.EnableDetailedErrors = true;
             });
 
-            services.AddSingleton<StreamOutput>();
+            services.AddSingleton<StreamOutputService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,7 +55,6 @@ namespace StreamOutputWebApp
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
-
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
