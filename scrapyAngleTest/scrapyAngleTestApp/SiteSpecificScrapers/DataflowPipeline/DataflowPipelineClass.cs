@@ -86,7 +86,7 @@ namespace SiteSpecificScrapers.DataflowPipeline
             var broadcast = new BroadcastBlock<ProcessedMessage>(msg => msg);
 
             //Real time publish ...
-            var realTimeFeedBlock = new ActionBlock<ProcessedMessage>(async (ProcessedMessage msg) =>
+            var realTimeFeedBlock = new ActionBlock<ProcessedMessage>(async (ProcessedMessage msg) => //TODOOO: CALL & INVOKE HUBS PUBLISH METHOD HERE AND CONNECT REST OF PIPELINE
             await _realTimeFeedPublisher.PublishAsync(msg), largeBufferOptions);
 
             //Link blocks together
