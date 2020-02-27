@@ -10,6 +10,6 @@ namespace SiteSpecificScrapers.DataflowPipeline.RealTimeFeed
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        Task PublishAsync(ProcessedMessage message);
+        void PublishAsync(Message message);
     }
 }

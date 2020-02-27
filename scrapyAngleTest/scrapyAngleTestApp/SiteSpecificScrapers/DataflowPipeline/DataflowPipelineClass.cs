@@ -49,7 +49,6 @@ namespace SiteSpecificScrapers.DataflowPipeline
             var batchOptions = new GroupingDataflowBlockOptions() { BoundedCapacity = 1000 };
 
             ///TODO:
-            /// check out  await Task.Yield(); to yeald to same context
             /// _specificScraper.Run(browser) --> Run method will have different implementation in each scraper( problem is logic separation which it does in it )
 
             //Block definitions
@@ -67,8 +66,8 @@ namespace SiteSpecificScrapers.DataflowPipeline
             //1. see "Decoder" Clas for example and use generic ienum<decodedmessage> as example to fix this compile error
 
             //It is like the TransformBlock but it outputs an IEnumerable<TOutput> for each message it consumes.
-            var scrapeManyBlock = new TransformManyBlock<Message, ProcessedMessage>(async (Message msg) =>
-               await _specificScraper.Run(this.Browser, msg), largeBufferOptions);
+            //var scrapeManyBlock = new TransformManyBlock<Message, ProcessedMessage>(async (Message msg) =>
+            //   await _specificScraper.Run(this.Browser, msg), largeBufferOptions);  //TODO :SINCE "RUN" THROWS NOT IMPLEMENTED EX. BLOCK COMPLETES AND STOPS RECEIVEING MSG'S ...
 
             #region BroadcasterBlock info
 
@@ -83,16 +82,18 @@ namespace SiteSpecificScrapers.DataflowPipeline
             #endregion BroadcasterBlock info
 
             //Branches out the messages to other consumer blocks linked!
-            var broadcast = new BroadcastBlock<ProcessedMessage>(msg => msg);
+            var broadcast = new BroadcastBlock<Message>(msg => msg);
 
             //Real time publish ...
-            var realTimeFeedBlock = new ActionBlock<ProcessedMessage>(async (ProcessedMessage msg) => //TODOOO: CALL & INVOKE HUBS PUBLISH METHOD HERE AND CONNECT REST OF PIPELINE
-            await _realTimeFeedPublisher.PublishAsync(msg), largeBufferOptions);
+            var realTimeFeedBlock = new ActionBlock<Message>((Message msg) => //TODOOO: CALL & INVOKE HUBS PUBLISH METHOD HERE AND CONNECT REST OF PIPELINE
+            _realTimeFeedPublisher.PublishAsync(msg), largeBufferOptions);
 
             //Link blocks together
-            transformBlock.LinkTo(scrapeManyBlock, linkOptions); //Can add 3rd param , ()=>  filter method msg need to pass to propagate from source to target!!
-            scrapeManyBlock.LinkTo(broadcast, linkOptions);
+            transformBlock.LinkTo(broadcast, linkOptions);
             broadcast.LinkTo(realTimeFeedBlock, linkOptions);
+            //transformBlock.LinkTo(scrapeManyBlock, linkOptions); //Can add 3rd param , ()=>  filter method msg need to pass to propagate from source to target!!
+            //scrapeManyBlock.LinkTo(broadcast, linkOptions);
+            //broadcast.LinkTo(realTimeFeedBlock, linkOptions);
 
             //Start consuming data (uncoment block to switch block from which propagation starts)
             var consumerTask = _dataConsumer.StartConsuming(transformBlock,/*scrapeManyBlock,*/ token, _specificScraper);

@@ -118,10 +118,11 @@ namespace SiteSpecificScrapers
             await Task.Yield();
         }
 
+        //NOTE:  NOT USED AT THE MOMENT --- ONLY USING SINGLE TRANSFORM BLOCK --->BROADCAST --->ACTION BLOCK (REALTIMEPUBLISHER) --->SIGNALR
         async Task<IEnumerable<ProcessedMessage>> ISiteSpecific.Run(ScrapingBrowser browser, Message message)
         {
             //TODO: make this method get shops/link data and assigns it to message.Webshops ---TEST FLOW ON "RunInitMsg" FIST HAN REPLACE IT WITH THIS METHOD
-            throw new NotImplementedException();
+            throw new NotImplementedException(); // WARNING : SINCE THIS THROWS ERROR ...TRANSFORM MANY BLOCK COMPLETES AND  STOPS GETTING MESSAGES PASSED TO HIM ...
         }
     }
 }
