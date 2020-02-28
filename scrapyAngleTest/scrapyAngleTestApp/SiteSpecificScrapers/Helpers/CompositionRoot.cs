@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR.Client;
 using ScrapySharp.Network;
 using SiteSpecificScrapers.DataflowPipeline;
 using SiteSpecificScrapers.DataflowPipeline.RealTimeFeed;
@@ -28,23 +29,19 @@ namespace SiteSpecificScrapers.Helpers
             this.Browser = browser;
         }
 
-        //TODO :
-        /*
+        /* NOTES:
          * 1.2. respect politeness policy --delay requests to single domain ..., and NEVER make async requests to same domain (only async other site scrapers)
          * 1.3. make QUEUES SPECIFIC to  sites --ONE QUEUE per site !!
-         *
-         *
-         * TODO: run scraper and await task completion...than run next one
+         * 1.4 run scraper and await task completion...than run next one
          */
 
         protected async Task InitPipeline(ISiteSpecific scraper)
         {
+            //TODO:  await completion , than start next scraper (in future if i have more threads ...can make few pipes run in parallel as well)
             var cts = new CancellationTokenSource();
             // init
-            var pipeline = new DataflowPipelineClass(Browser, scraper, new RealTimePublisher(), new DataConsumer());
+            var pipeline = new DataflowPipelineClass(Browser, scraper, new RealTimePublisher(), new DataConsumer(), new HubConnectionBuilder());
 
-            //TODO:  await completion , than start next scraper (in future if i have more threads ...can make few pipes run in parallel as well)
-            //pass : _specificScrapers --> new DataflowPipeline(Browser, _specificScrapers)
             Task pipelineTask = Task.Run(async () =>
             {
                 try

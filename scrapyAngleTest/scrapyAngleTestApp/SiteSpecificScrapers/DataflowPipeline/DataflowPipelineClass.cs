@@ -1,4 +1,5 @@
-﻿using ScrapySharp.Network;
+﻿using Microsoft.AspNetCore.SignalR.Client;
+using ScrapySharp.Network;
 using SiteSpecificScrapers.DataflowPipeline.RealTimeFeed;
 using SiteSpecificScrapers.Interfaces;
 using SiteSpecificScrapers.Messages;
@@ -13,9 +14,10 @@ namespace SiteSpecificScrapers.DataflowPipeline
     {
         //NOTE: TPL DATAFLOW ONLY DEFINES PIPELINE FOR MESSAGE FLOW & TRHOUGHPUT !!! (can extend it with kafka,0mq for load balancing)
 
-        private readonly ISiteSpecific _specificScraper;
-        private readonly IRealTimePublisher _realTimeFeedPublisher;
-        private readonly IDataConsumer _dataConsumer;
+        readonly ISiteSpecific _specificScraper;
+        readonly IRealTimePublisher _realTimeFeedPublisher;
+        readonly IDataConsumer _dataConsumer;
+        readonly IHubConnectionBuilder _hubcConnectionBuilder;
         public ScrapingBrowser Browser { get; set; }
 
         /// <summary>
@@ -27,12 +29,14 @@ namespace SiteSpecificScrapers.DataflowPipeline
         public DataflowPipelineClass(ScrapingBrowser browser,
                                     ISiteSpecific scraper,
                                     IRealTimePublisher realTimePublisher,
-                                    IDataConsumer dataConsumer)
+                                    IDataConsumer dataConsumer,
+                                    IHubConnectionBuilder hubConnection)
         {
             Browser = browser;
             _specificScraper = scraper;
             _realTimeFeedPublisher = realTimePublisher;
             _dataConsumer = dataConsumer;
+            _hubcConnectionBuilder = hubConnection;
         }
 
         public async Task StartPipelineAsync(CancellationToken token)
@@ -48,8 +52,10 @@ namespace SiteSpecificScrapers.DataflowPipeline
             var parallelizedOptions = new ExecutionDataflowBlockOptions() { BoundedCapacity = 6000, MaxDegreeOfParallelism = 4 };//was 1000
             var batchOptions = new GroupingDataflowBlockOptions() { BoundedCapacity = 1000 };
 
-            ///TODO:
-            /// _specificScraper.Run(browser) --> Run method will have different implementation in each scraper( problem is logic separation which it does in it )
+            //Hub config
+            //_hubcConnectionBuilder.WithUrl("https://localhost:5001/outputstream");  TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+            ////.WithAutomaticReconnect();
+            //await using var hubConnection = _hubcConnectionBuilder.Build();
 
             //Block definitions
 
@@ -61,9 +67,6 @@ namespace SiteSpecificScrapers.DataflowPipeline
 
                 return msg;
             }, largeBufferOptionsSingleProd);
-
-            /*TODO: execute scraping logic for passed site source's, might not need "TransformBlock" since i always return many  */
-            //1. see "Decoder" Clas for example and use generic ienum<decodedmessage> as example to fix this compile error
 
             //It is like the TransformBlock but it outputs an IEnumerable<TOutput> for each message it consumes.
             //var scrapeManyBlock = new TransformManyBlock<Message, ProcessedMessage>(async (Message msg) =>
@@ -85,8 +88,8 @@ namespace SiteSpecificScrapers.DataflowPipeline
             var broadcast = new BroadcastBlock<Message>(msg => msg);
 
             //Real time publish ...
-            var realTimeFeedBlock = new ActionBlock<Message>((Message msg) => //TODOOO: CALL & INVOKE HUBS PUBLISH METHOD HERE AND CONNECT REST OF PIPELINE
-            _realTimeFeedPublisher.PublishAsync(msg), largeBufferOptions);
+            var realTimeFeedBlock = new ActionBlock<Message>((Message msg) => //TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO: invoke hub method instead of console log
+            _realTimeFeedPublisher.PublishAsync(msg) /*_hubcConnectionBuilder.*/, largeBufferOptions);
 
             //Link blocks together
             transformBlock.LinkTo(broadcast, linkOptions);
